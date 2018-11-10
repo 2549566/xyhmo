@@ -1,4 +1,4 @@
-package com.xyhmo.commom.base;
+package com.xyhmo.commom.enums;
 
 /**
  * 错误码

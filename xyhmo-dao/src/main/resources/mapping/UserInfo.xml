@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.UserInfoDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.UserInfo" >
+      <id column="id" property="id" />
+      <result column="pin" property="pin" />
+      <result column="token" property="token" />
+      <result column="mobile_number" property="mobileNumber" />
+      <result column="user_name" property="userName" />
+      <result column="user_type" property="userType" />
+      <result column="password" property="password" />
+      <result column="bind_vender" property="bindVender" />
+      <result column="bind_vender_proxy" property="bindVenderProxy" />
+      <result column="is_auth" property="isAuth" />
+      <result column="image_hearder" property="imageHearder" />
+      <result column="created" property="created" />
+      <result column="modified" property="modified" />
+      <result column="creator" property="creator" />
+      <result column="modifier" property="modifier" />
+      <result column="status" property="status" />
+  </resultMap>
+  <sql id="allColumns">
+	id,pin,token,mobile_number,user_name,user_type,password,bind_vender,bind_vender_proxy,is_auth,
+	image_hearder,created,modified,creator,modifier,status
+  </sql>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.UserInfo">
+      INSERT INTO user_info (<include refid="allColumns"/>)
+      VALUES (null,#{pin},#{token},#{mobileNumber},#{userName},#{userType},#{password},#{bindVender},#{bindVenderProxy},#{isAuth},#{imageHearder},
+      NOW(),#{modified},#{creator},#{modifier},#{status} )
+  </insert>
+	
+  
+</mapper>

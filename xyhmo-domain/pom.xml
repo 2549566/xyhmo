@@ -10,6 +10,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>xyhmo-domain</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.xyhmo</groupId>
+            <artifactId>xyhmo-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 
 </project>

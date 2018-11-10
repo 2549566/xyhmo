@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.UserAuthInfoDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.UserAuthInfo" >
+      <id column="id" property="id" />
+      <result column="pin" property="pin" />
+      <result column="real_name" property="realName" />
+      <result column="image_card_face" property="imageCardFace" />
+      <result column="image_card_back" property="imageCardBack" />
+      <result column="image_company_qualiy" property="imageCompanyQualiy" />
+      <result column="company_name" property="companyName" />
+      <result column="created" property="created" />
+      <result column="modified" property="modified" />
+      <result column="creator" property="creator" />
+      <result column="modifier" property="modifier" />
+      <result column="status" property="status" />
+  </resultMap>
+  <sql id="allColumns">
+	id,pin,real_name,image_card_face,image_card_back,image_company_qualiy,company_name,created,modified,creator,modifier,status
+  </sql>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.UserAuthInfo">
+      INSERT INTO user_info (<include refid="allColumns"/>)
+      VALUES (null,#{pin},#{realName},#{imageCardFace},#{imageCardBack},#{imageCompanyQualiy},#{companyName},
+      NOW(),#{modified},#{creator},#{modifier},#{status} )
+  </insert>
+	
+  
+</mapper>

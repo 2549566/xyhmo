@@ -1,60 +1,82 @@
 package com.xyhmo.commom.base;
 
 import java.io.Serializable;
-import java.util.List;
 
-public class Result implements Serializable{
-	
-	private int code; //返回码
-	private String msg; //返回信息
-	private List<Object> resultList;//实体类列表
-	private Object modelInfo; //实体类
-	private String other;//返回路径
-	
-	
-	public Result(){
-		this.code = -1;
-		this.msg = "";
-	}
-	public Result(int code, String msg){
-		this.code = code;
-		this.msg = msg;
-	}
-	public Result(int code, String msg, String other){
-		this.code = code;
-		this.msg = msg;
-		this.other = other;
-	}
-	public int getCode() {
-		return code;
-	}
-	public void setCode(int code) {
-		this.code = code;
-	}
-	public String getMsg() {
-		return msg;
-	}
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-	public List getResultList() {
-		return resultList;
-	}
-	public void setResultList(List resultList) {
-		this.resultList = resultList;
-	}
-	public Object getModelInfo() {
-		return modelInfo;
-	}
-	public void setModelInfo(Object modelInfo) {
-		this.modelInfo = modelInfo;
-	}
-	public String getOther() {
-		return other;
-	}
-	public void setOther(String other) {
-		this.other = other;
-	}
-	
+public class Result<T> implements Serializable {
+    private static final long serialVersionUID = -5230176214305528119L;
 
+    private boolean success=false;
+    private Integer code;
+    private String message;
+    private T data;
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public Result fail(String message){
+        this.success=false;
+        this.message=message;
+        this.code=0;
+        return this;
+    }
+
+    public Result fail(Integer code, String message){
+        this.success=false;
+        this.code = code;
+        this.message=message;
+        return this;
+    }
+
+    public Result fail(Integer code, String message, T data){
+        this.success=false;
+        this.code = code;
+        this.message=message;
+        this.data = data;
+        return this;
+    }
+
+    public Result success(T data, String message){
+        this.success=true;
+        this.code=1;
+        this.message=message;
+        this.data=data;
+        return this;
+    }
+
+    public Result success(T data){
+        this.success=true;
+        this.code=1;
+        this.message="成功";
+        this.data=data;
+        return this;
+    }
 }
