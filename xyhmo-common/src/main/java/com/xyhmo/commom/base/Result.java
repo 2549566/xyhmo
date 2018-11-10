@@ -7,6 +7,7 @@ public class Result<T> implements Serializable {
 
     private boolean success=false;
     private Integer code;
+    private Integer businessCode;
     private String message;
     private T data;
 
@@ -49,9 +50,10 @@ public class Result<T> implements Serializable {
         return this;
     }
 
-    public Result fail(Integer code, String message){
+    public Result fail(Integer businessCode, String message){
         this.success=false;
-        this.code = code;
+        this.code = 0;
+        this.businessCode=businessCode;
         this.message=message;
         return this;
     }

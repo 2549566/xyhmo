@@ -4,17 +4,14 @@ package com.xyhmo.commom.enums;
  * 正则表达式枚举
  *
  * */
-public enum ParamEnum {
+public enum ReturnEnum {
 
-    PARAM_ERROR(-1,"参数异常"),
-    PARAM_MOBILE_RULE(-1001,"手机号格式错误"),
-    PARAM_CODE_RULE(-2001,"验证码格式错误"),
-    PARAM_CODE_OVER(-2002,"验证码过期"),
-    PARAM_GEN_CODE(-2003,"生成验证码错误");
+    RETURN_SUCCESS(1,"成功"),
+    RETURN_MOBILE_CHECK_CODE(2001,"获取验证码成功");
     private int code;
     private String desc;
 
-    ParamEnum(int code, String desc) {
+    ReturnEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -41,7 +38,7 @@ public enum ParamEnum {
         if(null == code){
             return "";
         }
-        for(ParamEnum node:values()){
+        for(ReturnEnum node:values()){
             if(node.getCode()==code){
                 return node.getDesc();
             }

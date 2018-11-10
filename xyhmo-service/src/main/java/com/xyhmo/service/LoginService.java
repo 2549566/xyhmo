@@ -17,4 +17,10 @@ public interface LoginService {
      * */
     UserVo login(String token);
 
+    /**
+     * 生成手机验证码
+     *
+     * */
+    String genCheckCode(String mobile);
+
 }

@@ -3,7 +3,12 @@ package com.xyhmo.controller.login;
 
 import com.xyhmo.commom.base.Result;
 import com.xyhmo.commom.enums.ParamEnum;
+import com.xyhmo.commom.enums.ReturnEnum;
+import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
+import com.xyhmo.commom.exception.SystemException;
+import com.xyhmo.commom.service.RedisService;
+import com.xyhmo.commom.utils.ParamCheckUtil;
 import com.xyhmo.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +32,7 @@ public class LoginController {
     private Result register(String mobile, String code){
         Result result = new Result();
         try{
-            if(!checkParam(mobile,code)){
+            if(!ParamCheckUtil.checkMobileNumber(mobile) || !ParamCheckUtil.checkCode(code) || !checkCodeOver(code)){
                 return result.fail(ParamEnum.PARAM_ERROR.getCode(),ParamEnum.PARAM_ERROR.getDesc());
             }
 
@@ -36,26 +41,37 @@ public class LoginController {
             return result.fail(p.getCode(),p.getMessage());
         }catch (Exception e){
             logger.error("LoginController:注册异常",e);
+            return result.fail(e.getMessage());
         }
-        return null;
+        return result;
     }
 
-    private boolean checkParam(String mobile,String code){
-        if(StringUtils.isEmpty(mobile) ||  !mobile.matches( "[0-9]{1,}" )){
-            throw new ParamException(ParamEnum.PARAM_MOBILE_RULE.getCode(),ParamEnum.PARAM_MOBILE_RULE.getDesc());
+    @RequestMapping(value = "/getCheckCode")
+    @ResponseBody
+    private Result getCheckCode(String mobile) {
+        Result result = new Result();
+        try {
+            ParamCheckUtil.checkMobileNumber(mobile);
+            String code =loginService.genCheckCode(mobile);
+            result.success(code,ReturnEnum.RETURN_MOBILE_CHECK_CODE.getDesc());
+        } catch (ParamException p) {
+            logger.error("LoginController：getCheckCode 手机号格式异常", p.getMessage());
+            return result.fail(p.getCode(), p.getMessage());
+        }catch (SystemException s){
+            logger.error("LoginController：getCheckCode 手机号格式异常", s.getMessage());
+            return result.fail(s.getCode(),s.getMessage());
+        }catch (Exception e){
+            logger.error("LoginController:获取验证码异常",e);
+            return result.fail(e.getMessage());
         }
-        if(StringUtils.isEmpty(code) ||  !code.matches( "[0-9]{1,}" )){
-            throw new ParamException(ParamEnum.PARAM_CODE_RULE.getCode(),ParamEnum.PARAM_CODE_RULE.getDesc());
-        }
-        if(!checkCodeOver(code)){
-            throw new ParamException(ParamEnum.PARAM_CODE_OVER.getCode(),ParamEnum.PARAM_CODE_OVER.getDesc());
-        }
-        return true;
+        return result;
     }
 
     private boolean checkCodeOver(String code){
         try{
             //todo 缓存里面找，找不见，返回false，找见，返回true
+            //false
+//            throw new ParamException(ParamEnum.PARAM_CODE_OVER.getCode(),ParamEnum.PARAM_CODE_OVER.getDesc());
             return true;
         }catch (Exception e){
             logger.error("redis中获取验证码失败",e);
