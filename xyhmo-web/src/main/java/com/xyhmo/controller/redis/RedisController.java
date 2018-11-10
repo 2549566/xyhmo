@@ -1,7 +1,6 @@
 package com.xyhmo.controller.redis;
 
 
-import com.xyhmo.commom.base.Result;
 import com.xyhmo.commom.service.RedisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
