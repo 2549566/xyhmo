@@ -23,4 +23,10 @@ public interface LoginService {
      * */
     String genCheckCode(String mobile);
 
+    /**
+     * 校验IP
+     *
+     * */
+    boolean checkIp(String ip);
+
 }

@@ -42,14 +42,42 @@ public class LoginServiceImpl implements LoginService{
 
     @Override
     public String genCheckCode(String mobile) {
+        checkMobileTimes(mobile);
         try{
             Integer code =(int)((Math.random()*9+1)*1000);
-            redisService.set(Contants.MOBILE_CHECK_CODE+mobile,code.toString(),Contants.MOBILE_CHECK_CODE_OVER_TIME);
+            redisService.set(Contants.MOBILE_GEN_CODE+mobile,code.toString(),Contants.MOBILE_CHECK_CODE_OVER_TIME);
             return code.toString();
         }catch (SystemException s){
             logger.error("LoginServiceImpl:生成手机验证码失败");
-            throw new SystemException(SystemEnum.PARAM_CODE_OVER.getCode(),SystemEnum.PARAM_CODE_OVER.getDesc());
+            throw new SystemException(SystemEnum.SYSTEM_GEN_CODE_ERROR.getCode(),SystemEnum.SYSTEM_GEN_CODE_ERROR.getDesc());
         }
 
+    }
+
+    @Override
+    public boolean checkIp(String ip) {
+        ParamCheckUtil.checkIp(ip);
+        if(null==redisService.get(Contants.CHECK_IP+ip)){
+            redisService.set(Contants.CHECK_IP+ip,1,Contants.CHECK_IP_OVER_TIME);
+            return true;
+        }
+        if(Integer.parseInt(redisService.get(Contants.CHECK_IP+ip).toString())<Contants.CHECK_IP_TIMES){
+            redisService.set(Contants.CHECK_IP+ip,Integer.parseInt(redisService.get(Contants.CHECK_IP+ip).toString())+1);
+            return true;
+        }
+        throw new SystemException(SystemEnum.SYSTEM_IP_SAFE.getCode(),SystemEnum.SYSTEM_IP_SAFE.getDesc());
+    }
+
+    public boolean checkMobileTimes(String mobile){
+        ParamCheckUtil.checkMobileNumber(mobile);
+        if(null==redisService.get(Contants.CHECK_MOBILE+mobile)){
+            redisService.set(Contants.CHECK_MOBILE+mobile,1,Contants.CHECK_MOBILE_OVER_TIME);
+            return true;
+        }
+        if(Integer.parseInt(redisService.get(Contants.CHECK_MOBILE+mobile).toString())<Contants.CHECK_MOBILE_TIMES_EVERYDAY){
+            redisService.set(Contants.CHECK_MOBILE+mobile,Integer.parseInt(redisService.get(Contants.CHECK_MOBILE+mobile).toString())+1);
+            return true;
+        }
+        throw new SystemException(SystemEnum.SYSTEM_MOBILE_SAFE.getCode(),SystemEnum.SYSTEM_MOBILE_SAFE.getDesc());
     }
 }

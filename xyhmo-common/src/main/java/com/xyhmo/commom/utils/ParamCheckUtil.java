@@ -28,4 +28,16 @@ public class ParamCheckUtil {
 		}
 		return true;
 	}
+
+	public static boolean checkIp(String ip){
+		String regex= "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
+				+"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+				+"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+				+"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+		// 判断ip地址是否与正则表达式匹配
+		if(StringUtils.isEmpty(ip) || !ip.matches(regex)){
+			throw new ParamException(ParamEnum.PARAM_IP_RULE.getCode(),ParamEnum.PARAM_IP_RULE.getDesc());
+		}
+		return true;
+	}
 }

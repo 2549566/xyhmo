@@ -39,6 +39,14 @@ public class Result<T> implements Serializable {
         return data;
     }
 
+    public Integer getBusinessCode() {
+        return businessCode;
+    }
+
+    public void setBusinessCode(Integer businessCode) {
+        this.businessCode = businessCode;
+    }
+
     public void setData(T data) {
         this.data = data;
     }

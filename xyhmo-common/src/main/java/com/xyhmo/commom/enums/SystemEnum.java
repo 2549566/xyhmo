@@ -1,13 +1,17 @@
 package com.xyhmo.commom.enums;
 
+import com.xyhmo.commom.service.Contants;
+
 /**
  * 正则表达式枚举
  *
  * */
 public enum SystemEnum {
 
-    PARAM_ERROR(-1,"系统错误"),
-    PARAM_CODE_OVER(-2003,"生成验证码错误");
+    SYSTEM_ERROR(-1,"系统错误"),
+    SYSTEM_GEN_CODE_ERROR(-2003,"生成验证码错误"),
+    SYSTEM_IP_SAFE(-3003,"同一个手机每天最多只能获取"+ Contants.CHECK_IP_TIMES+"次验证码"),
+    SYSTEM_MOBILE_SAFE(-1003,"同一个手机号每天最多只能获取"+Contants.CHECK_MOBILE_TIMES_EVERYDAY+"次验证码");
     private int code;
     private String desc;
 
