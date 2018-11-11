@@ -34,7 +34,8 @@
 		<constructor-arg index="1">
 			<list>
 				<bean  class="redis.clients.jedis.JedisShardInfo">
-					<constructor-arg index="0" value="47.94.168.59" />
+					<!--<constructor-arg index="0" value="47.94.168.59" />-->
+					<constructor-arg index="0" value="39.105.133.157" />
 					<constructor-arg index="1" value="6379" />
 					<constructor-arg index="2" value="1500" />
 					<constructor-arg index="3" value="1" />
