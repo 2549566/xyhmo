@@ -8,6 +8,7 @@ public enum ReturnEnum {
 
     RETURN_SUCCESS(1,"成功"),
     RETURN_MOBILE_CHECK_CODE(2001,"获取验证码成功");
+
     private int code;
     private String desc;
 

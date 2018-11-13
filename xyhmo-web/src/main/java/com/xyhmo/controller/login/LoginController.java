@@ -6,9 +6,12 @@ import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.exception.ParamException;
 import com.xyhmo.commom.exception.SystemException;
+import com.xyhmo.commom.service.Contants;
+import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.IpUtil;
 import com.xyhmo.commom.utils.ParamCheckUtil;
 import com.xyhmo.service.LoginService;
+import com.xyhmo.service.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +28,25 @@ public class LoginController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
+    private RedisService redisService;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
     private LoginService loginService;
-
+    /**
+     * 注册，第一次登陆
+     *
+     * */
     @RequestMapping(value = "/register")
     @ResponseBody
     private Result register(String mobile, String code){
         Result result = new Result();
         try{
-            if(!ParamCheckUtil.checkMobileNumber(mobile) || !ParamCheckUtil.checkCode(code) || !checkCodeOver(code)){
+            if(!ParamCheckUtil.checkMobileNumber(mobile) || !ParamCheckUtil.checkCode(code) || !checkCodeOver(mobile,code)){
                 return result.fail(ParamEnum.PARAM_ERROR.getCode(),ParamEnum.PARAM_ERROR.getDesc());
             }
-
+            loginService.register(mobile);
+            return result.success(tokenService.genToken(mobile),ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
             logger.error("LoginController：参数校验异常",p.getMessage());
             return result.fail(p.getCode(),p.getMessage());
@@ -43,9 +54,12 @@ public class LoginController {
             logger.error("LoginController:注册异常",e);
             return result.fail(e.getMessage());
         }
-        return result;
     }
 
+    /**
+     * 生成二维码
+     *
+     * */
     @RequestMapping(value = "/getCheckCode")
     @ResponseBody
     private Result getCheckCode(HttpServletRequest request, String mobile) {
@@ -71,15 +85,10 @@ public class LoginController {
         return result;
     }
 
-    private boolean checkCodeOver(String code){
-        try{
-            //todo 缓存里面找，找不见，返回false，找见，返回true
-            //false
-//            throw new ParamException(ParamEnum.PARAM_CODE_OVER.getCode(),ParamEnum.PARAM_CODE_OVER.getDesc());
-            return true;
-        }catch (Exception e){
-            logger.error("redis中获取验证码失败",e);
-            return false;
+    private boolean checkCodeOver(String mobile,String code){
+        if(!code.equals(redisService.get(Contants.MOBILE_GEN_CODE+mobile))){
+            throw new ParamException(ParamEnum.PARAM_CODE_OVER.getCode(),ParamEnum.PARAM_CODE_OVER.getDesc());
         }
+        return true;
     }
 }

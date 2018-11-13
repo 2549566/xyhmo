@@ -11,7 +11,8 @@ public enum SystemEnum {
     SYSTEM_ERROR(-1,"系统错误"),
     SYSTEM_GEN_CODE_ERROR(-2003,"生成验证码错误"),
     SYSTEM_IP_SAFE(-3003,"同一个手机每天最多只能获取"+ Contants.CHECK_IP_TIMES+"次验证码"),
-    SYSTEM_MOBILE_SAFE(-1003,"同一个手机号每天最多只能获取"+Contants.CHECK_MOBILE_TIMES_EVERYDAY+"次验证码");
+    SYSTEM_MOBILE_SAFE(-1003,"同一个手机号每天最多只能获取"+Contants.CHECK_MOBILE_TIMES_EVERYDAY+"次验证码"),
+    SYSTEM_GEN_TOKEN_ERROR(-4001,"生成token失败");
     private int code;
     private String desc;
 

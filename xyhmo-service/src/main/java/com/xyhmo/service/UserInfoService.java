@@ -8,7 +8,7 @@ public interface UserInfoService {
      * 插入一条数据
      *
      * */
-    Long save(UserInfo userInfo);
+    Long save(String mobile);
     /**
      * 组装userInfo
      *

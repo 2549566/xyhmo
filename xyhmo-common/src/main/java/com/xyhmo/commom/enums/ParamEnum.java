@@ -9,9 +9,10 @@ public enum ParamEnum {
     PARAM_ERROR(-1,"参数异常"),
     PARAM_MOBILE_RULE(-1001,"手机号格式错误"),
     PARAM_CODE_RULE(-2001,"验证码格式错误"),
-    PARAM_CODE_OVER(-2002,"验证码过期"),
+    PARAM_CODE_OVER(-2002,"验证码错误或已过期，请重新获取验证码"),
     PARAM_GEN_CODE(-2003,"生成验证码错误"),
-    PARAM_IP_RULE(-3001,"ip格式错误");
+    PARAM_IP_RULE(-3001,"ip格式错误"),
+    PARAM_DATA_USED(1,"数据有效");
     private int code;
     private String desc;
 

@@ -1,5 +1,7 @@
 package com.xyhmo.service.impl;
 
+import com.gexin.rp.sdk.http.utils.ParamUtils;
+import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.SystemException;
 import com.xyhmo.commom.service.Contants;
@@ -7,6 +9,7 @@ import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.ParamCheckUtil;
 import com.xyhmo.domain.UserInfo;
 import com.xyhmo.service.LoginService;
+import com.xyhmo.service.TokenService;
 import com.xyhmo.service.UserAuthInfoService;
 import com.xyhmo.service.UserInfoService;
 import com.xyhmo.vo.UserVo;
@@ -26,13 +29,19 @@ public class LoginServiceImpl implements LoginService{
     private UserAuthInfoService userAuthInfoService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private TokenService tokenService;
+
+
     @Override
-    public Boolean register(UserInfo userInfo) {
-        if(null==userInfo){
-            logger.error("register userInfo is null");
+    public Boolean register(String mobile){
+        Long id=userInfoService.save(mobile);
+        if(id<=0){
+            logger.error("LoginServiceImpl register error");
             return false;
         }
-        return userInfoService.save(userInfo)>0;
+        redisService.set(tokenService.genToken(mobile),mobile);
+        return id>0;
     }
 
     @Override
@@ -62,7 +71,7 @@ public class LoginServiceImpl implements LoginService{
             return true;
         }
         if(Integer.parseInt(redisService.get(Contants.CHECK_IP+ip).toString())<Contants.CHECK_IP_TIMES){
-            redisService.set(Contants.CHECK_IP+ip,Integer.parseInt(redisService.get(Contants.CHECK_IP+ip).toString())+1);
+            redisService.set(Contants.CHECK_IP+ip,Integer.parseInt(redisService.get(Contants.CHECK_IP+ip).toString())+1,Contants.CHECK_IP_OVER_TIME);
             return true;
         }
         throw new SystemException(SystemEnum.SYSTEM_IP_SAFE.getCode(),SystemEnum.SYSTEM_IP_SAFE.getDesc());
@@ -75,7 +84,7 @@ public class LoginServiceImpl implements LoginService{
             return true;
         }
         if(Integer.parseInt(redisService.get(Contants.CHECK_MOBILE+mobile).toString())<Contants.CHECK_MOBILE_TIMES_EVERYDAY){
-            redisService.set(Contants.CHECK_MOBILE+mobile,Integer.parseInt(redisService.get(Contants.CHECK_MOBILE+mobile).toString())+1);
+            redisService.set(Contants.CHECK_MOBILE+mobile,Integer.parseInt(redisService.get(Contants.CHECK_MOBILE+mobile).toString())+1,Contants.CHECK_IP_OVER_TIME);
             return true;
         }
         throw new SystemException(SystemEnum.SYSTEM_MOBILE_SAFE.getCode(),SystemEnum.SYSTEM_MOBILE_SAFE.getDesc());

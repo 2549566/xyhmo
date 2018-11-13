@@ -63,6 +63,11 @@ public class UserInfo extends BaseModel implements Serializable{
      *
      * */
     private String imageHearder;
+    /**
+     * 评分
+     *
+     * */
+    private Integer score;
 
     public Long getId() {
         return id;
@@ -150,5 +155,13 @@ public class UserInfo extends BaseModel implements Serializable{
 
     public void setImageHearder(String imageHearder) {
         this.imageHearder = imageHearder;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
     }
 }
