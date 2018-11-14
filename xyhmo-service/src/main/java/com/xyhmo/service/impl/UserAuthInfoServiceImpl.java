@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class UserAuthInfoServiceImpl implements UserAuthInfoService{
@@ -23,5 +24,13 @@ public class UserAuthInfoServiceImpl implements UserAuthInfoService{
             return null;
         }
         return userAuthInfoDao.insert(userAuthInfo);
+    }
+
+    @Override
+    public UserAuthInfo getUserAuthInfoByPin(String pin) {
+        if(StringUtils.isEmpty(pin)){
+            logger.error("UserAuthInfoServiceImpl pin is null");
+        }
+        return userAuthInfoDao.selectUserAuthInfoByPin(pin);
     }
 }

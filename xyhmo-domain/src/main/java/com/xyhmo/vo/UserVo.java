@@ -1,9 +1,12 @@
 package com.xyhmo.vo;
 
 
-import java.io.Serializable;
+import com.xyhmo.commom.model.BaseModel;
 
-public class UserVo implements Serializable{
+import java.io.Serializable;
+import java.util.Date;
+
+public class UserVo extends BaseModel implements Serializable{
 
     private static final long serialVersionUID = -7142167768212454696L;
     /**
@@ -87,6 +90,26 @@ public class UserVo implements Serializable{
      *
      * */
     private String companyName;
+    /**
+     * 评分
+     *
+     * */
+    private Integer score;
+    /**
+     * 是否接受订单
+     *
+     * */
+    private Integer isAcceptOrder;
+    /**
+     * 用户认证创建时间
+     *
+     * */
+    private Date authCreated;
+    /**
+     * 用户认证修改时间
+     *
+     * */
+    private Date authModified;
 
     public Long getId() {
         return id;
@@ -214,5 +237,37 @@ public class UserVo implements Serializable{
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Integer getIsAcceptOrder() {
+        return isAcceptOrder;
+    }
+
+    public void setIsAcceptOrder(Integer isAcceptOrder) {
+        this.isAcceptOrder = isAcceptOrder;
+    }
+
+    public Date getAuthCreated() {
+        return authCreated;
+    }
+
+    public void setAuthCreated(Date authCreated) {
+        this.authCreated = authCreated;
+    }
+
+    public Date getAuthModified() {
+        return authModified;
+    }
+
+    public void setAuthModified(Date authModified) {
+        this.authModified = authModified;
     }
 }

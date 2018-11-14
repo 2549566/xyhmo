@@ -19,6 +19,10 @@ public final class Contants {
 	public static int CHECK_MOBILE_OVER_TIME;
 	//限制手机号的key
 	public static String CHECK_MOBILE;
+	//token系统无访问，token最大存货时间
+	public static int TOKEN_OVER_TIME;
+	//存入系统的token前缀
+	public static String TOKEN_ADD_BEFORE_STRING;
 	
 	static{
 		MOBILE_GEN_CODE = "mobile_check_code_";
@@ -29,6 +33,8 @@ public final class Contants {
 		CHECK_MOBILE_TIMES_EVERYDAY=5;
 		CHECK_MOBILE_OVER_TIME =60*60*24;
 		CHECK_MOBILE="check_mobile_";
+		TOKEN_OVER_TIME = 60*60*24*30;
+		TOKEN_ADD_BEFORE_STRING="token_xyfs";
 	}
 
 	

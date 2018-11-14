@@ -10,6 +10,7 @@ public class Result<T> implements Serializable {
     private Integer businessCode;
     private String message;
     private T data;
+    private String token;
 
     public Integer getCode() {
         return code;
@@ -76,6 +77,14 @@ public class Result<T> implements Serializable {
 
     public Result success(T data, String message){
         this.success=true;
+        this.code=1;
+        this.message=message;
+        this.data=data;
+        return this;
+    }
+    public Result success(String token,T data, String message){
+        this.success=true;
+        this.token=token;
         this.code=1;
         this.message=message;
         this.data=data;

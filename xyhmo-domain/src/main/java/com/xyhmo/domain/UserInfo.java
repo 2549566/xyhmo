@@ -68,6 +68,11 @@ public class UserInfo extends BaseModel implements Serializable{
      *
      * */
     private Integer score;
+    /**
+     * 是否接受订单
+     *
+     * */
+    private Integer isAcceptOrder;
 
     public Long getId() {
         return id;
@@ -163,5 +168,13 @@ public class UserInfo extends BaseModel implements Serializable{
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public Integer getIsAcceptOrder() {
+        return isAcceptOrder;
+    }
+
+    public void setIsAcceptOrder(Integer isAcceptOrder) {
+        this.isAcceptOrder = isAcceptOrder;
     }
 }

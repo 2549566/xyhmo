@@ -2,6 +2,7 @@ package com.xyhmo.service.impl;
 
 import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.utils.ParamCheckUtil;
+import com.xyhmo.commom.utils.UniqueUtil;
 import com.xyhmo.dao.UserInfoDao;
 import com.xyhmo.domain.UserInfo;
 import com.xyhmo.service.UserInfoService;
@@ -24,6 +25,7 @@ public class UserInfoServiceImpl implements UserInfoService{
         ParamCheckUtil.checkMobileNumber(mobile);
         UserInfo userInfo = new UserInfo();
         userInfo.setMobileNumber(mobile);
+        userInfo.setPin(UniqueUtil.genPin(mobile));
         userInfo.setStatus(ParamEnum.PARAM_DATA_USED.getCode());
         return userInfoDao.insert(userInfo);
     }
@@ -31,5 +33,10 @@ public class UserInfoServiceImpl implements UserInfoService{
     @Override
     public UserInfo autuwaredUserInfo(String mobile) {
         return null;
+    }
+
+    @Override
+    public UserInfo getUserInfoByMobile(String mobile) {
+        return userInfoDao.selectUserInfoByMobile(mobile);
     }
 }

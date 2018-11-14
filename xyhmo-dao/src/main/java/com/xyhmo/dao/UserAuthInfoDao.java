@@ -13,4 +13,9 @@ public interface UserAuthInfoDao {
      * */
     Long  insert(UserAuthInfo userAuthInfo);
 
+    /**
+     * 根据pin获取用户认证信息
+     *
+     * */
+    UserAuthInfo selectUserAuthInfoByPin(String pin);
 }

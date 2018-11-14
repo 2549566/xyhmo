@@ -14,4 +14,10 @@ public interface UserInfoService {
      *
      * */
     UserInfo autuwaredUserInfo(String mobile);
+
+    /**
+     * 根据mobile获取用户信息
+     *
+     * */
+    UserInfo getUserInfoByMobile(String mobile);
 }

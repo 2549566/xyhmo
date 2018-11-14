@@ -9,4 +9,10 @@ public interface UserAuthInfoService {
      *
      * */
     Long save(UserAuthInfo userAuthInfo);
+
+    /**
+     * 根据pin获取用户认证信息
+     *
+     * */
+    UserAuthInfo getUserAuthInfoByPin(String pin);
 }

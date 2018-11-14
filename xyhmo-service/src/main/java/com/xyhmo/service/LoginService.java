@@ -7,7 +7,7 @@ public interface LoginService {
      * 注册用户
      *
      * */
-    Boolean register(String mobile);
+    Boolean register(String mobile,String token);
 
     /**
      * 用户登录
@@ -26,5 +26,15 @@ public interface LoginService {
      *
      * */
     boolean checkIp(String ip);
+    /**
+     * 获取用户信息
+     *
+     * */
+    UserVo getUserInfo(String mobile);
 
+    /**
+     * 将用户信息存到Redis中
+     *
+     * */
+    String saveUserVoToRedis(UserVo vo);
 }

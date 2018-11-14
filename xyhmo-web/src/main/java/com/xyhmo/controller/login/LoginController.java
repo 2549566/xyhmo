@@ -12,6 +12,7 @@ import com.xyhmo.commom.utils.IpUtil;
 import com.xyhmo.commom.utils.ParamCheckUtil;
 import com.xyhmo.service.LoginService;
 import com.xyhmo.service.TokenService;
+import com.xyhmo.vo.UserVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +38,24 @@ public class LoginController {
      * 注册，第一次登陆
      *
      * */
-    @RequestMapping(value = "/register")
+    @RequestMapping(value = "/login")
     @ResponseBody
-    private Result register(String mobile, String code){
+    private Result login(String mobile, String code){
         Result result = new Result();
         try{
             if(!ParamCheckUtil.checkMobileNumber(mobile) || !ParamCheckUtil.checkCode(code) || !checkCodeOver(mobile,code)){
                 return result.fail(ParamEnum.PARAM_ERROR.getCode(),ParamEnum.PARAM_ERROR.getDesc());
             }
-            loginService.register(mobile);
-            return result.success(tokenService.genToken(mobile),ReturnEnum.RETURN_SUCCESS.getDesc());
+            UserVo vo = loginService.getUserInfo(mobile);
+            String token = "";
+            if(null==vo){
+                token=tokenService.genToken(mobile);
+                loginService.register(mobile,token);
+            }else{
+                token=loginService.saveUserVoToRedis(vo);
+                result.setData(vo);
+            }
+            return result.success(token,vo,ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
             logger.error("LoginController：参数校验异常",p.getMessage());
             return result.fail(p.getCode(),p.getMessage());

@@ -13,4 +13,9 @@ public interface UserInfoDao {
      * */
     Long  insert(UserInfo userInfo);
 
+    /**
+     * 根据用户手机号获取用户信息
+     *
+     * */
+    UserInfo selectUserInfoByMobile(String mobileNumber);
 }
