@@ -12,6 +12,8 @@ public enum ParamEnum {
     PARAM_CODE_OVER(-2002,"验证码错误或已过期，请重新获取验证码"),
     PARAM_GEN_CODE(-2003,"生成验证码错误"),
     PARAM_IP_RULE(-3001,"ip格式错误"),
+    PARAM_TOKEN_NOT_EXIST(-4002,"token不存在"),
+    PARAM_TOKEN_IS_EMPTY(-4003,"token入参为空"),
     PARAM_DATA_USED(1,"数据有效");
     private int code;
     private String desc;

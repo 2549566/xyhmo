@@ -2,6 +2,7 @@ package com.xyhmo.service;
 
 
 import com.xyhmo.domain.UserInfo;
+import com.xyhmo.vo.UserVo;
 
 public interface UserInfoService {
     /**
@@ -20,4 +21,9 @@ public interface UserInfoService {
      *
      * */
     UserInfo getUserInfoByMobile(String mobile);
+
+    /**
+     * 修改用户信息
+     * */
+    void EditUserInfo(UserVo vo);
 }

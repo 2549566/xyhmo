@@ -6,10 +6,12 @@ import com.xyhmo.commom.utils.UniqueUtil;
 import com.xyhmo.dao.UserInfoDao;
 import com.xyhmo.domain.UserInfo;
 import com.xyhmo.service.UserInfoService;
+import com.xyhmo.vo.UserVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService{
@@ -38,5 +40,18 @@ public class UserInfoServiceImpl implements UserInfoService{
     @Override
     public UserInfo getUserInfoByMobile(String mobile) {
         return userInfoDao.selectUserInfoByMobile(mobile);
+    }
+
+    @Override
+    public void EditUserInfo(UserVo vo) {
+        if(vo==null || StringUtils.isEmpty(vo.getPin())){
+            return ;
+        }
+        UserInfo userInfo = userInfoDao.selectUserInfoByPin(vo.getPin());
+        if(userInfo==null){
+            return ;
+        }
+        userInfo.setUserType(vo.getUserType());
+        userInfoDao.updateUserInfo(userInfo);
     }
 }

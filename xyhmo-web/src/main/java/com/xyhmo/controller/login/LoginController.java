@@ -4,14 +4,17 @@ package com.xyhmo.controller.login;
 import com.xyhmo.commom.base.Result;
 import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
+import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
 import com.xyhmo.commom.exception.SystemException;
 import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.IpUtil;
 import com.xyhmo.commom.utils.ParamCheckUtil;
+import com.xyhmo.domain.UserInfo;
 import com.xyhmo.service.LoginService;
 import com.xyhmo.service.TokenService;
+import com.xyhmo.service.UserInfoService;
 import com.xyhmo.vo.UserVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +37,8 @@ public class LoginController {
     private TokenService tokenService;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private UserInfoService userInfoService;
     /**
      * 注册，第一次登陆
      *
@@ -57,10 +62,10 @@ public class LoginController {
             }
             return result.success(token,vo,ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
-            logger.error("LoginController：参数校验异常",p.getMessage());
+            logger.error("LoginController：login 参数校验异常",p.getMessage());
             return result.fail(p.getCode(),p.getMessage());
         }catch (Exception e){
-            logger.error("LoginController:注册异常",e);
+            logger.error("LoginController:登录异常",e);
             return result.fail(e.getMessage());
         }
     }
@@ -93,6 +98,34 @@ public class LoginController {
         }
         return result;
     }
+
+    /**
+     * 选择角色
+     *
+     * */
+    @RequestMapping(value = "/choseRole")
+    @ResponseBody
+    private Result choseRole(String token,Integer userType){
+        Result result = new Result();
+        try{
+            UserVo vo = tokenService.checkTokenExist(token);
+            if(vo==null){
+                return result.fail(SystemEnum.SYSTEM_GET_USERVO.getCode(),SystemEnum.SYSTEM_GET_USERVO.getDesc());
+            }
+            vo.setUserType(userType);
+            //todo 可走异步，先插入缓存，再MQ入库
+            userInfoService.EditUserInfo(vo);
+            return result.success(token,vo,ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("LoginController：choseRole token参数校验异常",p.getMessage());
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (Exception e){
+            logger.error("LoginController:选择角色异常",e);
+            return result.fail(e.getMessage());
+        }
+    }
+
+
 
     private boolean checkCodeOver(String mobile,String code){
         if(!code.equals(redisService.get(Contants.MOBILE_GEN_CODE+mobile))){

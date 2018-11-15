@@ -18,4 +18,15 @@ public interface UserInfoDao {
      *
      * */
     UserInfo selectUserInfoByMobile(String mobileNumber);
+    /**
+     * 根据用户pin获取用户信息
+     *
+     * */
+    UserInfo selectUserInfoByPin(String pin);
+
+    /**
+     * 修改用户信息
+     *
+     * */
+    void updateUserInfo(UserInfo userInfo);
 }
