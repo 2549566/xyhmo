@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.BulletinDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.Bulletin" >
+      <id column="id" property="id" />
+      <result column="pin" property="pin" />
+      <result column="sort" property="sort" />
+      <result column="detail_path" property="detailPath" />
+      <result column="role_type" property="roleType" />
+      <result column="desc" property="desc" />
+      <result column="name" property="name" />
+      <result column="content" property="content" />
+      <result column="created" property="created" />
+      <result column="modified" property="modified" />
+      <result column="creator" property="creator" />
+      <result column="modifier" property="modifier" />
+      <result column="status" property="status" />
+  </resultMap>
+  <sql id="allColumns">
+      id,pin,sort,detail_path,role_type,desc,name,content,created,modified,creator,modifier,status
+  </sql>
+
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.UserEvaluateDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.UserEvaluate" >
+      <id column="id" property="id" />
+      <result column="pin" property="pin" />
+      <result column="order_id" property="orderId" />
+      <result column="score" property="score" />
+      <result column="customer_pin" property="customerPin" />
+      <result column="created" property="created" />
+      <result column="modified" property="modified" />
+      <result column="status" property="status" />
+      <result column="evaluate_content" property="evaluateContent" />
+  </resultMap>
+  <sql id="allColumns">
+      id,pin,order_id,score,customer_pin,created,modified,status,evaluate_content
+  </sql>
+
+</mapper>
