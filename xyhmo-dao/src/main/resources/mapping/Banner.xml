@@ -8,7 +8,7 @@
       <result column="img_path" property="imgPath" />
       <result column="detail_path" property="detailPath" />
       <result column="role_type" property="roleType" />
-      <result column="desc" property="desc" />
+      <result column="banner_desc" property="bannerDesc" />
       <result column="name" property="name" />
       <result column="created" property="created" />
       <result column="modified" property="modified" />
@@ -17,7 +17,10 @@
       <result column="status" property="status" />
   </resultMap>
   <sql id="allColumns">
-      id,pin,sort,img_path,detail_path,role_type,desc,name,created,modified,creator,modifier,status
+      id,pin,sort,img_path,detail_path,role_type,banner_desc,name,created,modified,creator,modifier,status
   </sql>
-
+    <select id="selectBannerList" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM banner WHERE STATUS = 1  AND sort is not null order by sort
+    </select>
 </mapper>

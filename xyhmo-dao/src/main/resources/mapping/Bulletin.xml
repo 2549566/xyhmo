@@ -7,7 +7,7 @@
       <result column="sort" property="sort" />
       <result column="detail_path" property="detailPath" />
       <result column="role_type" property="roleType" />
-      <result column="desc" property="desc" />
+      <result column="bulletin_desc" property="bulletinDesc" />
       <result column="name" property="name" />
       <result column="content" property="content" />
       <result column="created" property="created" />
@@ -17,7 +17,10 @@
       <result column="status" property="status" />
   </resultMap>
   <sql id="allColumns">
-      id,pin,sort,detail_path,role_type,desc,name,content,created,modified,creator,modifier,status
+      id,pin,sort,detail_path,role_type,bulletin_desc,name,content,created,modified,creator,modifier,status
   </sql>
-
+    <select id="selectBulletinList" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM bulletin WHERE STATUS = 1 AND sort is not null order by sort
+    </select>
 </mapper>

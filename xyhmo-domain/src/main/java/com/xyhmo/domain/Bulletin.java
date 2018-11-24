@@ -41,12 +41,12 @@ public class Bulletin extends BaseModel implements Serializable{
      * 快报名称
      *
      * */
-    private Integer name;
+    private String name;
     /**
      *  快报描述
      *
      * */
-    private String desc;
+    private String bulletinDesc;
     /**
      *  快报内容
      *
@@ -93,20 +93,20 @@ public class Bulletin extends BaseModel implements Serializable{
         this.roleType = roleType;
     }
 
-    public Integer getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(Integer name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getBulletinDesc() {
+        return bulletinDesc;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setBulletinDesc(String bulletinDesc) {
+        this.bulletinDesc = bulletinDesc;
     }
 
     public String getContent() {

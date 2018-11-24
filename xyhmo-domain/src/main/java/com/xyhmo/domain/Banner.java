@@ -45,12 +45,12 @@ public class Banner extends BaseModel implements Serializable{
      * 轮播图名称
      *
      * */
-    private Integer name;
+    private String  name;
     /**
      *  轮播图描述
      *
      * */
-    private String desc;
+    private String bannerDesc;
 
     public Long getId() {
         return id;
@@ -92,20 +92,20 @@ public class Banner extends BaseModel implements Serializable{
         this.roleType = roleType;
     }
 
-    public Integer getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(Integer name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getBannerDesc() {
+        return bannerDesc;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setBannerDesc(String bannerDesc) {
+        this.bannerDesc = bannerDesc;
     }
 
     public String getPin() {
