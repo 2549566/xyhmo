@@ -40,7 +40,7 @@ public class BannerController {
             return result;
         }catch (ParamException p){
             logger.error("BunnerController:token 不存在",p);
-            return result.fail(ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());
+            return result.fail(ParamEnum.PARAM_TOKEN_NOT_EXIST.getCode(),ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());
         }catch (Exception e){
             logger.error("BunnerController：获取轮播图列表失败",e);
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
