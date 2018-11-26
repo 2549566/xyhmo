@@ -27,6 +27,10 @@ public final class Contants {
 	public static String REDIS_INDEX_BANNER;
 	//缓存：首页快报key
 	public static String REDIS_INDEX_BULLETIN;
+	//缓存：所有商品
+	public static String REDIS_ALL_WARE;
+	//缓存：某个代理商商品
+	public static String REDIS_WARE_PIN;
 	
 	static{
 		MOBILE_GEN_CODE = "mobile_check_code_";
@@ -41,6 +45,8 @@ public final class Contants {
 		REDIS_TOKEKN_BEFORE="redis_token_xyfs";
 		REDIS_INDEX_BANNER="redis_index_banner";
 		REDIS_INDEX_BULLETIN="redis_index_bulletin";
+		REDIS_ALL_WARE="redis_all_ware";
+		REDIS_WARE_PIN="redis_ware_pin_";
 	}
 
 	

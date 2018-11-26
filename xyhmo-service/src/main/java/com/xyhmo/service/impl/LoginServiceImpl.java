@@ -84,7 +84,7 @@ public class LoginServiceImpl implements LoginService{
             return null;
         }
         UserAuthInfo userAuthInfo = userAuthInfoService.getUserAuthInfoByPin(userInfo.getPin());
-        return autowaredToVo(userInfo,userAuthInfo);
+        return userInfoService.autowaredToVo(userInfo,userAuthInfo);
     }
 
     @Override
@@ -92,39 +92,6 @@ public class LoginServiceImpl implements LoginService{
         String token = tokenService.genToken(vo.getMobileNumber());
         redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,vo,Contants.TOKEN_OVER_TIME);
         return token;
-    }
-
-    private UserVo autowaredToVo(UserInfo userInfo,UserAuthInfo userAuthInfo){
-        if(userInfo==null){
-            return null;
-        }
-        UserVo vo = new UserVo();
-        vo.setId(userInfo.getId());
-        vo.setPin(userInfo.getPin());
-        vo.setToken(userInfo.getToken());
-        vo.setMobileNumber(userInfo.getMobileNumber());
-        vo.setUserName(userInfo.getUserName());
-        vo.setUserType(userInfo.getUserType());
-        vo.setPassword(userInfo.getPassword());
-        vo.setBindVender(userInfo.getBindVender());
-        vo.setBindVenderProxy(userInfo.getBindVenderProxy());
-        vo.setIsAuth(userInfo.getIsAuth());
-        vo.setImageHearder(userInfo.getImageHearder());
-        vo.setCreated(userInfo.getCreated());
-        vo.setModified(userInfo.getModified());
-        vo.setScore(userInfo.getScore());
-        vo.setIsAcceptOrder(userInfo.getIsAcceptOrder());
-        if(null==userAuthInfo){
-            return vo;
-        }
-        vo.setRealName(userAuthInfo.getRealName());
-        vo.setImageCardFace(userAuthInfo.getImageCardFace());
-        vo.setImageCardBack(userAuthInfo.getImageCardBack());
-        vo.setImageCompanyQualiy(userAuthInfo.getImageCompanyQualiy());
-        vo.setCompanyName(userAuthInfo.getCompanyName());
-        vo.setAuthCreated(userAuthInfo.getCreated());
-        vo.setAuthModified(userAuthInfo.getModified());
-        return vo;
     }
 
     public boolean checkMobileTimes(String mobile){

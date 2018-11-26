@@ -45,6 +45,9 @@ public class TokenServiceImpl implements TokenService{
         if(null==redisService.get(Contants.REDIS_TOKEKN_BEFORE+token)){
             throw new ParamException(ParamEnum.PARAM_TOKEN_NOT_EXIST.getCode(),ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());
         }
+        if(null==redisService.get(Contants.REDIS_TOKEKN_BEFORE+token)){
+            throw new ParamException(ParamEnum.PARAM_TOKEN_NOT_EXIST.getCode(),ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());
+        }
         return redisService.get(Contants.REDIS_TOKEKN_BEFORE+token);
     }
 }

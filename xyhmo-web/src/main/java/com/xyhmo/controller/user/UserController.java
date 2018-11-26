@@ -3,14 +3,15 @@ package com.xyhmo.controller.user;
 
 import com.xyhmo.commom.base.Result;
 import com.xyhmo.commom.enums.ParamEnum;
+import com.xyhmo.commom.enums.ReturnEnum;
+import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
-import com.xyhmo.commom.service.RedisService;
-import com.xyhmo.service.LoginService;
+import com.xyhmo.service.UserInfoService;
+import com.xyhmo.vo.UserVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,19 +22,23 @@ public class UserController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private RedisService redisService;
+    private UserInfoService userInfoService;
 
     @RequestMapping(value = "/getUser")
     @ResponseBody
-    private Result getUser(String pin){
-        System.out.println("1111111111111111111111");
-//        redisService.set("quyang","wangmengjiao+19880124");
-        System.out.println(redisService.get("quyang").toString());
-        String sss =redisService.get("quyang").toString();
-        System.out.println(redisService.get(pin).toString());
+    private Result getUser(String token){
         Result result = new Result();
-                result.setData(redisService.get(pin).toString());
-        return result;
+        try{
+            UserVo vo =userInfoService.getUserVoByToken(token);
+            result.success(vo, ReturnEnum.RETURN_SUCCESS.getDesc());
+            return result;
+        }catch (ParamException p){
+            logger.error("BunnerController:token 不存在",p);
+            return result.fail(ParamEnum.PARAM_TOKEN_NOT_EXIST.getCode(),ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());
+        }catch (Exception e){
+            logger.error("BulletinController：获取用户信息失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
     }
 
 

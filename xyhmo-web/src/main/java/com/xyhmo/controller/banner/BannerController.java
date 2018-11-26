@@ -35,6 +35,7 @@ public class BannerController {
         Result result = new Result();
         try{
             tokenService.checkTokenExist(token);
+            //TODO 需要上传轮播图
             List<Banner> bannerList = bannerService.getBannerList();
             result.success(bannerList, ReturnEnum.RETURN_SUCCESS.getDesc());
             return result;

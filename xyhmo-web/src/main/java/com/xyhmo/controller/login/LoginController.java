@@ -115,6 +115,7 @@ public class LoginController {
             vo.setUserType(userType);
             //todo 可走异步，先插入缓存，再MQ入库
             userInfoService.EditUserInfo(vo);
+            redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,vo);
             return result.success(token,vo,ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
             logger.error("LoginController：choseRole token参数校验异常",p.getMessage());
