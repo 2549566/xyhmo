@@ -42,9 +42,9 @@ public class TokenServiceImpl implements TokenService{
         if(StringUtils.isEmpty(token)){
             throw new ParamException(ParamEnum.PARAM_TOKEN_IS_EMPTY.getCode(),ParamEnum.PARAM_TOKEN_IS_EMPTY.getDesc());
         }
-        if(null==redisService.get(Contants.TOKEN_ADD_BEFORE_STRING+token)){
+        if(null==redisService.get(Contants.REDIS_TOKEKN_BEFORE+token)){
             throw new ParamException(ParamEnum.PARAM_TOKEN_NOT_EXIST.getCode(),ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());
         }
-        return redisService.get(Contants.TOKEN_ADD_BEFORE_STRING+token);
+        return redisService.get(Contants.REDIS_TOKEKN_BEFORE+token);
     }
 }

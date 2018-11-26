@@ -19,10 +19,14 @@ public final class Contants {
 	public static int CHECK_MOBILE_OVER_TIME;
 	//限制手机号的key
 	public static String CHECK_MOBILE;
-	//token系统无访问，token最大存货时间
+	//token系统无访问，token最大存活时间
 	public static int TOKEN_OVER_TIME;
 	//存入系统的token前缀
-	public static String TOKEN_ADD_BEFORE_STRING;
+	public static String REDIS_TOKEKN_BEFORE;
+	//缓存：首页轮播图key
+	public static String REDIS_INDEX_BANNER;
+	//缓存：首页快报key
+	public static String REDIS_INDEX_BULLETIN;
 	
 	static{
 		MOBILE_GEN_CODE = "mobile_check_code_";
@@ -34,7 +38,9 @@ public final class Contants {
 		CHECK_MOBILE_OVER_TIME =60*60*24;
 		CHECK_MOBILE="check_mobile_";
 		TOKEN_OVER_TIME = 60*60*24*30;
-		TOKEN_ADD_BEFORE_STRING="token_xyfs";
+		REDIS_TOKEKN_BEFORE="redis_token_xyfs";
+		REDIS_INDEX_BANNER="redis_index_banner";
+		REDIS_INDEX_BULLETIN="redis_index_bulletin";
 	}
 
 	

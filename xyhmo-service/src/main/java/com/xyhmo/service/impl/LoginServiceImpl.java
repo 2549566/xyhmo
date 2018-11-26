@@ -39,7 +39,7 @@ public class LoginServiceImpl implements LoginService{
             logger.error("LoginServiceImpl register error");
             return false;
         }
-        redisService.set(Contants.TOKEN_ADD_BEFORE_STRING+token,mobile,Contants.TOKEN_OVER_TIME);
+        redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,mobile,Contants.TOKEN_OVER_TIME);
         return id>0;
     }
 
@@ -90,7 +90,7 @@ public class LoginServiceImpl implements LoginService{
     @Override
     public String saveUserVoToRedis(UserVo vo) {
         String token = tokenService.genToken(vo.getMobileNumber());
-        redisService.set(Contants.TOKEN_ADD_BEFORE_STRING+token,vo,Contants.TOKEN_OVER_TIME);
+        redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,vo,Contants.TOKEN_OVER_TIME);
         return token;
     }
 

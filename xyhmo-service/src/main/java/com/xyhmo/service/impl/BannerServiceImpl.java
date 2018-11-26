@@ -1,5 +1,7 @@
 package com.xyhmo.service.impl;
 
+import com.xyhmo.commom.service.Contants;
+import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.dao.BannerDao;
 import com.xyhmo.domain.Banner;
 import com.xyhmo.service.BannerService;
@@ -16,9 +18,16 @@ public class BannerServiceImpl implements BannerService{
 
     @Autowired
     private BannerDao bannerDao;
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public List<Banner> getBannerList() {
-        return bannerDao.selectBannerList();
+        if(null!=redisService.get(Contants.REDIS_INDEX_BANNER)){
+            return redisService.get(Contants.REDIS_INDEX_BANNER);
+        }
+        List<Banner> bannerList = bannerDao.selectBannerList();
+        redisService.set(Contants.REDIS_INDEX_BANNER, bannerList);
+        return bannerList;
     }
 }
