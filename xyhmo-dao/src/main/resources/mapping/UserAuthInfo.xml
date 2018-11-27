@@ -14,14 +14,16 @@
       <result column="creator" property="creator" />
       <result column="modifier" property="modifier" />
       <result column="status" property="status" />
+      <result column="coordinate" property="coordinate" />
+      <result column="address" property="address" />
   </resultMap>
   <sql id="allColumns">
-	id,pin,real_name,image_card_face,image_card_back,image_company_qualiy,company_name,created,modified,creator,modifier,status
+	id,pin,real_name,image_card_face,image_card_back,image_company_qualiy,company_name,created,modified,creator,modifier,status,coordinate,address
   </sql>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.UserAuthInfo">
       INSERT INTO user_auth_info (<include refid="allColumns"/>)
       VALUES (null,#{pin},#{realName},#{imageCardFace},#{imageCardBack},#{imageCompanyQualiy},#{companyName},
-      NOW(),#{modified},#{creator},#{modifier},#{status} )
+      NOW(),#{modified},#{creator},#{modifier},#{status},#{coordinate},#{address} )
   </insert>
     <select id="selectUserAuthInfoByPin" parameterType="String" resultMap="BaseResultMap">
         SELECT <include refid="allColumns"/>

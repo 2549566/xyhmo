@@ -29,6 +29,13 @@ public class ParamCheckUtil {
 		return true;
 	}
 
+	public static boolean checkPageNum(Integer pageNum){
+		if(null==pageNum ||pageNum<=0){
+			throw new ParamException(ParamEnum.PARAM_PAGE_ERROR.getCode(),ParamEnum.PARAM_PAGE_ERROR.getDesc());
+		}
+		return true;
+	}
+
 	public static boolean checkIp(String ip){
 		String regex= "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
 				+"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."

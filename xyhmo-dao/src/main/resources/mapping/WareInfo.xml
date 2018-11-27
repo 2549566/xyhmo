@@ -18,10 +18,12 @@
       <result column="creator" property="creator" />
       <result column="modifier" property="modifier" />
       <result column="status" property="status" />
+      <result column="redu_coordinate" property="reduCoordinate" />
+
   </resultMap>
   <sql id="allColumns">
 	id,pin,sku_id,sku_name,img_path,sku_desc,sku_price,sku_before_price,sku_status,vender_pin,
-	sku_type,created,modified,creator,modifier,status
+	sku_type,created,modified,creator,modifier,status,redu_coordinate
   </sql>
     <select id="selectWareInfoList" parameterType="String" resultMap="BaseResultMap">
         SELECT <include refid="allColumns"/>
@@ -31,4 +33,14 @@
         SELECT <include refid="allColumns"/>
         FROM ware_info WHERE STATUS = 1 AND sku_status =1 order by id
     </select>
+    <select id="selectWareInfoListByUserType" parameterType="com.xyhmo.domain.WareInfo" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ware_info
+        WHERE STATUS = #{status} AND sku_status =#{skuStatus} AND sku_type=#{skuType}
+        <if test="pin != null and pin != '' ">
+            AND pin=#{pin}
+        </if>
+        order by id
+    </select>
+
 </mapper>

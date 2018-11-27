@@ -20,4 +20,10 @@ public interface WareInfoDao {
      *
      * */
     List<WareInfo> selectAllWareInfoList();
+
+    /**
+     * 根据userType获取商品列表
+     *
+     * */
+    List<WareInfo> selectWareInfoListByUserType(WareInfo wareInfo);
 }

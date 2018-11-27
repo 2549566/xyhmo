@@ -64,6 +64,11 @@ public class WareInfo extends BaseModel implements Serializable{
      *
      * */
     private Integer skuType;
+    /**
+     * 冗余字段：商品所在的地点，即代理商所在的地点
+     *
+     * */
+    private String reduCoordinate;
 
     public Long getId() {
         return id;
@@ -151,5 +156,13 @@ public class WareInfo extends BaseModel implements Serializable{
 
     public void setSkuType(Integer skuType) {
         this.skuType = skuType;
+    }
+
+    public String getReduCoordinate() {
+        return reduCoordinate;
+    }
+
+    public void setReduCoordinate(String reduCoordinate) {
+        this.reduCoordinate = reduCoordinate;
     }
 }

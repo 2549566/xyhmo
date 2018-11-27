@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class ResultOld implements Serializable{
-	
+
+	private static final long serialVersionUID = 2518905830224487545L;
 	private int code; //返回码
 	private String msg; //返回信息
 	private List<Object> resultList;//实体类列表

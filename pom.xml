@@ -607,6 +607,11 @@
             <artifactId>shiro-quartz</artifactId>
             <version>${shiro.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>4.0.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>

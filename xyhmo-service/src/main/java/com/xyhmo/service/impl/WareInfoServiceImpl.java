@@ -1,10 +1,15 @@
 package com.xyhmo.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xyhmo.commom.enums.BusiessEnum;
+import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
+import com.xyhmo.commom.utils.ParamCheckUtil;
 import com.xyhmo.dao.WareInfoDao;
 import com.xyhmo.domain.WareInfo;
+import com.xyhmo.query.WareInfoQuery;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.service.WareInfoService;
 import com.xyhmo.vo.UserVo;
@@ -14,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +76,25 @@ public class WareInfoServiceImpl implements WareInfoService{
         //TODO 修改业务员绑定代理商，需要刷新缓存
         redisService.set(Contants.REDIS_WARE_PIN+pin,map);
         return map;
+    }
+
+    @Override
+    public PageInfo getWareInfoListByUserType(String token, Integer skuType, Integer pageNum) {
+        tokenService.checkTokenExist(token);
+        ParamCheckUtil.checkPageNum(pageNum);
+        PageHelper.startPage(pageNum,ParamEnum.PARAM_DEFAULT_PAGESIZE.getCode());
+        UserVo vo = tokenService.checkTokenExist(token);
+        String pin = vo.getBindVenderProxy();
+        WareInfo wareInfo = new WareInfo();
+        if(!StringUtils.isEmpty(pin)){
+            wareInfo.setPin(pin);
+        }
+        wareInfo.setSkuType(skuType);
+        wareInfo.setSkuStatus(1);
+        wareInfo.setStatus(1);
+        List<WareInfo> wareInfoList = wareInfoDao.selectWareInfoListByUserType(wareInfo);
+        PageInfo<WareInfo> pageInfo = new PageInfo<>(wareInfoList);
+        return pageInfo;
     }
 
 

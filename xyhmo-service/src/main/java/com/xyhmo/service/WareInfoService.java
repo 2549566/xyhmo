@@ -1,5 +1,6 @@
 package com.xyhmo.service;
 
+import com.github.pagehelper.PageInfo;
 import com.xyhmo.domain.WareInfo;
 
 import java.util.List;
@@ -21,4 +22,10 @@ public interface WareInfoService {
      *
      * */
     Map<Integer,List<WareInfo>> getWareInfoListByPin(String pin);
+
+    /**
+     * 分类，分页查询商品列表
+     *
+     * */
+    PageInfo getWareInfoListByUserType(String token, Integer skuType, Integer pageNum);
 }

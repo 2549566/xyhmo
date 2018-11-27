@@ -43,6 +43,16 @@ public class UserAuthInfo extends BaseModel implements Serializable{
      *
      * */
     private String companyName;
+    /**
+     * 坐标
+     *
+     * */
+    private String coordinate;
+    /**
+     * 地址
+     *
+     * */
+    private String address;
 
     public Long getId() {
         return id;
@@ -98,5 +108,21 @@ public class UserAuthInfo extends BaseModel implements Serializable{
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(String coordinate) {
+        this.coordinate = coordinate;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
