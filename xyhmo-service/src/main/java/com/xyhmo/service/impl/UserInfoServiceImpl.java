@@ -112,7 +112,7 @@ public class UserInfoServiceImpl implements UserInfoService{
         UserInfo userInfo = getUserInfoByPin(vo.getPin());
         UserAuthInfo userAuthInfo = userAuthInfoService.getUserAuthInfoByPin(vo.getPin());
         UserVo userVo = autowaredToVo(userInfo,userAuthInfo);
-        redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,userVo);
+        redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,userVo,Contants.TOKEN_OVER_TIME);
         return userVo;
     }
 }
