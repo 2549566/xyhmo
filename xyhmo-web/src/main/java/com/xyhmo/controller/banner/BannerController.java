@@ -41,12 +41,7 @@ public class BannerController {
         try{
             tokenService.checkTokenExist(token);
             //TODO 需要上传轮播图
-            List<Banner> bannerList = bannerService.getBannerList();
-            UserVo vo = redisService.get(Contants.REDIS_TOKEKN_BEFORE+token);
-            if(vo==null){
-                return result.fail(ParamEnum.PARAM_TOKEN_NOT_EXIST.getCode(),ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());
-            }
-            redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,vo,Contants.TOKEN_OVER_TIME);
+            List<Banner> bannerList = bannerService.getBannerList(token);
             result.success(bannerList, ReturnEnum.RETURN_SUCCESS.getDesc());
             return result;
         }catch (ParamException p){

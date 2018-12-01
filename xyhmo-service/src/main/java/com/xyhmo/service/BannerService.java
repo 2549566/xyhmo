@@ -9,5 +9,5 @@ public interface BannerService {
      * 获取轮播图列表
      *
      * */
-    List<Banner> getBannerList();
+    List<Banner> getBannerList(String token);
 }

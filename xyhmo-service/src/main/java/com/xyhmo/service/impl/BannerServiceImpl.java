@@ -22,7 +22,7 @@ public class BannerServiceImpl implements BannerService{
     private RedisService redisService;
 
     @Override
-    public List<Banner> getBannerList() {
+    public List<Banner> getBannerList(String token) {
         if(null!=redisService.get(Contants.REDIS_INDEX_BANNER)){
             return redisService.get(Contants.REDIS_INDEX_BANNER);
         }
