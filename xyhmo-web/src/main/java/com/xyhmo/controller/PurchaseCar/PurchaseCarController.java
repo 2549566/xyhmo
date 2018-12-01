@@ -88,8 +88,7 @@ public class PurchaseCarController {
         }
     }
 
-//    @RequestMapping(value = "/addWareToPurchaseCar", method = RequestMethod.POST)
-    @RequestMapping(value = "/addWareToPurchaseCar")
+    @RequestMapping(value = "/addWareToPurchaseCar", method = RequestMethod.POST)
     @ResponseBody
     private Result addWareToPurchaseCar(String token,Long skuId){
         Result result = new Result();
@@ -106,7 +105,7 @@ public class PurchaseCarController {
         }
     }
 
-    @RequestMapping(value = "/updateWareNum")
+    @RequestMapping(value = "/updateWareNum", method = RequestMethod.POST)
     @ResponseBody
     private Result updateWareNum(String token,Long skuId,Integer num){
         Result result = new Result();
@@ -123,7 +122,7 @@ public class PurchaseCarController {
         }
     }
 
-    @RequestMapping(value = "/updateWareSelectStatus")
+    @RequestMapping(value = "/updateWareSelectStatus", method = RequestMethod.POST)
     @ResponseBody
     private Result updateWareSelectStatus(String token,Long skuId,Boolean selected){
         Result result = new Result();
@@ -140,7 +139,7 @@ public class PurchaseCarController {
         }
     }
 
-    @RequestMapping(value = "/deletePurchaseCarWareList")
+    @RequestMapping(value = "/deletePurchaseCarWareList", method = RequestMethod.POST)
     @ResponseBody
     private Result deletePurchaseCarWareList(String token,String skuIds){
         Result result = new Result();
