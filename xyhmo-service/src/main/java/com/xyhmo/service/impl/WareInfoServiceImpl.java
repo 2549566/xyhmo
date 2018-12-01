@@ -9,7 +9,6 @@ import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.ParamCheckUtil;
 import com.xyhmo.dao.WareInfoDao;
 import com.xyhmo.domain.WareInfo;
-import com.xyhmo.query.WareInfoQuery;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.service.WareInfoService;
 import com.xyhmo.vo.UserVo;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,6 +93,22 @@ public class WareInfoServiceImpl implements WareInfoService{
         List<WareInfo> wareInfoList = wareInfoDao.selectWareInfoListByUserType(wareInfo);
         PageInfo<WareInfo> pageInfo = new PageInfo<>(wareInfoList);
         return pageInfo;
+    }
+
+    @Override
+    public WareInfo getWareInfoBySkuId(Long skuId) {
+        if(null==skuId){
+            return null;
+        }
+        WareInfo wareInfo = redisService.get(Contants.REDIS_WARE_SKUID+skuId);
+        if(wareInfo!=null){
+            return wareInfo;
+        }
+        wareInfo = wareInfoDao.selectWareInfoBySkuId(skuId);
+        if(wareInfo!=null){
+            redisService.set(Contants.REDIS_WARE_SKUID+skuId,wareInfo);
+        }
+        return wareInfo;
     }
 
 

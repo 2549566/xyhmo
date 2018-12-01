@@ -21,7 +21,9 @@ public final class Contants {
 	public static String CHECK_MOBILE;
 	//token系统无访问，token最大存活时间
 	public static int TOKEN_OVER_TIME;
-	//存入系统的token前缀
+	//购物车过期时间
+	public static int PURCHASE_CAR_OVER_TIME;
+	//缓存：存入系统的token前缀
 	public static String REDIS_TOKEKN_BEFORE;
 	//缓存：首页轮播图key
 	public static String REDIS_INDEX_BANNER;
@@ -31,13 +33,17 @@ public final class Contants {
 	public static String REDIS_ALL_WARE;
 	//缓存：某个代理商商品
 	public static String REDIS_WARE_PIN;
-	
+	//缓存：购物车
+	public static String REDIS_PURCHASE_CAR;
+	//缓存：单个商品缓存(会把所有的商品向缓存中存一份)
+	public static String REDIS_WARE_SKUID;
 	static{
 		MOBILE_GEN_CODE = "mobile_check_code_";
 		MOBILE_CHECK_CODE_OVER_TIME = 10*60;
 		CHECK_IP="check_ip_";
 		CHECK_IP_TIMES=5;
 		CHECK_IP_OVER_TIME = 60*60*24;
+		PURCHASE_CAR_OVER_TIME=60*60*24;
 		CHECK_MOBILE_TIMES_EVERYDAY=5;
 		CHECK_MOBILE_OVER_TIME =60*60*24;
 		CHECK_MOBILE="check_mobile_";
@@ -47,6 +53,8 @@ public final class Contants {
 		REDIS_INDEX_BULLETIN="redis_index_bulletin";
 		REDIS_ALL_WARE="redis_all_ware";
 		REDIS_WARE_PIN="redis_ware_pin_";
+		REDIS_PURCHASE_CAR="redis_purchase_car_";
+		REDIS_WARE_SKUID="redis_ware_skuId_";
 	}
 
 	

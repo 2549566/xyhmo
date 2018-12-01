@@ -26,4 +26,10 @@ public interface WareInfoDao {
      *
      * */
     List<WareInfo> selectWareInfoListByUserType(WareInfo wareInfo);
+
+    /**
+     * 根据SKUID获取商品信息
+     *
+     * */
+    WareInfo selectWareInfoBySkuId(Long skuId);
 }

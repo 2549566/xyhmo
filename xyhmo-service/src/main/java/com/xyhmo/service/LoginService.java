@@ -1,7 +1,5 @@
 package com.xyhmo.service;
 
-import com.xyhmo.domain.UserAuthInfo;
-import com.xyhmo.domain.UserInfo;
 import com.xyhmo.vo.UserVo;
 
 public interface LoginService {

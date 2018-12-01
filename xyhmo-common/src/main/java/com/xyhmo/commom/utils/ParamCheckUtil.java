@@ -29,6 +29,13 @@ public class ParamCheckUtil {
 		return true;
 	}
 
+	public static boolean checkSkuIds(String skuIds){
+		if(StringUtils.isEmpty(skuIds) || !skuIds.matches("(\\d+\\,?)+")){
+			throw new ParamException(ParamEnum.PARAM_SKUIDS_ERROR.getCode(),ParamEnum.PARAM_SKUIDS_ERROR.getDesc());
+		}
+		return true;
+	}
+
 	public static boolean checkPageNum(Integer pageNum){
 		if(null==pageNum ||pageNum<=0){
 			throw new ParamException(ParamEnum.PARAM_PAGE_ERROR.getCode(),ParamEnum.PARAM_PAGE_ERROR.getDesc());

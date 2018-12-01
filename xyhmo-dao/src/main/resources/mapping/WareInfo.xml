@@ -42,5 +42,10 @@
         </if>
         order by id
     </select>
+    <select id="selectWareInfoBySkuId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ware_info
+        WHERE STATUS = 1 AND sku_status =1 AND sku_id=#{skuId}
+    </select>
 
 </mapper>

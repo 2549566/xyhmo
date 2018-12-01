@@ -47,14 +47,31 @@ public class WareController {
 //            result.success(map,ReturnEnum.RETURN_SUCCESS.getDesc());
             return result.success(pageInfo,ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
-            logger.error("BunnerController:token 不存在",p);
+            logger.error("WareController:查询商品列表失败",p);
             return result.fail(p.getCode(),p.getMessage());
         }catch (Exception e){
-            logger.error("BulletinController：获取商品列表失败",e);
+            logger.error("WareController：查询商品列表失败",e);
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
         }
 
     }
 
+    @RequestMapping(value = "/getWareInfoBySkuId")
+    @ResponseBody
+    private Result getWareInfoBySkuId(String token,Long skuId){
+        Result result = new Result();
+        try{
+            tokenService.checkTokenExist(token);
+            WareInfo wareInfo = wareInfoService.getWareInfoBySkuId(skuId);
+            return result.success(wareInfo,ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("WareController:查询商品列表失败",p);
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (Exception e){
+            logger.error("WareController：查询商品列表失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+
+    }
 
 }

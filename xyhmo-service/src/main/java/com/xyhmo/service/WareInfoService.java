@@ -2,6 +2,7 @@ package com.xyhmo.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xyhmo.domain.WareInfo;
+import org.apache.activemq.util.WrappedException;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,13 @@ public interface WareInfoService {
 
     /**
      * 分类，分页查询商品列表
-     *
+     * TODO 缓存第一页的数据
      * */
     PageInfo getWareInfoListByUserType(String token, Integer skuType, Integer pageNum);
+    /**
+     * 根据商品ID，获取商品信息
+     *
+     *
+     * */
+    WareInfo getWareInfoBySkuId(Long skuId);
 }

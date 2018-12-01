@@ -11,7 +11,6 @@ import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.IpUtil;
 import com.xyhmo.commom.utils.ParamCheckUtil;
-import com.xyhmo.domain.UserInfo;
 import com.xyhmo.service.LoginService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.service.UserInfoService;
