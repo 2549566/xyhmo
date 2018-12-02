@@ -10,7 +10,7 @@ public class HashCodeUtil {
             // 就代表a的值，同理b=2；
             hashCode = ((hashCode << 5) + letterValue) % arraySize;// 防止编码溢出，对每步结果都进行取模运算
         }
-        return hashCode;
+        return Math.abs(hashCode);
     }
 
 }

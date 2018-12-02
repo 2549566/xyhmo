@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.OrderDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.Order" >
+      <id column="id" property="id" />
+      <result column="order_id" property="orderId" />
+      <result column="pin" property="pin" />
+      <result column="proxy_pin" property="proxyPin" />
+      <result column="coordinate" property="coordinate" />
+      <result column="address" property="address" />
+      <result column="is_delivery" property="isDelivery" />
+      <result column="delivery_price" property="deliveryPrice" />
+      <result column="order_type" property="orderType" />
+      <result column="payable_price" property="payablePrice" />
+      <result column="real_income_price" property="realIncomePrice" />
+      <result column="save_mony_price" property="saveMonyPrice" />
+      <result column="created" property="created" />
+      <result column="modified" property="modified" />
+      <result column="creator" property="creator" />
+      <result column="modifier" property="modifier" />
+      <result column="status" property="status" />
+  </resultMap>
+  <!--<sql id="allColumns">-->
+      <!--id,order_id,pin,proxy_pin,coordinate,address,is_delivery,delivery_price,order_type,payable_price,real_income_price,save_mony_price,created,modified,creator,modifier,status-->
+  <!--</sql>-->
+    <!--<insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.Order" statementType="STATEMENT">-->
+        <!--INSERT INTO ${tableName} (<include refid="allColumns"/>)-->
+        <!--VALUES (null,#{orderId},#{pin},#{proxyPin},#{coordinate},#{address},#{isDelivery},#{deliveryPrice},#{orderType},#{payablePrice},#{realIncomePrice},#{saveMonyPrice},-->
+        <!--NOW(),#{modified},#{creator},#{modifier},#{status})-->
+    <!--</insert>-->
+    <sql id="allColumns">
+        id,order_id,pin,order_type
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.Order" statementType="STATEMENT">
+        INSERT INTO ${tableName} (<include refid="allColumns"/>)
+        VALUES (null,${orderId},${pin},${orderType})
+    </insert>
+</mapper>
