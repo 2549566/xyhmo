@@ -1,5 +1,7 @@
 package com.xyhmo.service;
 
+import java.util.Map;
+
 /**
  * 订单业务层
  *
@@ -10,5 +12,5 @@ public interface OrderService {
      *
      *
      * */
-    Long saveOrder();
+    Long saveOrder(String token,Map<Long,Integer> orderMap) throws Exception;
 }

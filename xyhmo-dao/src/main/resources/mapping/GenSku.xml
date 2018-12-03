@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.GenSkuDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.GenSku" >
+      <id column="id" property="id" />
+      <result column="sku_name" property="skuName" />
+  </resultMap>
+
+    <sql id="allColumns">
+        id,skuName
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.GenSku" >
+        INSERT INTO gen_order (<include refid="allColumns"/>)
+        VALUES (null,#{skuName})
+    </insert>
+</mapper>

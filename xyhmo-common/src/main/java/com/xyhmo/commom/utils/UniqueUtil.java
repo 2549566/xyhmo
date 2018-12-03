@@ -14,7 +14,7 @@ public class UniqueUtil {
     public static String genPin(String mobile){
         String date = System.currentTimeMillis()+"";
         String dateStr=date.substring(date.length()-6);
-        return "S"+mobile+dateStr;
+        return "BJ"+mobile+dateStr;
     }
 
     public static String md5(String data) throws NoSuchAlgorithmException {
