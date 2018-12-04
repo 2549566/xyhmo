@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class WareInfoServiceImpl implements WareInfoService{
@@ -109,6 +106,15 @@ public class WareInfoServiceImpl implements WareInfoService{
             redisService.set(Contants.REDIS_WARE_SKUID+skuId,wareInfo);
         }
         return wareInfo;
+    }
+
+    @Override
+    public List<WareInfo> getWareListBySkuIds(Set<Long> skuIds) {
+        if(CollectionUtils.isEmpty(skuIds)){
+            logger.error("skuIds is empty");
+            return new ArrayList<>();
+        }
+        return wareInfoDao.selectWareListBySkuIds(skuIds);
     }
 
 

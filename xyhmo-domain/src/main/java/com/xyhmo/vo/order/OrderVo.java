@@ -1,19 +1,15 @@
-package com.xyhmo.domain;
+package com.xyhmo.vo.order;
 
 import com.xyhmo.commom.model.BaseModel;
+import com.xyhmo.domain.OrderWare;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * 订单对象
- *
- *
- * */
-public class Order extends BaseModel implements Serializable {
+public class OrderVo extends BaseModel implements Serializable{
 
-    private static final long serialVersionUID = -661568280765397370L;
+    private static final long serialVersionUID = -8897824706002754817L;
 
     private String tableName;
 
@@ -89,7 +85,19 @@ public class Order extends BaseModel implements Serializable {
      * */
     private String totalPayOrderId;
 
+    /**
+     * 商品list
+     *
+     * */
+    private List<OrderWare> orderWareList;
 
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
     public Long getId() {
         return id;
@@ -187,14 +195,6 @@ public class Order extends BaseModel implements Serializable {
         this.saveMonyPrice = saveMonyPrice;
     }
 
-    public String getTableName() {
-        return tableName;
-    }
-
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
     public Integer getIsTotalPay() {
         return isTotalPay;
     }
@@ -219,4 +219,11 @@ public class Order extends BaseModel implements Serializable {
         this.totalPayOrderId = totalPayOrderId;
     }
 
+    public List<OrderWare> getOrderWareList() {
+        return orderWareList;
+    }
+
+    public void setOrderWareList(List<OrderWare> orderWareList) {
+        this.orderWareList = orderWareList;
+    }
 }

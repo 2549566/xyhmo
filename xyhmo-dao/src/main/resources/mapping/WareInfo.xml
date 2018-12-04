@@ -47,5 +47,14 @@
         FROM ware_info
         WHERE STATUS = 1 AND sku_status =1 AND sku_id=#{skuId}
     </select>
+    <select id="selectWareListBySkuIds"  resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ware_info
+        WHERE STATUS = 1 AND sku_status =1 AND sku_id IN
+        <foreach collection="Set" item="skuIds"  open="(" separator="," close=")">
+            #{skuIds}
+        </foreach>
+    </select>
+
 
 </mapper>

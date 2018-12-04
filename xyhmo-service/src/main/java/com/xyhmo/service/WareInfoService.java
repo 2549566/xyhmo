@@ -6,6 +6,7 @@ import org.apache.activemq.util.WrappedException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface WareInfoService {
     /**
@@ -35,4 +36,9 @@ public interface WareInfoService {
      *
      * */
     WareInfo getWareInfoBySkuId(Long skuId);
+    /**
+     * 根据skuIds批量获取商品
+     *
+     * */
+    List<WareInfo> getWareListBySkuIds(Set<Long> skuIds);
 }
