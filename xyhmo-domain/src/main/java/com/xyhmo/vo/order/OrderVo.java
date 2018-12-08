@@ -49,7 +49,7 @@ public class OrderVo extends BaseModel implements Serializable{
      * 配送费用
      *
      * */
-    private BigDecimal deliveryPrice;
+    private Double deliveryPrice=0.00;
     /**
      * 订单状态：1：业务员已报单，并且代理商进入配送或者业务员取货状态 2：代理商已经点击确认 3：业务员点击确认结单（未支付） 4：业务员点击确认，并支付
      *
@@ -58,17 +58,17 @@ public class OrderVo extends BaseModel implements Serializable{
     /**
      * 应付金额
      * */
-    private BigDecimal payablePrice;
+    private Double payablePrice=0.00;
     /**
      * 实收金额
      *
      * */
-    private BigDecimal realIncomePrice;
+    private Double realIncomePrice=0.00;
     /**
      * 节省金额
      *
      * */
-    private BigDecimal saveMonyPrice;
+    private Double saveMonyPrice=0.00;
     /**
      * 是否一起支付
      *
@@ -78,7 +78,7 @@ public class OrderVo extends BaseModel implements Serializable{
      * 总支付金额
      *
      * */
-    private BigDecimal totalPayPrice;
+    private Double totalPayPrice=0.00;
     /**
      * 一起支付订单ID
      *
@@ -155,11 +155,11 @@ public class OrderVo extends BaseModel implements Serializable{
         this.isDelivery = isDelivery;
     }
 
-    public BigDecimal getDeliveryPrice() {
+    public Double getDeliveryPrice() {
         return deliveryPrice;
     }
 
-    public void setDeliveryPrice(BigDecimal deliveryPrice) {
+    public void setDeliveryPrice(Double deliveryPrice) {
         this.deliveryPrice = deliveryPrice;
     }
 
@@ -171,27 +171,27 @@ public class OrderVo extends BaseModel implements Serializable{
         this.orderType = orderType;
     }
 
-    public BigDecimal getPayablePrice() {
+    public Double getPayablePrice() {
         return payablePrice;
     }
 
-    public void setPayablePrice(BigDecimal payablePrice) {
+    public void setPayablePrice(Double payablePrice) {
         this.payablePrice = payablePrice;
     }
 
-    public BigDecimal getRealIncomePrice() {
+    public Double getRealIncomePrice() {
         return realIncomePrice;
     }
 
-    public void setRealIncomePrice(BigDecimal realIncomePrice) {
+    public void setRealIncomePrice(Double realIncomePrice) {
         this.realIncomePrice = realIncomePrice;
     }
 
-    public BigDecimal getSaveMonyPrice() {
+    public Double getSaveMonyPrice() {
         return saveMonyPrice;
     }
 
-    public void setSaveMonyPrice(BigDecimal saveMonyPrice) {
+    public void setSaveMonyPrice(Double saveMonyPrice) {
         this.saveMonyPrice = saveMonyPrice;
     }
 
@@ -203,11 +203,11 @@ public class OrderVo extends BaseModel implements Serializable{
         this.isTotalPay = isTotalPay;
     }
 
-    public BigDecimal getTotalPayPrice() {
+    public Double getTotalPayPrice() {
         return totalPayPrice;
     }
 
-    public void setTotalPayPrice(BigDecimal totalPayPrice) {
+    public void setTotalPayPrice(Double totalPayPrice) {
         this.totalPayPrice = totalPayPrice;
     }
 

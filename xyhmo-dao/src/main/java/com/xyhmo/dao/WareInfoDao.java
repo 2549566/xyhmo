@@ -38,5 +38,5 @@ public interface WareInfoDao {
      * 根据skuIds获取商品列表
      *
      * */
-    List<WareInfo> selectWareListBySkuIds(Set<Long> skuIds);
+    List<WareInfo> selectWareListBySkuIds(List<Long> skuIds);
 }

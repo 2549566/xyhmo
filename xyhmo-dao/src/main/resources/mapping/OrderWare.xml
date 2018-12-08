@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.OrderWareDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.OrderWare" >
+      <id column="id" property="id" />
+      <result column="order_id" property="orderId" />
+      <result column="pin" property="pin" />
+      <result column="ware_num" property="wareNum" />
+      <result column="ware_price" property="warePrice" />
+      <result column="sku_id" property="skuId" />
+      <result column="redu_sku_name" property="reduSkuName" />
+      <result column="redu_img_path" property="reduImgPath" />
+      <result column="redu_sku_before_price" property="reduSkuBeforePrice" />
+      <result column="created" property="created" />
+      <result column="modified" property="modified" />
+      <result column="creator" property="creator" />
+      <result column="modifier" property="modifier" />
+      <result column="status" property="status" />
+  </resultMap>
+    <sql id="allColumns">
+        id,order_id,pin,ware_num,ware_price,sku_id,redu_sku_name,redu_img_path,redu_sku_before_price,created,modified,creator,modifier,status
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.OrderWare" statementType="STATEMENT">
+        INSERT INTO ${tableName} (<include refid="allColumns"/>)
+        VALUES (null,${orderId},${pin},${wareNum},${warePrice},${skuId},${reduSkuName},${reduImgPath},${reduSkuBeforePrice},
+         NOW(),NOW(),${creator},${modifier},${status})
+    </insert>
+</mapper>

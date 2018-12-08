@@ -9,6 +9,8 @@ public class OrderWare extends BaseModel implements Serializable {
 
     private static final long serialVersionUID = 2072242427789248887L;
 
+    private String tableName;
+
     private Long id;
     /**
      * 订单ID，北京地区以BJ开头
@@ -29,7 +31,7 @@ public class OrderWare extends BaseModel implements Serializable {
      * 购买的该商品单价
      *
      * */
-    private BigDecimal warePrice;
+    private Double warePrice=0.00;
     /**
      * 商品ID
      *
@@ -51,7 +53,7 @@ public class OrderWare extends BaseModel implements Serializable {
      * 商品之前价格
      *
      * */
-    private BigDecimal reduSkuBeforePrice;
+    private Double reduSkuBeforePrice=0.00;
 
     public Long getId() {
         return id;
@@ -85,11 +87,11 @@ public class OrderWare extends BaseModel implements Serializable {
         this.wareNum = wareNum;
     }
 
-    public BigDecimal getWarePrice() {
+    public Double getWarePrice() {
         return warePrice;
     }
 
-    public void setWarePrice(BigDecimal warePrice) {
+    public void setWarePrice(Double warePrice) {
         this.warePrice = warePrice;
     }
 
@@ -117,11 +119,19 @@ public class OrderWare extends BaseModel implements Serializable {
         this.reduImgPath = reduImgPath;
     }
 
-    public BigDecimal getReduSkuBeforePrice() {
+    public Double getReduSkuBeforePrice() {
         return reduSkuBeforePrice;
     }
 
-    public void setReduSkuBeforePrice(BigDecimal reduSkuBeforePrice) {
+    public void setReduSkuBeforePrice(Double reduSkuBeforePrice) {
         this.reduSkuBeforePrice = reduSkuBeforePrice;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }

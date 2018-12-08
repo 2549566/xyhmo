@@ -43,12 +43,12 @@ public class WareInfo extends BaseModel implements Serializable{
      * 商品当前价格
      *
      * */
-    private BigDecimal skuPrice;
+    private Double skuPrice=0.00;
     /**
      * 商品之前价格
      *
      * */
-    private BigDecimal skuBeforePrice;
+    private Double skuBeforePrice=0.0;
     /**
      * 商品上下架状态
      *
@@ -118,19 +118,19 @@ public class WareInfo extends BaseModel implements Serializable{
         this.skuDesc = skuDesc;
     }
 
-    public BigDecimal getSkuPrice() {
+    public Double getSkuPrice() {
         return skuPrice;
     }
 
-    public void setSkuPrice(BigDecimal skuPrice) {
+    public void setSkuPrice(Double skuPrice) {
         this.skuPrice = skuPrice;
     }
 
-    public BigDecimal getSkuBeforePrice() {
+    public Double getSkuBeforePrice() {
         return skuBeforePrice;
     }
 
-    public void setSkuBeforePrice(BigDecimal skuBeforePrice) {
+    public void setSkuBeforePrice(Double skuBeforePrice) {
         this.skuBeforePrice = skuBeforePrice;
     }
 

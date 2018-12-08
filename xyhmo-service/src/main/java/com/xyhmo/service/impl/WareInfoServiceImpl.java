@@ -114,7 +114,7 @@ public class WareInfoServiceImpl implements WareInfoService{
             logger.error("skuIds is empty");
             return new ArrayList<>();
         }
-        return wareInfoDao.selectWareListBySkuIds(skuIds);
+        return wareInfoDao.selectWareListBySkuIds(new ArrayList<>(skuIds));
     }
 
 

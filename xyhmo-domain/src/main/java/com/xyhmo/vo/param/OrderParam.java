@@ -13,7 +13,7 @@ public class OrderParam implements Serializable{
      * */
     private String token;
     /**
-     * 是否配送 1:配送 2：不配送
+     * 是否配送 1:配送 0不配送
      *
      * */
     private Integer isDelivery;

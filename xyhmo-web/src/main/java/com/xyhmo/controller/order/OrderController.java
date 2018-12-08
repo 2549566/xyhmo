@@ -35,9 +35,23 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @RequestMapping(value = "/saveOrder", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveOrder", method = RequestMethod.GET)
+    //TODO 换成get
+//    @RequestMapping(value = "/saveOrder", method = RequestMethod.POST)
     @ResponseBody
-    private Result saveOrder(@RequestBody OrderParam orderParam){
+    //TODO 添加参数
+//    private Result saveOrder(@RequestBody OrderParam orderParam){
+        private Result saveOrder(){
+        OrderParam orderParam = new OrderParam();
+        //TODO 去掉默认值
+        orderParam.setToken("1f2e40a670db6c40b37e2cb577566b65");
+        orderParam.setIsDelivery(DeliveryEnum.IS_NOT_DELIVERY.getCode());
+        Map<Long,Integer> map = new HashMap<>();
+        map.put(100000001l,1);
+        map.put(100000002l,2);
+        map.put(100000003l,3);
+        map.put(100000004l,4);
+        orderParam.setSkuMap(map);
         Result result = new Result();
         if(orderParam==null || CollectionUtils.isEmpty(orderParam.getSkuMap())){
             return result.fail(ParamEnum.PARAM_TOKEN_NOT_EXIST.getCode(),ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());

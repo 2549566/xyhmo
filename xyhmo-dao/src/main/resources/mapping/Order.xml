@@ -23,21 +23,14 @@
       <result column="total_pay_price" property="totalPayPrice" />
       <result column="total_pay_order_id" property="totalPayOrderId" />
   </resultMap>
-  <!--<sql id="allColumns">-->
-      <!---->
-  <!--</sql>-->
-    <!--<insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.Order" statementType="STATEMENT">-->
-        <!--INSERT INTO ${tableName} (<include refid="allColumns"/>)-->
-        <!--VALUES (null,#{orderId},#{pin},#{proxyPin},#{coordinate},#{address},#{isDelivery},#{deliveryPrice},#{orderType},#{payablePrice},#{realIncomePrice},#{saveMonyPrice},-->
-        <!--NOW(),#{modified},#{creator},#{modifier},#{status})-->
-    <!--</insert>-->
+
     <sql id="allColumns">
         id,order_id,pin,proxy_pin,coordinate,address,is_delivery,delivery_price,order_type,payable_price,real_income_price,save_mony_price,created,modified,creator,modifier,status,
-        is_total_pay,total_pay_price,total_pay_order_id
+                 is_total_pay,total_pay_price,total_pay_order_id
     </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.Order" statementType="STATEMENT">
         INSERT INTO ${tableName} (<include refid="allColumns"/>)
         VALUES (null,${orderId},${pin},${proxyPin},${coordinate},${address},${isDelivery},${deliveryPrice},${orderType},${payablePrice},${realIncomePrice},${saveMonyPrice},
-         NOW(),${modified},${creator},${modifier},${status},${isTotalPay},${totalPayPrice},${totalPayOrderId})
+        NOW(),NOW(),${creator},${modifier},${status},${isTotalPay},${totalPayPrice},${totalPayOrderId})
     </insert>
 </mapper>

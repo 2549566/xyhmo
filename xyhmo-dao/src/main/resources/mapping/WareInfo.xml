@@ -51,7 +51,7 @@
         SELECT <include refid="allColumns"/>
         FROM ware_info
         WHERE STATUS = 1 AND sku_status =1 AND sku_id IN
-        <foreach collection="Set" item="skuIds"  open="(" separator="," close=")">
+        <foreach collection="list" item="skuIds"  open="(" separator="," close=")">
             #{skuIds}
         </foreach>
     </select>
