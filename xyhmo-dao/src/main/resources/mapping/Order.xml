@@ -10,7 +10,7 @@
       <result column="address" property="address" />
       <result column="is_delivery" property="isDelivery" />
       <result column="delivery_price" property="deliveryPrice" />
-      <result column="order_type" property="orderType" />
+      <result column="order_status" property="orderStatus" />
       <result column="payable_price" property="payablePrice" />
       <result column="real_income_price" property="realIncomePrice" />
       <result column="save_mony_price" property="saveMonyPrice" />
@@ -25,12 +25,20 @@
   </resultMap>
 
     <sql id="allColumns">
-        id,order_id,pin,proxy_pin,coordinate,address,is_delivery,delivery_price,order_type,payable_price,real_income_price,save_mony_price,created,modified,creator,modifier,status,
+        id,order_id,pin,proxy_pin,coordinate,address,is_delivery,delivery_price,order_status,payable_price,real_income_price,save_mony_price,created,modified,creator,modifier,status,
                  is_total_pay,total_pay_price,total_pay_order_id
     </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.Order" statementType="STATEMENT">
         INSERT INTO ${tableName} (<include refid="allColumns"/>)
-        VALUES (null,${orderId},${pin},${proxyPin},${coordinate},${address},${isDelivery},${deliveryPrice},${orderType},${payablePrice},${realIncomePrice},${saveMonyPrice},
+        VALUES (null,${orderId},${pin},${proxyPin},${coordinate},${address},${isDelivery},${deliveryPrice},${orderStatus},${payablePrice},${realIncomePrice},${saveMonyPrice},
         NOW(),NOW(),${creator},${modifier},${status},${isTotalPay},${totalPayPrice},${totalPayOrderId})
     </insert>
+    <select id="selectOrderListByOrderStatus" parameterType="com.xyhmo.domain.Order"  statementType="STATEMENT" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ${tableName}
+        WHERE STATUS = 1 AND proxy_pin=${proxyPin}
+        <if test="orderStatus!=null">
+            AND order_status=${orderStatus}
+        </if>
+    </select>
 </mapper>

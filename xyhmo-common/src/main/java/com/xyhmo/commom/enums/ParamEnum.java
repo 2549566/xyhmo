@@ -17,6 +17,7 @@ public enum ParamEnum {
     PARAM_PAGE_ERROR(-5001,"页码不能为空，并且不能小于1"),
     PARAM_SKUIDS_ERROR(-6001,"skuIds格式异常"),
     PARAM_DELIVERY_ERROR(-7001,"请填写配送地址"),
+    PARAM_ORDER_STATUS(-8001,"订单状态入参错误"),
     PARAM_DEFAULT_PAGESIZE(20,"默认pageSize"),
     PARAM_DATA_USED(1,"数据有效");
     private int code;

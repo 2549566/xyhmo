@@ -25,4 +25,12 @@
         VALUES (null,${orderId},${pin},${wareNum},${warePrice},${skuId},${reduSkuName},${reduImgPath},${reduSkuBeforePrice},
          NOW(),NOW(),${creator},${modifier},${status})
     </insert>
+    <select id="selectOrderWareListByOrderIdList" statementType="STATEMENT"  resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ${tableName}
+        WHERE STATUS = 1 AND order_id IN
+        <foreach collection="orderIdList" item="idList"  open="(" separator="," close=")">
+            ${idList}
+        </foreach>
+    </select>
 </mapper>

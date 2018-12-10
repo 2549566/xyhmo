@@ -37,6 +37,8 @@ public final class Contants {
 	public static String REDIS_PURCHASE_CAR;
 	//缓存：单个商品缓存(会把所有的商品向缓存中存一份)
 	public static String REDIS_WARE_SKUID;
+	//缓存：缓存代理商的商品列表
+	public static String REDIS_ORDER_PROXY_PIN;
 	static{
 		MOBILE_GEN_CODE = "mobile_check_code_";
 		MOBILE_CHECK_CODE_OVER_TIME = 10*60;
@@ -55,6 +57,7 @@ public final class Contants {
 		REDIS_WARE_PIN="redis_ware_pin_";
 		REDIS_PURCHASE_CAR="redis_purchase_car_";
 		REDIS_WARE_SKUID="redis_ware_skuId_";
+		REDIS_ORDER_PROXY_PIN="redis_order_proxy_pin_";
 	}
 
 	

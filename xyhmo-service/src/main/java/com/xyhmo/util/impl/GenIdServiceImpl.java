@@ -31,7 +31,6 @@ public class GenIdServiceImpl implements GenIdService{
         genOrder.setOrderName("1");
         Long id = genOrderDao.insert(genOrder);
         String date = System.currentTimeMillis()+"";
-        String dateStr=date.substring(date.length()-6);
-        return city+dateStr+String.valueOf(id);
+        return city+date+String.valueOf(id);
     }
 }

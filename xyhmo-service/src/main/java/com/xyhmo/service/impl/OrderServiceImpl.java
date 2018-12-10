@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.beans.Transient;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPayOrderId(vo.getTotalPayOrderId());
         order.setStatus(1);
         order.setTotalPayOrderId(vo.getTotalPayOrderId());
-        order.setOrderType(vo.getOrderType());
+        order.setOrderStatus(vo.getOrderStatus());
         order.setRealIncomePrice(vo.getRealIncomePrice());
         order.setCreator(vo.getCreator());
         order.setModifier(vo.getModifier());
@@ -152,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(1);
         String totalPayOrderId="''";
         order.setTotalPayOrderId(totalPayOrderId);
-        order.setOrderType(OrderTypeEnum.ORDER_YWY_SUBMIT.getCode());
+        order.setOrderStatus(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode());
         order.setCreator(pin);
         order.setModifier(modifier);
         order.setIsTotalPay(0);

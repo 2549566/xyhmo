@@ -58,7 +58,7 @@ public class Order extends BaseModel implements Serializable {
      * 订单状态：1：业务员已报单，并且代理商进入配送或者业务员取货状态 2：代理商已经点击确认 3：业务员点击确认结单（未支付） 4：业务员点击确认，并支付
      *
      * */
-    private Integer orderType;
+    private Integer orderStatus;
     /**
      * 应付金额
      * */
@@ -155,12 +155,12 @@ public class Order extends BaseModel implements Serializable {
         this.deliveryPrice = deliveryPrice;
     }
 
-    public Integer getOrderType() {
-        return orderType;
+    public Integer getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrderType(Integer orderType) {
-        this.orderType = orderType;
+    public void setOrderStatus(Integer orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Double getPayablePrice() {
