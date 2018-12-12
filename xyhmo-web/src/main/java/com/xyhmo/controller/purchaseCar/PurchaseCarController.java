@@ -1,15 +1,11 @@
-package com.xyhmo.controller.PurchaseCar;
+package com.xyhmo.controller.purchaseCar;
 
 
 import com.xyhmo.commom.base.Result;
-import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
-import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.ParamCheckUtil;
-import com.xyhmo.domain.Banner;
-import com.xyhmo.service.BannerService;
 import com.xyhmo.service.PurchaseCarService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.vo.purchaseCar.PurchaseWareVo;

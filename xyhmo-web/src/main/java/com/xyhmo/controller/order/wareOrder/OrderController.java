@@ -1,4 +1,4 @@
-package com.xyhmo.controller.order;
+package com.xyhmo.controller.order.wareOrder;
 
 
 import com.xyhmo.commom.base.Result;
@@ -11,6 +11,7 @@ import com.xyhmo.domain.Bulletin;
 import com.xyhmo.service.BulletinService;
 import com.xyhmo.service.OrderService;
 import com.xyhmo.service.TokenService;
+import com.xyhmo.vo.order.OrderVo;
 import com.xyhmo.vo.param.OrderParam;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -75,6 +76,32 @@ public class OrderController {
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
         }
 
+    }
+
+    /**
+     * 获取业务员订单
+     * token：代理商token
+     * orderStatus：订单状态 如果为null 则获取所有的订单表
+     *
+     * */
+    @RequestMapping(value = "/getWorkerOrderList", method = RequestMethod.GET)
+    @ResponseBody
+    private Result getWorkerOrderList(String token,Integer orderStatus){
+        Result result = new Result();
+        try{
+            tokenService.checkTokenExist(token);
+            if(orderStatus==null || orderStatus>20){
+                throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
+            }
+            List<OrderVo> orderVoList =orderService.getWorkerOrderList(token,orderStatus);
+            return result.success(orderVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("OrderProxyController:代理商订单表入参错误",p);
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (Exception e){
+            logger.error("OrderProxyController：代理商获取订单列表失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
     }
 
 

@@ -1,4 +1,4 @@
-package com.xyhmo.controller.order;
+package com.xyhmo.controller.order.wareOrder;
 
 import com.xyhmo.commom.base.Result;
 import com.xyhmo.commom.enums.ParamEnum;
@@ -42,7 +42,7 @@ public class OrderProxyController {
         Result result = new Result();
         try{
             tokenService.checkTokenExist(token);
-            if(orderStatus!=null && orderStatus>20){
+            if(orderStatus==null || orderStatus>20){
                 throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
             }
             List<OrderVo> orderVoList =orderProxyService.getOrderProxyList(token,orderStatus);

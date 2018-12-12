@@ -33,11 +33,25 @@
         VALUES (null,${orderId},${pin},${proxyPin},${coordinate},${address},${isDelivery},${deliveryPrice},${orderStatus},${payablePrice},${realIncomePrice},${saveMonyPrice},
         NOW(),NOW(),${creator},${modifier},${status},${isTotalPay},${totalPayPrice},${totalPayOrderId})
     </insert>
-    <select id="selectOrderListByOrderStatus" parameterType="com.xyhmo.domain.Order"  statementType="STATEMENT" resultMap="BaseResultMap">
+    <select id="selectOrderProxyListByOrderStatus" parameterType="com.xyhmo.domain.Order"  statementType="STATEMENT" resultMap="BaseResultMap">
         SELECT <include refid="allColumns"/>
         FROM ${tableName}
         WHERE STATUS = 1 AND proxy_pin=${proxyPin}
-        <if test="orderStatus!=null">
+        <if test="orderStatus!=null and 2>=orderStatus">
+            AND 2>=order_status
+        </if>
+        <if test="orderStatus!=null and orderStatus>=2">
+            AND order_status=${orderStatus}
+        </if>
+    </select>
+    <select id="selectOrderWorkerListByOrderStatus" parameterType="com.xyhmo.domain.Order"  statementType="STATEMENT" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ${tableName}
+        WHERE STATUS = 1 AND pin=${pin}
+        <if test="orderStatus!=null and 2>=orderStatus">
+            AND 2>=order_status
+        </if>
+        <if test="orderStatus!=null and orderStatus>=2">
             AND order_status=${orderStatus}
         </if>
     </select>

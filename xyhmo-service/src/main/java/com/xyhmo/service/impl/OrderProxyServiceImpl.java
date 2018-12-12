@@ -1,7 +1,10 @@
 package com.xyhmo.service.impl;
 
+import com.xyhmo.commom.enums.OrderStatusEnum;
 import com.xyhmo.commom.enums.OrderTableEnum;
+import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.SystemEnum;
+import com.xyhmo.commom.exception.ParamException;
 import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.dao.OrderDao;
@@ -9,6 +12,7 @@ import com.xyhmo.dao.OrderWareDao;
 import com.xyhmo.domain.Order;
 import com.xyhmo.domain.OrderWare;
 import com.xyhmo.service.OrderProxyService;
+import com.xyhmo.service.OrderService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.vo.UserVo;
 import com.xyhmo.vo.order.OrderVo;
@@ -37,10 +41,12 @@ public class OrderProxyServiceImpl implements OrderProxyService{
     private OrderDao orderDao;
     @Autowired
     private OrderWareDao orderWareDao;
+    @Autowired
+    private OrderService orderService;
 
     @Override
     @Transient
-    public List<OrderVo> getOrderProxyList(String token,Integer orderStatus)throws Exception {
+    public List<OrderVo> getOrderProxyList(String token,Integer orderStatus)throws ParamException,Exception {
         if(StringUtils.isEmpty(token) || (orderStatus!=null && orderStatus>20)){
             logger.error("OrderProxyServiceImpl:getOrderProxyList 入参出错");
             return new ArrayList<>();
@@ -50,14 +56,18 @@ public class OrderProxyServiceImpl implements OrderProxyService{
         if(userVo==null){
             throw new Exception(SystemEnum.SYSTEM_ERROR.getDesc());
         }
-        List<OrderVo> orderVoList = redisService.get(Contants.REDIS_ORDER_PROXY_PIN+userVo.getPin());
-        if(!CollectionUtils.isEmpty(orderVoList)){
-            return getOrderProxyListForStatus(orderVoList,orderStatus);
+        String redisBefore = getBeforeRedisKey(orderStatus);
+        if(StringUtils.isEmpty(redisBefore)){
+            throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
         }
+        List<OrderVo> orderVoList = redisService.get(redisBefore+userVo.getPin());
+        if(!CollectionUtils.isEmpty(orderVoList)){
+            return orderVoList;
+        }
+        orderVoList=new ArrayList<>();
         if(OrderTableEnum.ORDER_TABLE_COUNT.getCode()!=OrderTableEnum.ORDER_WARE_TABLE_COUNT.getCode()){
             throw new Exception(SystemEnum.SYSTEM_ERROR.getDesc());
         }
-        List<OrderVo> orderVos = new ArrayList<>();
         for(int i= 0;i<OrderTableEnum.ORDER_TABLE_COUNT.getCode();i++){
             OrderVo vo=new OrderVo();
             String orderTableName = "order_bj_"+i;
@@ -67,7 +77,7 @@ public class OrderProxyServiceImpl implements OrderProxyService{
             order.setStatus(orderStatus);
             String proxyPin="'"+userVo.getPin()+"'";
             order.setProxyPin(proxyPin);
-            List<Order> orderList = orderDao.selectOrderListByOrderStatus(order);
+            List<Order> orderList = orderDao.selectOrderProxyListByOrderStatus(order);
             if(CollectionUtils.isEmpty(orderList)){
                 continue;
             }
@@ -76,54 +86,21 @@ public class OrderProxyServiceImpl implements OrderProxyService{
                 orderIdList.add("'"+ord.getOrderId()+"'");
             }
             List<OrderWare> orderWareList=orderWareDao.selectOrderWareListByOrderIdList(orderWareTableName,orderIdList);
-            translationToOrderVos(orderVos,orderList,orderWareList);
+            orderService.translationToOrderVos(orderVoList,orderList,orderWareList);
         }
-        return orderVos;
+        redisService.set(redisBefore+userVo.getPin(),orderVoList);
+        return orderVoList;
     }
 
-    private List<OrderVo> getOrderProxyListForStatus(List<OrderVo> orderVoList, Integer orderStatus) {
-        if(null==orderStatus){
-            return orderVoList;
+    private String getBeforeRedisKey(Integer orderStatus){
+        if(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode()==orderStatus || OrderStatusEnum.ORDER_DLS_SURE.getCode()==orderStatus){
+            return Contants.REDIS_ORDERPROXY_WEIJIEDAN_PIN;
+        }else if(OrderStatusEnum.ORDER_YWY_SURE_NOTPAY.getCode()==orderStatus){
+            return Contants.REDIS_ORDERPROXY_WEIZHIFU_PIN;
+        }else if(OrderStatusEnum.ORDER_YWY_SURE_PAY.getCode()==orderStatus){
+            return Contants.REDIS_ORDERPROXY_YIZHIFU_PIN;
         }
-        List<OrderVo> voList = new ArrayList<>();
-        for(OrderVo orderVo:orderVoList){
-            if(orderStatus==orderVo.getStatus()){
-                voList.add(orderVo);
-            }
-        }
-        return voList;
-    }
-
-    private void translationToOrderVos(List<OrderVo> orderVos, List<Order> orderList, List<OrderWare> orderWareList) {
-        if(CollectionUtils.isEmpty(orderList)){
-            return;
-        }
-        for(Order order:orderList) {
-            OrderVo vo = new OrderVo();
-            vo.setId(order.getId());
-            vo.setOrderId(order.getOrderId());
-            vo.setPin(order.getPin());
-            vo.setProxyPin(order.getProxyPin());
-            vo.setCoordinate(order.getCoordinate());
-            vo.setAddress(order.getAddress());
-            vo.setIsDelivery(order.getIsDelivery());
-            vo.setDeliveryPrice(order.getDeliveryPrice());
-            vo.setOrderStatus(order.getOrderStatus());
-            vo.setPayablePrice(order.getPayablePrice());
-            vo.setRealIncomePrice(order.getRealIncomePrice());
-            vo.setSaveMonyPrice(order.getSaveMonyPrice());
-            vo.setIsTotalPay(order.getIsTotalPay());
-            vo.setTotalPayPrice(order.getTotalPayPrice());
-            vo.setTotalPayOrderId(order.getTotalPayOrderId());
-            List<OrderWare> orderWares = new ArrayList<>();
-            for (OrderWare orderWare : orderWareList) {
-                if (order.getOrderId().equals(orderWare.getOrderId())) {
-                    orderWares.add(orderWare);
-                }
-            }
-            vo.setOrderWareList(orderWares);
-            orderVos.add(vo);
-        }
+        return "";
     }
 
 }

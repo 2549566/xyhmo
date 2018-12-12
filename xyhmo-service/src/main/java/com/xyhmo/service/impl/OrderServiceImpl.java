@@ -2,6 +2,8 @@ package com.xyhmo.service.impl;
 
 import com.xyhmo.commom.enums.*;
 import com.xyhmo.commom.exception.ParamException;
+import com.xyhmo.commom.service.Contants;
+import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.HashCodeUtil;
 import com.xyhmo.dao.OrderDao;
 import com.xyhmo.dao.OrderWareDao;
@@ -43,6 +45,8 @@ public class OrderServiceImpl implements OrderService {
     private WareInfoService wareInfoService;
     @Autowired
     private OrderWareDao orderWareDao;
+    @Autowired
+    private RedisService redisService;
 
     @Override
     @Transient
@@ -59,6 +63,7 @@ public class OrderServiceImpl implements OrderService {
         if(null==orderVo){
             throw new Exception(SystemEnum.SYSTEM_ERROR.getDesc());
         }
+        saveOrderToRedis(orderVo,vo);
         Order order = translationToOrder(orderVo);
         Long id = orderDao.insert(order);
         List<OrderWare> orderWareList = orderVo.getOrderWareList();
@@ -66,6 +71,103 @@ public class OrderServiceImpl implements OrderService {
             orderWareDao.insert(orderWare);
         }
         return id;
+    }
+
+    @Override
+    public List<OrderVo> getWorkerOrderList(String token, Integer orderStatus) {
+        UserVo vo = userInfoService.getUserVoByToken(token);
+        if(null==vo || StringUtils.isEmpty(vo.getPin())){
+            return new ArrayList<>();
+        }
+        String redisBefore = getBeforeRedisKey(orderStatus);
+        if(StringUtils.isEmpty(redisBefore)){
+            throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
+        }
+        List<OrderVo> orderVoList = redisService.get(redisBefore+vo.getPin());
+        if(!CollectionUtils.isEmpty(orderVoList)){
+            return orderVoList;
+        }
+        logger.error("OrderServiceImpl：getWorkerOrderList 缓存中获取状态为"+orderStatus+"的订单列表为空");
+        orderVoList=new ArrayList<>();
+        String tableName = genOrderTabeleName(vo.getPin());
+        String orderWareTableName=genOrderWareTabeleName(vo.getPin());
+        Order order = new Order();
+        order.setTableName(tableName);
+        order.setOrderStatus(orderStatus);
+        order.setPin("'"+vo.getPin()+"'");
+        List<Order> orderList = orderDao.selectOrderWorkerListByOrderStatus(order);
+        if(CollectionUtils.isEmpty(orderList)){
+            return new ArrayList<>();
+        }
+        List<String> orderIdList = new ArrayList<>();
+        for(Order ord:orderList){
+            orderIdList.add("'"+ord.getOrderId()+"'");
+        }
+        List<OrderWare> orderWareList=orderWareDao.selectOrderWareListByOrderIdList(orderWareTableName,orderIdList);
+        translationToOrderVos(orderVoList,orderList,orderWareList);
+        redisService.set(redisBefore+vo.getPin(),orderVoList,Contants.ORDERWORKER_CACHE_OVER_TIME);
+        return orderVoList;
+    }
+
+    public void translationToOrderVos(List<OrderVo> orderVos, List<Order> orderList, List<OrderWare> orderWareList) {
+        if(CollectionUtils.isEmpty(orderList)){
+            return;
+        }
+        for(Order order:orderList) {
+            OrderVo vo = new OrderVo();
+            vo.setId(order.getId());
+            vo.setOrderId(order.getOrderId());
+            vo.setPin(order.getPin());
+            vo.setProxyPin(order.getProxyPin());
+            vo.setCoordinate(order.getCoordinate());
+            vo.setAddress(order.getAddress());
+            vo.setIsDelivery(order.getIsDelivery());
+            vo.setDeliveryPrice(order.getDeliveryPrice());
+            vo.setOrderStatus(order.getOrderStatus());
+            vo.setPayablePrice(order.getPayablePrice());
+            vo.setRealIncomePrice(order.getRealIncomePrice());
+            vo.setSaveMonyPrice(order.getSaveMonyPrice());
+            vo.setIsTotalPay(order.getIsTotalPay());
+            vo.setTotalPayPrice(order.getTotalPayPrice());
+            vo.setTotalPayOrderId(order.getTotalPayOrderId());
+            List<OrderWare> orderWares = new ArrayList<>();
+            for (OrderWare orderWare : orderWareList) {
+                if (order.getOrderId().equals(orderWare.getOrderId())) {
+                    orderWares.add(orderWare);
+                }
+            }
+            vo.setOrderWareList(orderWares);
+            orderVos.add(vo);
+        }
+    }
+
+    private String getBeforeRedisKey(Integer orderStatus){
+        if(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode()==orderStatus || OrderStatusEnum.ORDER_DLS_SURE.getCode()==orderStatus){
+            return Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN;
+        }else if(OrderStatusEnum.ORDER_YWY_SURE_NOTPAY.getCode()==orderStatus){
+            return Contants.REDIS_ORDERWORKER_WEIZHIFU_PIN;
+        }else if(OrderStatusEnum.ORDER_YWY_SURE_PAY.getCode()==orderStatus){
+            return Contants.REDIS_ORDERWORKER_YIZHIFU_PIN;
+        }
+        return "";
+    }
+
+    private void saveOrderToRedis(OrderVo orderVo,UserVo vo){
+        //添加进业务员的订单列表缓存中
+        List<OrderVo> orderWorkerList = redisService.get(Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN+vo.getPin());
+        if(CollectionUtils.isEmpty(orderWorkerList)){
+            orderWorkerList=new ArrayList<>();
+        }
+        orderWorkerList.add(orderVo);
+        //添加进业务员的订单列表缓存中，时间只有3天。
+        redisService.set(Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN+vo.getPin(),orderWorkerList,Contants.ORDERWORKER_CACHE_OVER_TIME);
+        //添加进代理商的订单列表缓存中,因为是下单，所以只添加进未结单的代理商订单列表中
+        List<OrderVo> orderVoList = redisService.get(Contants.REDIS_ORDERPROXY_WEIJIEDAN_PIN+vo.getBindVenderProxy());
+        if(CollectionUtils.isEmpty(orderVoList)){
+            orderVoList = new ArrayList<>();
+        }
+        orderVoList.add(orderVo);
+        redisService.set(Contants.REDIS_ORDERPROXY_WEIJIEDAN_PIN+vo.getBindVenderProxy(),orderVoList);
     }
 
     private Order translationToOrder(OrderVo vo){

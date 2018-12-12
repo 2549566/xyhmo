@@ -18,5 +18,11 @@ public interface OrderDao {
      * （代理商）根据订单状态获取订单列表
      *
      * */
-    List<Order> selectOrderListByOrderStatus(Order order);
+    List<Order> selectOrderProxyListByOrderStatus(Order order);
+
+    /**
+     * (工人)根据订单状态获取订单列表
+     *
+     * */
+    List<Order> selectOrderWorkerListByOrderStatus(Order order);
 }
