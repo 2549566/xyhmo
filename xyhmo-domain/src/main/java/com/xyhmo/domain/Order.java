@@ -89,7 +89,12 @@ public class Order extends BaseModel implements Serializable {
      * */
     private String totalPayOrderId;
 
-
+    /**
+     * 是否已支付
+     * 1：已支付
+     * 0：未支付
+     * */
+    private Integer isPay=0;
 
     public Long getId() {
         return id;
@@ -219,4 +224,11 @@ public class Order extends BaseModel implements Serializable {
         this.totalPayOrderId = totalPayOrderId;
     }
 
+    public Integer getIsPay() {
+        return isPay;
+    }
+
+    public void setIsPay(Integer isPay) {
+        this.isPay = isPay;
+    }
 }

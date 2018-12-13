@@ -1,9 +1,6 @@
 package com.xyhmo.service.impl;
 
-import com.xyhmo.commom.enums.OrderStatusEnum;
-import com.xyhmo.commom.enums.OrderTableEnum;
-import com.xyhmo.commom.enums.ParamEnum;
-import com.xyhmo.commom.enums.SystemEnum;
+import com.xyhmo.commom.enums.*;
 import com.xyhmo.commom.exception.ParamException;
 import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
@@ -45,7 +42,6 @@ public class OrderProxyServiceImpl implements OrderProxyService{
     private OrderService orderService;
 
     @Override
-    @Transient
     public List<OrderVo> getOrderProxyList(String token,Integer orderStatus)throws ParamException,Exception {
         if(StringUtils.isEmpty(token) || (orderStatus!=null && orderStatus>20)){
             logger.error("OrderProxyServiceImpl:getOrderProxyList 入参出错");
@@ -92,6 +88,72 @@ public class OrderProxyServiceImpl implements OrderProxyService{
         return orderVoList;
     }
 
+    @Override
+    @Transient
+    public Boolean sureWareAlreadyToWorker(String token, String orderId, Integer isPay, Double warePrice,Double deliveryPrice)throws Exception {
+        List<OrderVo> orderVoList= getOrderProxyList(token,OrderStatusEnum.ORDER_YWY_SUBMIT.getCode());
+        if(CollectionUtils.isEmpty(orderVoList)){
+            return false;
+        }
+        OrderVo orderVo=null;
+        for(OrderVo vo:orderVoList){
+            if(orderId.equals(vo.getOrderId())){
+                orderVo=vo;
+                orderVoList.remove(vo);
+                break;
+            }
+        }
+        if(orderVo.getOrderStatus()!=OrderStatusEnum.ORDER_YWY_SUBMIT.getCode()){
+            throw new Exception("订单状态不是1，代理商无法操作");
+        }
+        if(orderVo.getIsDelivery()== DeliveryEnum.IS_DELIVERY.getCode() && deliveryPrice==null){
+            throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),"此订单需配送，需填写配送费用，如免费，配送费用可填0");
+        }
+        orderVo.setIsPay(isPay);
+        orderVo.setOrderStatus(OrderStatusEnum.ORDER_DLS_SURE.getCode());
+        if(isPay==1){
+            orderVo.setRealIncomePrice(warePrice);
+        }
+        if(orderVo.getIsDelivery()==DeliveryEnum.IS_DELIVERY.getCode()){
+            orderVo.setDeliveryPrice(deliveryPrice);
+        }
+        //修改Redis中的数据
+        updateRedisOrderInfo(orderVo,orderVoList);
+        Order order = new Order();
+        order.setId(orderVo.getId());
+        order.setOrderId("'"+orderVo.getOrderId()+"'");
+        order.setIsPay(orderVo.getIsPay());
+        order.setOrderStatus(orderVo.getOrderStatus());
+        order.setRealIncomePrice(orderVo.getRealIncomePrice());
+        order.setDeliveryPrice(orderVo.getDeliveryPrice());
+        order.setModifier("'"+orderVo.getProxyPin()+"'");
+        orderDao.updateOrderStatus(order);
+        return true;
+    }
+
+    private void updateRedisOrderInfo(OrderVo orderVo,List<OrderVo> orderVoList){
+        if(null==orderVo || CollectionUtils.isEmpty(orderVoList)){
+            return;
+        }
+        //修改代理商的Redis数据
+        String redisBefore = getBeforeRedisKey(orderVo.getOrderStatus());
+        redisService.set(redisBefore+orderVo.getProxyPin(),orderVoList);
+        //修改业务员的Redis数据
+        List<OrderVo> workerOrderList = redisService.get(redisBefore+orderVo.getPin());
+        if(CollectionUtils.isEmpty(workerOrderList)){
+            return;
+        }
+        for(OrderVo vo:workerOrderList){
+            if(vo.getOrderId().equals(orderVo.getOrderId())){
+                orderVoList.remove(vo);
+                break;
+            }
+        }
+        workerOrderList.add(orderVo);
+        String redisWorkerBefore = getBeforeWorkerRedisKey(orderVo.getOrderStatus());
+        redisService.set(redisWorkerBefore+orderVo.getPin(),workerOrderList,Contants.ORDERWORKER_CACHE_OVER_TIME);
+    }
+
     private String getBeforeRedisKey(Integer orderStatus){
         if(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode()==orderStatus || OrderStatusEnum.ORDER_DLS_SURE.getCode()==orderStatus){
             return Contants.REDIS_ORDERPROXY_WEIJIEDAN_PIN;
@@ -103,4 +165,14 @@ public class OrderProxyServiceImpl implements OrderProxyService{
         return "";
     }
 
+    private String getBeforeWorkerRedisKey(Integer orderStatus){
+        if(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode()==orderStatus || OrderStatusEnum.ORDER_DLS_SURE.getCode()==orderStatus){
+            return Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN;
+        }else if(OrderStatusEnum.ORDER_YWY_SURE_NOTPAY.getCode()==orderStatus){
+            return Contants.REDIS_ORDERWORKER_WEIZHIFU_PIN;
+        }else if(OrderStatusEnum.ORDER_YWY_SURE_PAY.getCode()==orderStatus){
+            return Contants.REDIS_ORDERWORKER_YIZHIFU_PIN;
+        }
+        return "";
+    }
 }

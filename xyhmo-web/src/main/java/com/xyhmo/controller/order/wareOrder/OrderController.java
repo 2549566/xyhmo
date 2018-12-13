@@ -82,7 +82,7 @@ public class OrderController {
      * 获取业务员订单
      * token：代理商token
      * orderStatus：订单状态 如果为null 则获取所有的订单表
-     *
+     * list中的数据倒叙排列
      * */
     @RequestMapping(value = "/getWorkerOrderList", method = RequestMethod.GET)
     @ResponseBody

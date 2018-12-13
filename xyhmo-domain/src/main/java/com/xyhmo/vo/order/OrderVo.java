@@ -84,7 +84,12 @@ public class OrderVo extends BaseModel implements Serializable{
      *
      * */
     private String totalPayOrderId;
-
+    /**
+     * 是否已支付
+     * 1：已支付
+     * 0：未支付
+     * */
+    private Integer isPay=0;
     /**
      * 商品list
      *
@@ -225,5 +230,13 @@ public class OrderVo extends BaseModel implements Serializable{
 
     public void setOrderWareList(List<OrderWare> orderWareList) {
         this.orderWareList = orderWareList;
+    }
+
+    public Integer getIsPay() {
+        return isPay;
+    }
+
+    public void setIsPay(Integer isPay) {
+        this.isPay = isPay;
     }
 }

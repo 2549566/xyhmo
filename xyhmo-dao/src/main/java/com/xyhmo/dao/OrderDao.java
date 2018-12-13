@@ -2,6 +2,7 @@ package com.xyhmo.dao;
 
 import com.xyhmo.commom.dao.MyBatisRepository;
 import com.xyhmo.domain.Order;
+import com.xyhmo.vo.order.OrderVo;
 
 import java.util.List;
 
@@ -25,4 +26,10 @@ public interface OrderDao {
      *
      * */
     List<Order> selectOrderWorkerListByOrderStatus(Order order);
+
+    /**
+     * 修改订单状态
+     *
+     * */
+    void updateOrderStatus(Order order);
 }
