@@ -11,7 +11,7 @@ import java.util.List;
  * 订单业务层
  *
  * */
-public interface OrderService {
+public interface OrderWorkerService {
     /**
      * 插入一条订单
      *

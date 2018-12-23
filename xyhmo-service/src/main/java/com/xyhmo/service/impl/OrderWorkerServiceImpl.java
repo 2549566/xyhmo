@@ -10,7 +10,7 @@ import com.xyhmo.dao.OrderWareDao;
 import com.xyhmo.domain.Order;
 import com.xyhmo.domain.OrderWare;
 import com.xyhmo.domain.WareInfo;
-import com.xyhmo.service.OrderService;
+import com.xyhmo.service.OrderWorkerService;
 import com.xyhmo.service.UserInfoService;
 import com.xyhmo.service.WareInfoService;
 import com.xyhmo.util.GenIdService;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-public class OrderServiceImpl implements OrderService {
+public class OrderWorkerServiceImpl implements OrderWorkerService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

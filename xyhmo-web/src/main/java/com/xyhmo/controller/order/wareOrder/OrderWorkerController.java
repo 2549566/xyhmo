@@ -7,9 +7,7 @@ import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
-import com.xyhmo.domain.Bulletin;
-import com.xyhmo.service.BulletinService;
-import com.xyhmo.service.OrderService;
+import com.xyhmo.service.OrderWorkerService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.vo.order.OrderVo;
 import com.xyhmo.vo.param.OrderParam;
@@ -26,15 +24,15 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/order")
-public class OrderController {
+@RequestMapping("/orderWorker")
+public class OrderWorkerController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private OrderService orderService;
+    private OrderWorkerService orderWorkerService;
 
     @RequestMapping(value = "/saveOrder", method = RequestMethod.GET)
     //TODO 换成get
@@ -63,7 +61,7 @@ public class OrderController {
             if(orderParam.getIsDelivery()== DeliveryEnum.IS_DELIVERY.getCode() && StringUtils.isBlank(orderParam.getAddress())){
                 throw new ParamException(ParamEnum.PARAM_DELIVERY_ERROR.getCode(),ParamEnum.PARAM_DELIVERY_ERROR.getDesc());
             }
-            Long orderId= orderService.saveOrder(orderParam);
+            Long orderId= orderWorkerService.saveOrder(orderParam);
             if(orderId==null || orderId<1){
                 return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
             }
@@ -82,6 +80,8 @@ public class OrderController {
      * 获取业务员订单
      * token：代理商token
      * orderStatus：订单状态 如果为null 则获取所有的订单表
+     * param 未结单1（对应数据库状态1:已报单 2：代理商已发货，待业务员确认，如不确认，过7天自动确认），
+     * 已结单：2（对应数据库状态3,4），已结单未支付：3（对应数据库状态3），已结单已支付：4（对应数据库状态4）
      * list中的数据倒叙排列
      * */
     @RequestMapping(value = "/getWorkerOrderList", method = RequestMethod.GET)
@@ -93,7 +93,7 @@ public class OrderController {
             if(orderStatus==null || orderStatus>20){
                 throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
             }
-            List<OrderVo> orderVoList =orderService.getWorkerOrderList(token,orderStatus);
+            List<OrderVo> orderVoList =orderWorkerService.getWorkerOrderList(token,orderStatus);
             return result.success(orderVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
             logger.error("OrderProxyController:代理商订单表入参错误",p);
@@ -104,5 +104,28 @@ public class OrderController {
         }
     }
 
-
+    /**
+     * 业务员确认订单（已收货，并核定金额订单）
+     * token：代理商token
+     * orderStatus：订单状态 如果为null 则获取所有的订单表
+     * */
+//    @RequestMapping(value = "/getWorkerOrderList", method = RequestMethod.GET)
+//    @ResponseBody
+//    private Result getWorkerOrderList(String token,Integer orderStatus){
+//        Result result = new Result();
+//        try{
+//            tokenService.checkTokenExist(token);
+//            if(orderStatus==null || orderStatus>20){
+//                throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
+//            }
+//            List<OrderVo> orderVoList =orderWorkerService.getWorkerOrderList(token,orderStatus);
+//            return result.success(orderVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
+//        }catch (ParamException p){
+//            logger.error("OrderProxyController:代理商订单表入参错误",p);
+//            return result.fail(p.getCode(),p.getMessage());
+//        }catch (Exception e){
+//            logger.error("OrderProxyController：代理商获取订单列表失败",e);
+//            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+//        }
+//    }
 }
