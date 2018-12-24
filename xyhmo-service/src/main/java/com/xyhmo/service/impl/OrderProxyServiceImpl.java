@@ -5,6 +5,7 @@ import com.xyhmo.commom.exception.ParamException;
 import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.HashCodeUtil;
+import com.xyhmo.commom.utils.RedisUtil;
 import com.xyhmo.dao.OrderDao;
 import com.xyhmo.dao.OrderWareDao;
 import com.xyhmo.domain.Order;
@@ -53,7 +54,7 @@ public class OrderProxyServiceImpl implements OrderProxyService{
         if(userVo==null){
             throw new Exception(SystemEnum.SYSTEM_ERROR.getDesc());
         }
-        String redisBefore = getBeforeRedisKey(orderStatus);
+        String redisBefore = RedisUtil.getBeforeProxyRedisKey(orderStatus);
         if(StringUtils.isEmpty(redisBefore)){
             throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
         }
@@ -144,10 +145,10 @@ public class OrderProxyServiceImpl implements OrderProxyService{
             return;
         }
         //修改代理商的Redis数据
-        String redisBefore = getBeforeRedisKey(orderVo.getOrderStatus());
+        String redisBefore = RedisUtil.getBeforeProxyRedisKey(orderVo.getOrderStatus());
         redisService.set(redisBefore+orderVo.getProxyPin(),orderVoList);
         //修改业务员的Redis数据
-        String redisWorkerBefore = getBeforeWorkerRedisKey(orderVo.getOrderStatus());
+        String redisWorkerBefore =RedisUtil.getBeforeWorkerRedisKey(orderVo.getOrderStatus());
         List<OrderVo> workerOrderList = redisService.get(redisWorkerBefore+orderVo.getPin());
         if(CollectionUtils.isEmpty(workerOrderList)){
             return;
@@ -161,29 +162,6 @@ public class OrderProxyServiceImpl implements OrderProxyService{
         workerOrderList.add(orderVo);
         redisService.set(redisWorkerBefore+orderVo.getPin(),workerOrderList,Contants.ORDERWORKER_CACHE_OVER_TIME);
     }
-
-    private String getBeforeRedisKey(Integer orderStatus){
-        if(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode()==orderStatus || OrderStatusEnum.ORDER_DLS_SURE.getCode()==orderStatus){
-            return Contants.REDIS_ORDERPROXY_WEIJIEDAN_PIN;
-        }else if(OrderStatusEnum.ORDER_YWY_SURE_NOTPAY.getCode()==orderStatus){
-            return Contants.REDIS_ORDERPROXY_WEIZHIFU_PIN;
-        }else if(OrderStatusEnum.ORDER_YWY_SURE_PAY.getCode()==orderStatus){
-            return Contants.REDIS_ORDERPROXY_YIZHIFU_PIN;
-        }
-        return "";
-    }
-
-    private String getBeforeWorkerRedisKey(Integer orderStatus){
-        if(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode()==orderStatus || OrderStatusEnum.ORDER_DLS_SURE.getCode()==orderStatus){
-            return Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN;
-        }else if(OrderStatusEnum.ORDER_YWY_SURE_NOTPAY.getCode()==orderStatus){
-            return Contants.REDIS_ORDERWORKER_WEIZHIFU_PIN;
-        }else if(OrderStatusEnum.ORDER_YWY_SURE_PAY.getCode()==orderStatus){
-            return Contants.REDIS_ORDERWORKER_YIZHIFU_PIN;
-        }
-        return "";
-    }
-
     private String genOrderTabeleName(String pin){
         if(StringUtils.isBlank(pin)){
             return "";

@@ -2,9 +2,11 @@ package com.xyhmo.service.impl;
 
 import com.xyhmo.commom.enums.*;
 import com.xyhmo.commom.exception.ParamException;
+import com.xyhmo.commom.exception.SystemException;
 import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.HashCodeUtil;
+import com.xyhmo.commom.utils.RedisUtil;
 import com.xyhmo.dao.OrderDao;
 import com.xyhmo.dao.OrderWareDao;
 import com.xyhmo.domain.Order;
@@ -79,7 +81,7 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         if(null==vo || StringUtils.isEmpty(vo.getPin())){
             return new ArrayList<>();
         }
-        String redisBefore = getBeforeRedisKey(orderStatus);
+        String redisBefore = RedisUtil.getBeforeWorkerRedisKey(orderStatus);
         if(StringUtils.isEmpty(redisBefore)){
             throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
         }
@@ -141,16 +143,138 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         }
     }
 
-    private String getBeforeRedisKey(Integer orderStatus){
-        if(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode()==orderStatus || OrderStatusEnum.ORDER_DLS_SURE.getCode()==orderStatus){
-            return Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN;
-        }else if(OrderStatusEnum.ORDER_YWY_SURE_NOTPAY.getCode()==orderStatus){
-            return Contants.REDIS_ORDERWORKER_WEIZHIFU_PIN;
-        }else if(OrderStatusEnum.ORDER_YWY_SURE_PAY.getCode()==orderStatus){
-            return Contants.REDIS_ORDERWORKER_YIZHIFU_PIN;
+    @Override
+    public void sureOrderJiedan(String token, String orderId) {
+        UserVo userVo = userInfoService.getUserVoByToken(token);
+        if(null==userVo || StringUtils.isEmpty(userVo.getPin())){
+            throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),ParamEnum.PARAM_ERROR.getDesc());
         }
-        return "";
+        List<OrderVo> orderVoList=getWorkerOrderList(token,OrderStatusEnum.ORDER_DLS_SURE.getCode());
+        if(CollectionUtils.isEmpty(orderVoList)){
+            logger.error("OrderWorkerServiceImpl:业务员订单列表的缓存出现问题。请排查");
+        }
+        OrderVo orderVo=null;
+        for(OrderVo order:orderVoList){
+            if(order.getOrderId().equals(orderId) && order.getPin().equals(userVo.getPin())){
+                orderVo=order;
+                break;
+            }
+        }
+        if(orderVo==null){
+            throw new SystemException(SystemEnum.SYSTEM_ERROR.getCode(),SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+        String tableName = genOrderTabeleName(userVo.getPin());
+        Order order=new Order();
+        order.setTableName(tableName);
+        order.setOrderId("'"+orderId+"'");
+        order.setOrderStatus(OrderStatusEnum.ORDER_YWY_SURE_NOTPAY.getCode());
+        if(orderVo.getIsPay().equals(1)){
+            order.setOrderStatus(OrderStatusEnum.ORDER_YWY_SURE_PAY.getCode());
+        }
+        order.setModifier("'"+userVo.getPin()+"'");
+        orderDao.updateOrderStatus(order);
+        orderVo.setOrderStatus(order.getOrderStatus());
+        orderVo.setModifier(userVo.getPin());
+        updateRedisOrderInfo(orderVo,orderVoList);
     }
+
+    @Override
+    public void rejectOrder(String token, String orderId, String rejectCase) {
+        UserVo userVo = userInfoService.getUserVoByToken(token);
+        if(null==userVo || StringUtils.isEmpty(userVo.getPin())){
+            throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),ParamEnum.PARAM_ERROR.getDesc());
+        }
+        List<OrderVo> orderVoList=getWorkerOrderList(token,OrderStatusEnum.ORDER_DLS_SURE.getCode());
+        if(CollectionUtils.isEmpty(orderVoList)){
+            logger.error("OrderWorkerServiceImpl:业务员订单列表的缓存出现问题。请排查");
+        }
+        OrderVo orderVo=null;
+        for(OrderVo order:orderVoList){
+            if(order.getOrderId().equals(orderId) && order.getPin().equals(userVo.getPin())){
+                orderVo=order;
+                break;
+            }
+        }
+        if(orderVo==null){
+            throw new SystemException(SystemEnum.SYSTEM_ERROR.getCode(),SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+        String tableName = genOrderTabeleName(userVo.getPin());
+        Order order=new Order();
+        order.setTableName(tableName);
+        order.setModifier("'"+userVo.getPin()+"'");
+        order.setOrderId("'"+orderId+"'");
+        order.setOrderStatus(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode());
+        order.setRejectCase("'"+rejectCase+"'");
+        orderDao.updateOrderStatus(order);
+        orderVo.setOrderStatus(order.getOrderStatus());
+        orderVo.setModifier(userVo.getPin());
+        updateRedisOrderInfo(orderVo,orderVoList);
+    }
+
+    /**
+     * 业务员的缓存只保留3天
+     * 代理商的缓存一直存在
+     *
+     * */
+    private void updateRedisOrderInfo(OrderVo orderVo,List<OrderVo> orderVoList){
+        if(orderVo==null || CollectionUtils.isEmpty(orderVoList) || null==orderVo.getOrderStatus()){
+            return;
+        }
+        //修改业务员的redis数据
+        String redisWorkerBefore = RedisUtil.getBeforeWorkerRedisKey(orderVo.getOrderStatus());
+        String redisProxyBefore = RedisUtil.getBeforeProxyRedisKey(orderVo.getOrderStatus());
+        List<OrderVo> weijiedanProxyVoList = redisService.get(Contants.REDIS_ORDERPROXY_WEIJIEDAN_PIN+orderVo.getProxyPin());
+        if(orderVo.getOrderStatus().equals(OrderStatusEnum.ORDER_YWY_SURE_NOTPAY.getCode()) || orderVo.getOrderStatus().equals(OrderStatusEnum.ORDER_YWY_SURE_PAY.getCode())){
+            //删除未结单的
+            for(OrderVo order:orderVoList){
+                if(order.getOrderId().equals(orderVo.getOrderId())){
+                    orderVoList.remove(order);
+                    break;
+                }
+            }
+            redisService.set(Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN+orderVo.getPin(),orderVoList,Contants.ORDERWORKER_CACHE_OVER_TIME);
+            //获取已结单的订单列表
+            List<OrderVo> yijiedanVoList = redisService.get(redisWorkerBefore+orderVo.getPin());
+            yijiedanVoList.add(orderVo);
+            //设置业务员的已结单列表
+            redisService.set(redisWorkerBefore+orderVo.getPin(),yijiedanVoList,Contants.ORDERWORKER_CACHE_OVER_TIME);
+            //设置代理商的未结单列表
+            for(OrderVo vo:weijiedanProxyVoList){
+                if(vo.getOrderId().equals(orderVo.getOrderId())){
+                    weijiedanProxyVoList.remove(vo);
+                    break;
+                }
+            }
+            redisService.set(redisProxyBefore+orderVo.getProxyPin(),weijiedanProxyVoList);
+            //设置代理商的已结单列表
+            List<OrderVo> yijiedanProxyVoList=redisService.get(redisProxyBefore+orderVo.getProxyPin());
+            if(CollectionUtils.isEmpty(yijiedanProxyVoList)){
+                yijiedanProxyVoList=new ArrayList<>();
+            }
+            yijiedanProxyVoList.add(orderVo);
+            redisService.set(redisProxyBefore+orderVo.getProxyPin(),yijiedanProxyVoList);
+        }else if(orderVo.getOrderStatus().equals(OrderStatusEnum.ORDER_YWY_SUBMIT.getCode())){
+            //业务员驳回，重新设置未结单列表
+            for(OrderVo order:orderVoList){
+                if(order.getOrderId().equals(orderVo.getOrderId())){
+                    orderVoList.remove(order);
+                    break;
+                }
+            }
+            orderVoList.add(orderVo);
+            redisService.set(Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN+orderVo.getPin(),orderVoList,Contants.ORDERWORKER_CACHE_OVER_TIME);
+            //业务员驳回，重新设置代理商未结单列表
+            for(OrderVo order:weijiedanProxyVoList){
+                if(order.getOrderId().equals(orderVo.getOrderId())){
+                    weijiedanProxyVoList.remove(order);
+                    break;
+                }
+            }
+            weijiedanProxyVoList.add(orderVo);
+            redisService.set(redisProxyBefore+orderVo.getProxyPin(),weijiedanProxyVoList);
+        }
+    }
+
 
     private void saveOrderToRedis(OrderVo orderVo,UserVo vo){
         //添加进业务员的订单列表缓存中
@@ -191,6 +315,8 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         order.setModifier(vo.getModifier());
         order.setIsTotalPay(vo.getIsTotalPay());
         order.setTotalPayPrice(vo.getTotalPayPrice());
+        order.setRejectCase(vo.getRejectCase());
+        order.setContext(vo.getContext());
         return order;
     }
     private OrderVo translationToOrderVo(OrderParam orderParam, UserVo vo)throws Exception{
@@ -257,6 +383,10 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         order.setCreator(pin);
         order.setModifier(modifier);
         order.setIsTotalPay(0);
+        String rejectCase="''";
+        order.setRejectCase(rejectCase);
+        String context="''";
+        order.setContext(context);
         return order;
     }
 

@@ -31,6 +31,18 @@ public interface OrderWorkerService {
     void translationToOrderVos(List<OrderVo> orderVos, List<Order> orderList, List<OrderWare> orderWareList);
 
     /**
+     * 业务员确认代理商填的订单信息
+     *
+     * */
+    void sureOrderJiedan(String token, String orderId);
+
+    /**
+     * 业务员驳回代理商填写的订单信息
+     *
+     * */
+    void rejectOrder(String token, String orderId, String rejectCase);
+
+    /**
      * 注意，订单状态的修改，要同时更新 工人列表缓存和代理商列表缓存
      *
      * */

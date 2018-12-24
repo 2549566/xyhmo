@@ -23,16 +23,19 @@
       <result column="total_pay_price" property="totalPayPrice" />
       <result column="total_pay_order_id" property="totalPayOrderId" />
       <result column="is_pay" property="isPay" />
+      <result column="reject_case" property="rejectCase" />
+      <result column="context" property="context" />
+
   </resultMap>
 
     <sql id="allColumns">
         id,order_id,pin,proxy_pin,coordinate,address,is_delivery,delivery_price,order_status,payable_price,real_income_price,save_mony_price,created,modified,creator,modifier,status,
-                 is_total_pay,total_pay_price,total_pay_order_id,is_pay
+                 is_total_pay,total_pay_price,total_pay_order_id,is_pay,reject_case,context
     </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.Order" statementType="STATEMENT">
         INSERT INTO ${tableName} (<include refid="allColumns"/>)
         VALUES (null,${orderId},${pin},${proxyPin},${coordinate},${address},${isDelivery},${deliveryPrice},${orderStatus},${payablePrice},${realIncomePrice},${saveMonyPrice},
-        NOW(),NOW(),${creator},${modifier},${status},${isTotalPay},${totalPayPrice},${totalPayOrderId},${isPay})
+        NOW(),NOW(),${creator},${modifier},${status},${isTotalPay},${totalPayPrice},${totalPayOrderId},${isPay},${rejectCase},${context})
     </insert>
     <select id="selectOrderProxyListByOrderStatus" parameterType="com.xyhmo.domain.Order"  statementType="STATEMENT" resultMap="BaseResultMap">
         SELECT <include refid="allColumns"/>
@@ -58,11 +61,24 @@
     </select>
     <update  id="updateOrderStatus" parameterType="com.xyhmo.domain.Order"  statementType="STATEMENT">
         UPDATE ${tableName} SET
-        is_pay=${isPay},
-        order_status=${orderStatus},
-        real_income_price=${realIncomePrice},
-        delivery_price=${deliveryPrice},
-        modifier=${modifier},
+        <if test="isPay!=null" >
+            is_pay=${isPay},
+        </if>
+        <if test="orderStatus!=null" >
+            order_status=${orderStatus},
+        </if>
+        <if test="realIncomePrice!=null" >
+            real_income_price=${realIncomePrice},
+        </if>
+        <if test="deliveryPrice!=null" >
+            delivery_price=${deliveryPrice},
+        </if>
+        <if test="modifier!=null and modifier!='' " >
+            modifier=${modifier},
+        </if>
+        <if test="rejectCase!=null and rejectCase!='' " >
+            reject_case=${rejectCase},
+        </if>
         modified=NOW()
         WHERE order_id=${orderId}
     </update>

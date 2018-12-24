@@ -96,6 +96,17 @@ public class Order extends BaseModel implements Serializable {
      * */
     private Integer isPay=0;
 
+    /**
+     * 业务员驳回原因
+     *
+     * */
+    private String rejectCase;
+    /**
+     * 描述
+     *
+     * */
+    private String context;
+
     public Long getId() {
         return id;
     }
@@ -230,5 +241,21 @@ public class Order extends BaseModel implements Serializable {
 
     public void setIsPay(Integer isPay) {
         this.isPay = isPay;
+    }
+
+    public String getRejectCase() {
+        return rejectCase;
+    }
+
+    public void setRejectCase(String rejectCase) {
+        this.rejectCase = rejectCase;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
     }
 }

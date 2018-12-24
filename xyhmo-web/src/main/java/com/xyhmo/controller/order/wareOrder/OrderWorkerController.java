@@ -7,6 +7,7 @@ import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
+import com.xyhmo.commom.exception.SystemException;
 import com.xyhmo.service.OrderWorkerService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.vo.order.OrderVo;
@@ -67,10 +68,10 @@ public class OrderWorkerController {
             }
             return result.success(orderId,ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
-            logger.error("OrderController:订单入参错误",p);
+            logger.error("OrderWorkerController:订单入参错误",p);
             return result.fail(p.getCode(),p.getMessage());
         }catch (Exception e){
-            logger.error("OrderController：保存订单失败",e);
+            logger.error("OrderWorkerController：保存订单失败",e);
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
         }
 
@@ -78,7 +79,7 @@ public class OrderWorkerController {
 
     /**
      * 获取业务员订单
-     * token：代理商token
+     * token：业务员token
      * orderStatus：订单状态 如果为null 则获取所有的订单表
      * param 未结单1（对应数据库状态1:已报单 2：代理商已发货，待业务员确认，如不确认，过7天自动确认），
      * 已结单：2（对应数据库状态3,4），已结单未支付：3（对应数据库状态3），已结单已支付：4（对应数据库状态4）
@@ -96,36 +97,67 @@ public class OrderWorkerController {
             List<OrderVo> orderVoList =orderWorkerService.getWorkerOrderList(token,orderStatus);
             return result.success(orderVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
-            logger.error("OrderProxyController:代理商订单表入参错误",p);
+            logger.error("OrderWorkerController:订单表入参错误",p);
             return result.fail(p.getCode(),p.getMessage());
         }catch (Exception e){
-            logger.error("OrderProxyController：代理商获取订单列表失败",e);
+            logger.error("OrderWorkerController：业务员获取订单列表失败",e);
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
         }
     }
 
     /**
      * 业务员确认订单（已收货，并核定金额订单）
-     * token：代理商token
-     * orderStatus：订单状态 如果为null 则获取所有的订单表
+     * token：业务员token
+     * orderId：订单ID
      * */
-//    @RequestMapping(value = "/getWorkerOrderList", method = RequestMethod.GET)
-//    @ResponseBody
-//    private Result getWorkerOrderList(String token,Integer orderStatus){
-//        Result result = new Result();
-//        try{
-//            tokenService.checkTokenExist(token);
-//            if(orderStatus==null || orderStatus>20){
-//                throw new ParamException(ParamEnum.PARAM_ORDER_STATUS.getCode(),ParamEnum.PARAM_ORDER_STATUS.getDesc());
-//            }
-//            List<OrderVo> orderVoList =orderWorkerService.getWorkerOrderList(token,orderStatus);
-//            return result.success(orderVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
-//        }catch (ParamException p){
-//            logger.error("OrderProxyController:代理商订单表入参错误",p);
-//            return result.fail(p.getCode(),p.getMessage());
-//        }catch (Exception e){
-//            logger.error("OrderProxyController：代理商获取订单列表失败",e);
-//            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
-//        }
-//    }
+    //todo get换post
+    @RequestMapping(value = "/sureOrderJiedan", method = RequestMethod.GET)
+    @ResponseBody
+    private Result sureOrderJiedan(String token,String orderId){
+        Result result = new Result();
+        try{
+            tokenService.checkTokenExist(token);
+            orderWorkerService.sureOrderJiedan(token,orderId);
+            return result.success(ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("OrderWorkerController:业务员确认订单入参错误",p);
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (SystemException s){
+            logger.error("OrderWorkerController:业务员确认订单失败",s);
+            return result.fail(s.getCode(),s.getMessage());
+        }catch (Exception e){
+            logger.error("OrderWorkerController：业务员确认订单失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+    }
+
+    /**
+     * 业务员驳回订单（未收到货，或者订单信息有误，才会驳回，必须填写驳回信息）
+     * token：业务员token
+     * orderId：订单ID
+     * rejectCase:驳回原因不能为空
+     * */
+    //todo get换post
+    @RequestMapping(value = "/rejectOrder", method = RequestMethod.GET)
+    @ResponseBody
+    private Result rejectOrder(String token,String orderId,String rejectCase){
+        Result result = new Result();
+        try{
+            tokenService.checkTokenExist(token);
+            if(StringUtils.isEmpty(orderId) || StringUtils.isEmpty(rejectCase)){
+                throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),ParamEnum.PARAM_ERROR.getDesc());
+            }
+            orderWorkerService.rejectOrder(token,orderId,rejectCase);
+            return result.success(ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("OrderWorkerController:业务员驳回订单入参错误",p);
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (SystemException s){
+            logger.error("OrderWorkerController:业务员驳回订单失败",s);
+            return result.fail(s.getCode(),s.getMessage());
+        }catch (Exception e){
+            logger.error("OrderWorkerController：业务员驳回订单失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+    }
 }
