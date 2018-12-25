@@ -139,6 +139,8 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
                 }
             }
             vo.setOrderWareList(orderWares);
+            vo.setRejectCase(order.getRejectCase());
+            vo.setContext(order.getContext());
             orderVos.add(vo);
         }
     }
@@ -208,6 +210,7 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         orderDao.updateOrderStatus(order);
         orderVo.setOrderStatus(order.getOrderStatus());
         orderVo.setModifier(userVo.getPin());
+        orderVo.setRejectCase(rejectCase);
         updateRedisOrderInfo(orderVo,orderVoList);
     }
 
@@ -235,6 +238,9 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
             redisService.set(Contants.REDIS_ORDERWORKER_WEIJIEDAN_PIN+orderVo.getPin(),orderVoList,Contants.ORDERWORKER_CACHE_OVER_TIME);
             //获取已结单的订单列表
             List<OrderVo> yijiedanVoList = redisService.get(redisWorkerBefore+orderVo.getPin());
+            if(CollectionUtils.isEmpty(yijiedanVoList)){
+                yijiedanVoList=new ArrayList<>();
+            }
             yijiedanVoList.add(orderVo);
             //设置业务员的已结单列表
             redisService.set(redisWorkerBefore+orderVo.getPin(),yijiedanVoList,Contants.ORDERWORKER_CACHE_OVER_TIME);
@@ -245,7 +251,7 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
                     break;
                 }
             }
-            redisService.set(redisProxyBefore+orderVo.getProxyPin(),weijiedanProxyVoList);
+            redisService.set(Contants.REDIS_ORDERPROXY_WEIJIEDAN_PIN+orderVo.getProxyPin(),weijiedanProxyVoList);
             //设置代理商的已结单列表
             List<OrderVo> yijiedanProxyVoList=redisService.get(redisProxyBefore+orderVo.getProxyPin());
             if(CollectionUtils.isEmpty(yijiedanProxyVoList)){
@@ -271,7 +277,7 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
                 }
             }
             weijiedanProxyVoList.add(orderVo);
-            redisService.set(redisProxyBefore+orderVo.getProxyPin(),weijiedanProxyVoList);
+            redisService.set(Contants.REDIS_ORDERPROXY_WEIJIEDAN_PIN+orderVo.getProxyPin(),weijiedanProxyVoList);
         }
     }
 

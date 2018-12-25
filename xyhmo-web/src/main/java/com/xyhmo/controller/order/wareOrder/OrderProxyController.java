@@ -73,7 +73,7 @@ public class OrderProxyController {
      *           4：如果未支付，就点击未支付，隐藏填写支付费用模块
      */
     //todo 修改为POST方法
-    @RequestMapping(value = "/sureWareAlreadyToWorker", method = RequestMethod.GET)
+    @RequestMapping(value = "/sureWareAlreadyToWorker", method = RequestMethod.POST)
     @ResponseBody
     private Result sureWareAlreadyToWorker(String token,String orderId,Integer isPay,Double warePrice,Double deliveryPrice){
         Result result = new Result();

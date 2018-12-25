@@ -72,7 +72,7 @@ public class OrderProxyServiceImpl implements OrderProxyService{
             String orderWareTableName = "order_ware_bj_"+i;
             Order order=new Order();
             order.setTableName(orderTableName);
-            order.setStatus(orderStatus);
+            order.setOrderStatus(orderStatus);
             String proxyPin="'"+userVo.getPin()+"'";
             order.setProxyPin(proxyPin);
             List<Order> orderList = orderDao.selectOrderProxyListByOrderStatus(order);

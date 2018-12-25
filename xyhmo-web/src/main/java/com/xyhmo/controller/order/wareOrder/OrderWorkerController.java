@@ -35,23 +35,23 @@ public class OrderWorkerController {
     @Autowired
     private OrderWorkerService orderWorkerService;
 
-    @RequestMapping(value = "/saveOrder", method = RequestMethod.GET)
+//    @RequestMapping(value = "/saveOrder", method = RequestMethod.GET)
     //TODO 换成get
-//    @RequestMapping(value = "/saveOrder", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveOrder", method = RequestMethod.POST)
     @ResponseBody
     //TODO 添加参数
-//    private Result saveOrder(@RequestBody OrderParam orderParam){
-        private Result saveOrder(){
-        OrderParam orderParam = new OrderParam();
-        //TODO 去掉默认值
-        orderParam.setToken("1f2e40a670db6c40b37e2cb577566b65");
-        orderParam.setIsDelivery(DeliveryEnum.IS_NOT_DELIVERY.getCode());
-        Map<Long,Integer> map = new HashMap<>();
-        map.put(100000001l,1);
-        map.put(100000002l,2);
-        map.put(100000003l,3);
-        map.put(100000004l,4);
-        orderParam.setSkuMap(map);
+    private Result saveOrder(@RequestBody OrderParam orderParam){
+//        private Result saveOrder(){
+//        OrderParam orderParam = new OrderParam();
+//        //TODO 去掉默认值
+//        orderParam.setToken("1f2e40a670db6c40b37e2cb577566b65");
+//        orderParam.setIsDelivery(DeliveryEnum.IS_NOT_DELIVERY.getCode());
+//        Map<Long,Integer> map = new HashMap<>();
+//        map.put(100000001l,1);
+//        map.put(100000002l,2);
+//        map.put(100000003l,3);
+//        map.put(100000004l,4);
+//        orderParam.setSkuMap(map);
         Result result = new Result();
         if(orderParam==null || CollectionUtils.isEmpty(orderParam.getSkuMap())){
             return result.fail(ParamEnum.PARAM_TOKEN_NOT_EXIST.getCode(),ParamEnum.PARAM_TOKEN_NOT_EXIST.getDesc());
@@ -111,7 +111,7 @@ public class OrderWorkerController {
      * orderId：订单ID
      * */
     //todo get换post
-    @RequestMapping(value = "/sureOrderJiedan", method = RequestMethod.GET)
+    @RequestMapping(value = "/sureOrderJiedan", method = RequestMethod.POST)
     @ResponseBody
     private Result sureOrderJiedan(String token,String orderId){
         Result result = new Result();
@@ -138,7 +138,7 @@ public class OrderWorkerController {
      * rejectCase:驳回原因不能为空
      * */
     //todo get换post
-    @RequestMapping(value = "/rejectOrder", method = RequestMethod.GET)
+    @RequestMapping(value = "/rejectOrder", method = RequestMethod.POST)
     @ResponseBody
     private Result rejectOrder(String token,String orderId,String rejectCase){
         Result result = new Result();
