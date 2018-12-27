@@ -75,6 +75,7 @@ public class PurchaseCarServiceImpl implements PurchaseCarService{
         try{
             List<PurchaseWareVo> voList = getPurchaseWareList(token);
             if(CollectionUtils.isEmpty(voList)){
+                voList=new ArrayList<>();
                 WareInfo wareInfo = wareInfoService.getWareInfoBySkuId(skuId);
                 PurchaseWareVo vo = autowaredToVo(wareInfo);
                 if(vo==null){

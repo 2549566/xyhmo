@@ -97,7 +97,12 @@ public class WareInfoServiceImpl implements WareInfoService{
         if(null==skuId){
             return null;
         }
-        WareInfo wareInfo = redisService.get(Contants.REDIS_WARE_SKUID+skuId);
+        WareInfo wareInfo = null;
+        try{
+            wareInfo=redisService.get(Contants.REDIS_WARE_SKUID+skuId);
+        }catch (Exception e){
+            logger.error("redis 中 skuId="+skuId+"不存在");
+        }
         if(wareInfo!=null){
             return wareInfo;
         }
