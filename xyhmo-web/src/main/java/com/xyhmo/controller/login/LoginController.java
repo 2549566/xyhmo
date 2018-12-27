@@ -81,7 +81,8 @@ public class LoginController {
             //校验手机号
             ParamCheckUtil.checkMobileNumber(mobile);
             //校验IP，防止网络攻击
-            loginService.checkIp(IpUtil.getIpAddress(request));
+            //todo 测试先取消IP校验
+//            loginService.checkIp(IpUtil.getIpAddress(request));
             //获取验证码
             String code =loginService.genCheckCode(mobile);
             result.success(code,ReturnEnum.RETURN_MOBILE_CHECK_CODE.getDesc());
