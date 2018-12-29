@@ -75,10 +75,9 @@ public class WareInfoServiceImpl implements WareInfoService{
 
     @Override
     public PageInfo getWareInfoListByUserType(String token, Integer skuType, Integer pageNum) {
-        tokenService.checkTokenExist(token);
+        UserVo vo = tokenService.checkTokenExist(token);
         ParamCheckUtil.checkPageNum(pageNum);
         PageHelper.startPage(pageNum,ParamEnum.PARAM_DEFAULT_PAGESIZE.getCode());
-        UserVo vo = tokenService.checkTokenExist(token);
         String pin = vo.getBindVenderProxy();
         WareInfo wareInfo = new WareInfo();
         if(!StringUtils.isEmpty(pin)){
