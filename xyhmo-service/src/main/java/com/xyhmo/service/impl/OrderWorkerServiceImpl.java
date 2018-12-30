@@ -72,6 +72,8 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         for(OrderWare orderWare:orderWareList){
             orderWareDao.insert(orderWare);
         }
+        //清除购物车Redis
+        redisService.remove(Contants.REDIS_PURCHASE_CAR+token);
         return id;
     }
 
