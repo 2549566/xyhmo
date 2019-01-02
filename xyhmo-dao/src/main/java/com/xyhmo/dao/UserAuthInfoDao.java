@@ -4,6 +4,8 @@ package com.xyhmo.dao;
 import com.xyhmo.commom.dao.MyBatisRepository;
 import com.xyhmo.domain.UserAuthInfo;
 
+import java.util.List;
+
 @MyBatisRepository
 public interface UserAuthInfoDao {
 
@@ -18,4 +20,9 @@ public interface UserAuthInfoDao {
      *
      * */
     UserAuthInfo selectUserAuthInfoByPin(String pin);
+    /**
+     * 根据pinlist获取用户信息
+     *
+     * */
+    List<UserAuthInfo> selectUserAuthInfoByPinList(List<String> workerPinList);
 }

@@ -4,6 +4,8 @@ package com.xyhmo.dao;
 import com.xyhmo.commom.dao.MyBatisRepository;
 import com.xyhmo.domain.UserInfo;
 
+import java.util.List;
+
 @MyBatisRepository
 public interface UserInfoDao {
 
@@ -29,4 +31,9 @@ public interface UserInfoDao {
      *
      * */
     void updateUserInfo(UserInfo userInfo);
+    /**
+     * 获取代理商的业务员信息
+     *
+     * */
+    List<UserInfo> selectUserInfoByProxyPin(String pin);
 }

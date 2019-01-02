@@ -5,6 +5,8 @@ import com.xyhmo.domain.UserAuthInfo;
 import com.xyhmo.domain.UserInfo;
 import com.xyhmo.vo.UserVo;
 
+import java.util.List;
+
 public interface UserInfoService {
     /**
      * 插入一条数据
@@ -43,4 +45,17 @@ public interface UserInfoService {
      *
      * */
     UserVo getUserVoByToken(String token);
+
+    /**
+     *  获取代理商所属的业务员列表
+     *
+     * */
+    List<UserInfo> getUserInfoByProxyPin(String pin);
+    /**
+     * 组装用户信息
+     * 用户入参为列表
+     * 用户基本信息+用户认证信息
+     *
+     * */
+    List<UserVo> autowaredToVoList(List<UserInfo> userInfoList, List<UserAuthInfo> userAuthInfoList);
 }

@@ -29,7 +29,15 @@
         SELECT <include refid="allColumns"/>
         FROM user_auth_info WHERE STATUS = 1 and pin = #{pin}
     </select>
-
-	
+    <select id="selectUserAuthInfoByPinList"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        user_auth_info
+        WHERE   STATUS=1 AND pin IN
+        <foreach collection="list" item="pin"  open="(" separator="," close=")">
+            #{pin}
+        </foreach>
+    </select>
   
 </mapper>

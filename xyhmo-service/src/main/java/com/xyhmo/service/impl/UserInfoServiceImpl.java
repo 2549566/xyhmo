@@ -16,7 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService{
@@ -114,5 +118,54 @@ public class UserInfoServiceImpl implements UserInfoService{
         UserVo userVo = autowaredToVo(userInfo,userAuthInfo);
         redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,userVo,Contants.TOKEN_OVER_TIME);
         return userVo;
+    }
+
+    @Override
+    public List<UserInfo> getUserInfoByProxyPin(String pin) {
+        return userInfoDao.selectUserInfoByProxyPin(pin);
+    }
+
+    @Override
+    public List<UserVo> autowaredToVoList(List<UserInfo> userInfoList, List<UserAuthInfo> userAuthInfoList) {
+        List<UserVo> userVoList = new ArrayList<>();
+        if(CollectionUtils.isEmpty(userInfoList)){
+            logger.error("UserInfoServiceImpl autowaredToVoList:userInfoList is empty");
+            return userVoList;
+        }
+        for(UserInfo userInfo:userInfoList){
+            if(StringUtils.isEmpty(userInfo.getPin())){
+                continue;
+            }
+            UserVo vo = new UserVo();
+            vo.setId(userInfo.getId());
+            vo.setPin(userInfo.getPin());
+            vo.setToken(userInfo.getToken());
+            vo.setMobileNumber(userInfo.getMobileNumber());
+            vo.setUserName(userInfo.getUserName());
+            vo.setUserType(userInfo.getUserType());
+            vo.setPassword(userInfo.getPassword());
+            vo.setBindVender(userInfo.getBindVender());
+            vo.setBindVenderProxy(userInfo.getBindVenderProxy());
+            vo.setIsAuth(userInfo.getIsAuth());
+            vo.setImageHearder(userInfo.getImageHearder());
+            vo.setCreated(userInfo.getCreated());
+            vo.setModified(userInfo.getModified());
+            vo.setScore(userInfo.getScore());
+            vo.setIsAcceptOrder(userInfo.getIsAcceptOrder());
+            for(UserAuthInfo userAuthInfo:userAuthInfoList){
+                if(userInfo.getPin().equals(userAuthInfo.getPin())){
+                    vo.setRealName(userAuthInfo.getRealName());
+                    vo.setImageCardFace(userAuthInfo.getImageCardFace());
+                    vo.setImageCardBack(userAuthInfo.getImageCardBack());
+                    vo.setImageCompanyQualiy(userAuthInfo.getImageCompanyQualiy());
+                    vo.setCompanyName(userAuthInfo.getCompanyName());
+                    vo.setAuthCreated(userAuthInfo.getCreated());
+                    vo.setAuthModified(userAuthInfo.getModified());
+                    break;
+                }
+            }
+            userVoList.add(vo);
+        }
+        return userVoList;
     }
 }

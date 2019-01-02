@@ -7,7 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserAuthInfoServiceImpl implements UserAuthInfoService{
@@ -32,5 +36,13 @@ public class UserAuthInfoServiceImpl implements UserAuthInfoService{
             logger.error("UserAuthInfoServiceImpl pin is null");
         }
         return userAuthInfoDao.selectUserAuthInfoByPin(pin);
+    }
+
+    @Override
+    public List<UserAuthInfo> getUserAuthInfoByPinList(List<String> workerPinList) {
+        if(CollectionUtils.isEmpty(workerPinList)){
+            return new ArrayList<>();
+        }
+        return userAuthInfoDao.selectUserAuthInfoByPinList(workerPinList);
     }
 }
