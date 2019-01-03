@@ -58,4 +58,9 @@ public interface UserInfoService {
      *
      * */
     List<UserVo> autowaredToVoList(List<UserInfo> userInfoList, List<UserAuthInfo> userAuthInfoList);
+    /**
+     * 根据厂商pin获取厂商下面的代理商列表
+     *
+     * */
+    List<UserInfo> getProxyListByVenderPin(String pin);
 }

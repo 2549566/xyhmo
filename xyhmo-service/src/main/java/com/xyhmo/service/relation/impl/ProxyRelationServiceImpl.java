@@ -24,7 +24,7 @@ public class ProxyRelationServiceImpl extends RelationServiceImpl{
     @Autowired
     private UserInfoService userInfoService;
     @Autowired
-    private UserAuthInfoService authInfoService;
+    private UserAuthInfoService userAuthInfoService;
 
     @Override
     public List<UserVo> getRelationList(UserVo userVo) {
@@ -49,7 +49,7 @@ public class ProxyRelationServiceImpl extends RelationServiceImpl{
             }
             workerPinList.add(userInfo.getPin());
         }
-        List<UserAuthInfo> userAuthInfoList=authInfoService.getUserAuthInfoByPinList(workerPinList);
+        List<UserAuthInfo> userAuthInfoList=userAuthInfoService.getUserAuthInfoByPinList(workerPinList);
         return userInfoService.autowaredToVoList(userInfoList,userAuthInfoList);
     }
 }

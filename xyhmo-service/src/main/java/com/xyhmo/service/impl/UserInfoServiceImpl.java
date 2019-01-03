@@ -168,4 +168,13 @@ public class UserInfoServiceImpl implements UserInfoService{
         }
         return userVoList;
     }
+
+    @Override
+    public List<UserInfo> getProxyListByVenderPin(String pin) {
+        if(StringUtils.isEmpty(pin)){
+            logger.error("pin is empty");
+            return new ArrayList<>();
+        }
+        return userInfoDao.selectProxyListByVenderPin(pin);
+    }
 }

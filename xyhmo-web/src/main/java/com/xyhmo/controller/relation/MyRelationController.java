@@ -12,6 +12,7 @@ import com.xyhmo.domain.Banner;
 import com.xyhmo.service.BannerService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.service.relation.impl.ProxyRelationServiceImpl;
+import com.xyhmo.service.relation.impl.VenderRelationServiceImpl;
 import com.xyhmo.service.relation.impl.WorkerRelationServiceImpl;
 import com.xyhmo.vo.UserVo;
 import org.slf4j.Logger;
@@ -35,7 +36,13 @@ public class MyRelationController {
     private WorkerRelationServiceImpl workerRelationService;
     @Autowired
     private ProxyRelationServiceImpl proxyRelationService;
+    @Autowired
+    private VenderRelationServiceImpl venderRelationService;
 
+    /**
+     * 我的模块-->我的关系（不同的角色点进去，显示不同的列表）
+     *
+     * */
     @RequestMapping(value = "/getMyRelation")
     @ResponseBody
     private Result getMyRelation(String token){
@@ -47,6 +54,8 @@ public class MyRelationController {
                 userVoList=workerRelationService.getRelationList(userVo);
             }else if(userVo.getUserType().equals(UserTypeEnum.PROXY.getCode()) || userVo.getUserType().equals(UserTypeEnum.PROXY_STAFF.getCode())) {
                 userVoList = proxyRelationService.getRelationList(userVo);
+            }else if(userVo.getUserType().equals(UserTypeEnum.VENDER.getCode()) || userVo.getUserType().equals(UserTypeEnum.VENDER_STAFF.getCode())){
+                userVoList = venderRelationService.getRelationList(userVo);
             }
             result.success(userVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
             return result;

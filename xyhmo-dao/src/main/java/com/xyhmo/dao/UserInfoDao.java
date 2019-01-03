@@ -36,4 +36,10 @@ public interface UserInfoDao {
      *
      * */
     List<UserInfo> selectUserInfoByProxyPin(String pin);
+    /**
+     * 获取厂商的代理商信息
+     * 代理商的状态有 userType =2 和 userType=21
+     * 当userType=21的时候，是代理商的工作人员，所以不查询此类型的代理商
+     * */
+    List<UserInfo> selectProxyListByVenderPin(String pin);
 }
