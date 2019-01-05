@@ -40,7 +40,7 @@ public class OrderWorkerController {
     @RequestMapping(value = "/saveOrder", method = RequestMethod.POST)
     @ResponseBody
     //TODO 添加参数
-    private Result saveOrder(@RequestBody OrderParam orderParam){
+    public Result saveOrder(@RequestBody OrderParam orderParam){
 //        private Result saveOrder(){
 //        OrderParam orderParam = new OrderParam();
 //        //TODO 去掉默认值
@@ -87,7 +87,7 @@ public class OrderWorkerController {
      * */
     @RequestMapping(value = "/getWorkerOrderList", method = RequestMethod.GET)
     @ResponseBody
-    private Result getWorkerOrderList(String token,Integer orderStatus){
+    public Result getWorkerOrderList(String token,Integer orderStatus){
         Result result = new Result();
         try{
             tokenService.checkTokenExist(token);
@@ -113,7 +113,7 @@ public class OrderWorkerController {
     //todo get换post
     @RequestMapping(value = "/sureOrderJiedan", method = RequestMethod.POST)
     @ResponseBody
-    private Result sureOrderJiedan(String token,String orderId){
+    public Result sureOrderJiedan(String token,String orderId){
         Result result = new Result();
         try{
             tokenService.checkTokenExist(token);
@@ -140,7 +140,7 @@ public class OrderWorkerController {
     //todo get换post
     @RequestMapping(value = "/rejectOrder", method = RequestMethod.POST)
     @ResponseBody
-    private Result rejectOrder(String token,String orderId,String rejectCase){
+    public Result rejectOrder(String token,String orderId,String rejectCase){
         Result result = new Result();
         try{
             tokenService.checkTokenExist(token);

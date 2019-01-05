@@ -41,6 +41,11 @@ public interface OrderWorkerService {
      *
      * */
     void rejectOrder(String token, String orderId, String rejectCase);
+    /**
+     * 根据workerPin获取业务员订单列表（无Redis）
+     *
+     * */
+    List<OrderVo> getWorkerOrderListByWorkerPin(String workerPin);
 
     /**
      * 注意，订单状态的修改，要同时更新 工人列表缓存和代理商列表缓存

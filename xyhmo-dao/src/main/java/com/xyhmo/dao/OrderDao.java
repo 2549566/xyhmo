@@ -32,4 +32,9 @@ public interface OrderDao {
      *
      * */
     void updateOrderStatus(Order order);
+    /**
+     * 根据业务员pin获取订单列表
+     *
+     * */
+    List<Order> selectOrderWorkerListByPin(Order order);
 }

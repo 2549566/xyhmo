@@ -216,6 +216,28 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         updateRedisOrderInfo(orderVo,orderVoList);
     }
 
+    @Override
+    public List<OrderVo> getWorkerOrderListByWorkerPin(String workerPin) {
+        List<OrderVo> orderVoList=new ArrayList<>();
+        if(StringUtils.isBlank(workerPin)){
+            logger.error("OrderWorkerServiceImpl:workerPin is empty");
+            return orderVoList;
+        }
+        String tableName = genOrderTabeleName(workerPin);
+        String orderWareTableName=genOrderWareTabeleName(workerPin);
+        Order order=new Order();
+        order.setTableName(tableName);
+        order.setPin("'"+workerPin+"'");
+        List<Order> orderList=orderDao.selectOrderWorkerListByPin(order);
+        List<String> orderIdList = new ArrayList<>();
+        for(Order ord:orderList){
+            orderIdList.add("'"+ord.getOrderId()+"'");
+        }
+        List<OrderWare> orderWareList=orderWareDao.selectOrderWareListByOrderIdList(orderWareTableName,orderIdList);
+        translationToOrderVos(orderVoList,orderList,orderWareList);
+        return orderVoList;
+    }
+
     /**
      * 业务员的缓存只保留3天
      * 代理商的缓存一直存在

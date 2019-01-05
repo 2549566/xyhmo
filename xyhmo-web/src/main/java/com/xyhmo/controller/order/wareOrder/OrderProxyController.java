@@ -5,7 +5,9 @@ import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
+import com.xyhmo.commom.exception.SystemException;
 import com.xyhmo.service.OrderProxyService;
+import com.xyhmo.service.OrderWorkerService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.vo.order.OrderVo;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +33,8 @@ public class OrderProxyController {
     private TokenService tokenService;
     @Autowired
     private OrderProxyService orderProxyService;
+    @Autowired
+    private OrderWorkerService orderWorkerService;
 
     /**
      * 获取代理商订单
@@ -92,6 +96,35 @@ public class OrderProxyController {
             return result.fail(p.getCode(),p.getMessage());
         }catch (Exception e){
             logger.error("OrderProxyController：代理商根据订单ID修改订单状态失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+    }
+
+    /**
+     * 根据业务员pin获取业务员的订单（代理商我的关系，点击业务员列表，显示业务员的订单列表）
+     * token：代理商token
+     * workerPin：订单ID
+     * 无Redis
+     * */
+    @RequestMapping(value = "/getWorkerOrderListByWorkerPin", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getWorkerOrderListByWorkerPin(String token,String workerPin){
+        Result result = new Result();
+        try{
+            tokenService.checkTokenExist(token);
+            if(StringUtils.isEmpty(workerPin)){
+                throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),ParamEnum.PARAM_ERROR.getDesc());
+            }
+            List<OrderVo> orderVoList=orderWorkerService.getWorkerOrderListByWorkerPin(workerPin);
+            return result.success(orderVoList,ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("OrderWorkerController:根据业务员pin获取业务员订单入参异常",p);
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (SystemException s){
+            logger.error("OrderWorkerController:根据业务员pin获取业务员订单列表失败",s);
+            return result.fail(s.getCode(),s.getMessage());
+        }catch (Exception e){
+            logger.error("OrderWorkerController：根据业务员pin获取业务员订单列表失败",e);
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
         }
     }
