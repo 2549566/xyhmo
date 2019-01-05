@@ -6,8 +6,8 @@ import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
 import com.xyhmo.commom.exception.SystemException;
-import com.xyhmo.service.OrderProxyService;
-import com.xyhmo.service.OrderWorkerService;
+import com.xyhmo.service.orderWare.OrderProxyService;
+import com.xyhmo.service.orderWare.OrderWorkerService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.vo.order.OrderVo;
 import org.apache.commons.lang.StringUtils;
@@ -44,7 +44,7 @@ public class OrderProxyController {
      * */
     @RequestMapping(value = "/getProxyOrderList", method = RequestMethod.GET)
     @ResponseBody
-    private Result getProxyOrderList(String token,Integer orderStatus){
+    public Result getProxyOrderList(String token,Integer orderStatus){
         Result result = new Result();
         try{
             tokenService.checkTokenExist(token);
@@ -79,7 +79,7 @@ public class OrderProxyController {
     //todo 修改为POST方法
     @RequestMapping(value = "/sureWareAlreadyToWorker", method = RequestMethod.POST)
     @ResponseBody
-    private Result sureWareAlreadyToWorker(String token,String orderId,Integer isPay,Double warePrice,Double deliveryPrice){
+    public Result sureWareAlreadyToWorker(String token,String orderId,Integer isPay,Double warePrice,Double deliveryPrice){
         Result result = new Result();
         try{
             if(StringUtils.isEmpty(token) || StringUtils.isEmpty(orderId)){

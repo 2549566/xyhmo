@@ -1,4 +1,4 @@
-package com.xyhmo.service.impl;
+package com.xyhmo.service.orderWare.impl;
 
 import com.xyhmo.commom.enums.*;
 import com.xyhmo.commom.exception.ParamException;
@@ -6,12 +6,13 @@ import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.HashCodeUtil;
 import com.xyhmo.commom.utils.RedisUtil;
+import com.xyhmo.commom.utils.TableNameUtil;
 import com.xyhmo.dao.OrderDao;
 import com.xyhmo.dao.OrderWareDao;
 import com.xyhmo.domain.Order;
 import com.xyhmo.domain.OrderWare;
-import com.xyhmo.service.OrderProxyService;
-import com.xyhmo.service.OrderWorkerService;
+import com.xyhmo.service.orderWare.OrderProxyService;
+import com.xyhmo.service.orderWare.OrderWorkerService;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.vo.UserVo;
 import com.xyhmo.vo.order.OrderVo;
@@ -125,7 +126,7 @@ public class OrderProxyServiceImpl implements OrderProxyService{
         //修改代理商缓存列表中的状态，状态为2的情况下不删除
         orderVoList.add(orderVo);
         Order order = new Order();
-        String tableName = genOrderTabeleName(orderVo.getPin());
+        String tableName = TableNameUtil.genOrderTabeleName(orderVo.getPin());
         order.setId(orderVo.getId());
         order.setTableName(tableName);
         order.setOrderId("'"+orderVo.getOrderId()+"'");
@@ -162,10 +163,5 @@ public class OrderProxyServiceImpl implements OrderProxyService{
         workerOrderList.add(orderVo);
         redisService.set(redisWorkerBefore+orderVo.getPin(),workerOrderList,Contants.ORDERWORKER_CACHE_OVER_TIME);
     }
-    private String genOrderTabeleName(String pin){
-        if(StringUtils.isBlank(pin)){
-            return "";
-        }
-        return "order_bj_"+ HashCodeUtil.toHash(pin)%4;
-    }
+
 }

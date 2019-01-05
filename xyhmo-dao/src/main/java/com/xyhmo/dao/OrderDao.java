@@ -37,4 +37,9 @@ public interface OrderDao {
      *
      * */
     List<Order> selectOrderWorkerListByPin(Order order);
+    /**
+     * 根据订单ID获取订单详情
+     *
+     * */
+    Order selectOrderByOrderId(Order paramOrder);
 }

@@ -64,6 +64,11 @@
         FROM ${tableName}
         WHERE STATUS = 1 AND pin=${pin}
     </select>
+    <select id="selectOrderByOrderId" parameterType="com.xyhmo.domain.Order"  statementType="STATEMENT" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ${tableName}
+        WHERE STATUS = 1 AND order_id=${orderId}
+    </select>
     <update  id="updateOrderStatus" parameterType="com.xyhmo.domain.Order"  statementType="STATEMENT">
         UPDATE ${tableName} SET
         <if test="isPay!=null" >

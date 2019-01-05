@@ -1,4 +1,4 @@
-package com.xyhmo.service;
+package com.xyhmo.service.orderWare;
 
 import com.xyhmo.domain.Order;
 import com.xyhmo.domain.OrderWare;

@@ -1,4 +1,4 @@
-package com.xyhmo.service.impl;
+package com.xyhmo.service.orderWare.impl;
 
 import com.xyhmo.commom.enums.*;
 import com.xyhmo.commom.exception.ParamException;
@@ -7,12 +7,13 @@ import com.xyhmo.commom.service.Contants;
 import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.HashCodeUtil;
 import com.xyhmo.commom.utils.RedisUtil;
+import com.xyhmo.commom.utils.TableNameUtil;
 import com.xyhmo.dao.OrderDao;
 import com.xyhmo.dao.OrderWareDao;
 import com.xyhmo.domain.Order;
 import com.xyhmo.domain.OrderWare;
 import com.xyhmo.domain.WareInfo;
-import com.xyhmo.service.OrderWorkerService;
+import com.xyhmo.service.orderWare.OrderWorkerService;
 import com.xyhmo.service.UserInfoService;
 import com.xyhmo.service.WareInfoService;
 import com.xyhmo.util.GenIdService;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.xyhmo.commom.utils.TableNameUtil.genOrderWareTabeleName;
 
 @Service
 public class OrderWorkerServiceImpl implements OrderWorkerService {
@@ -93,8 +96,8 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         }
         logger.error("OrderServiceImpl：getWorkerOrderList 缓存中获取状态为"+orderStatus+"的订单列表为空");
         orderVoList=new ArrayList<>();
-        String tableName = genOrderTabeleName(vo.getPin());
-        String orderWareTableName=genOrderWareTabeleName(vo.getPin());
+        String tableName = TableNameUtil.genOrderTabeleName(vo.getPin());
+        String orderWareTableName=TableNameUtil.genOrderWareTabeleName(vo.getPin());
         Order order = new Order();
         order.setTableName(tableName);
         order.setOrderStatus(orderStatus);
@@ -167,7 +170,7 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         if(orderVo==null){
             throw new SystemException(SystemEnum.SYSTEM_ERROR.getCode(),SystemEnum.SYSTEM_ERROR.getDesc());
         }
-        String tableName = genOrderTabeleName(userVo.getPin());
+        String tableName = TableNameUtil.genOrderTabeleName(userVo.getPin());
         Order order=new Order();
         order.setTableName(tableName);
         order.setOrderId("'"+orderId+"'");
@@ -202,7 +205,7 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         if(orderVo==null){
             throw new SystemException(SystemEnum.SYSTEM_ERROR.getCode(),SystemEnum.SYSTEM_ERROR.getDesc());
         }
-        String tableName = genOrderTabeleName(userVo.getPin());
+        String tableName = TableNameUtil.genOrderTabeleName(userVo.getPin());
         Order order=new Order();
         order.setTableName(tableName);
         order.setModifier("'"+userVo.getPin()+"'");
@@ -223,8 +226,8 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
             logger.error("OrderWorkerServiceImpl:workerPin is empty");
             return orderVoList;
         }
-        String tableName = genOrderTabeleName(workerPin);
-        String orderWareTableName=genOrderWareTabeleName(workerPin);
+        String tableName = TableNameUtil.genOrderTabeleName(workerPin);
+        String orderWareTableName=TableNameUtil.genOrderWareTabeleName(workerPin);
         Order order=new Order();
         order.setTableName(tableName);
         order.setPin("'"+workerPin+"'");
@@ -350,7 +353,7 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         return order;
     }
     private OrderVo translationToOrderVo(OrderParam orderParam, UserVo vo)throws Exception{
-        String tableName = genOrderTabeleName(vo.getPin());
+        String tableName = TableNameUtil.genOrderTabeleName(vo.getPin());
         if(StringUtils.isBlank(tableName)){
             throw new Exception(SystemEnum.SYSTEM_ERROR.getDesc());
         }
@@ -365,7 +368,7 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         Double saveMonyPrice=0.0;
         List<OrderWare> orderWareList = new ArrayList<>();
         for(Long key:skuMap.keySet()){
-            String orderWareTableName = genOrderWareTabeleName(vo.getPin());
+            String orderWareTableName = TableNameUtil.genOrderWareTabeleName(vo.getPin());
             OrderWare orderWare = new OrderWare();
             orderWare.setOrderId(orderId);
             orderWare.setPin(pin);
@@ -418,20 +421,6 @@ public class OrderWorkerServiceImpl implements OrderWorkerService {
         String context="''";
         order.setContext(context);
         return order;
-    }
-
-    private String genOrderTabeleName(String pin){
-        if(StringUtils.isBlank(pin)){
-            return "";
-        }
-        return "order_bj_"+ HashCodeUtil.toHash(pin)%4;
-    }
-
-    private String genOrderWareTabeleName(String pin){
-        if(StringUtils.isBlank(pin)){
-            return "";
-        }
-        return "order_ware_bj_"+ HashCodeUtil.toHash(pin)%4;
     }
 
 }
