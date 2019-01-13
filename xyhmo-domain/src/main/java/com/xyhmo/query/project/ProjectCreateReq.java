@@ -1,44 +1,19 @@
-package com.xyhmo.vo.project;
-
-import com.xyhmo.commom.model.BaseModel;
-import com.xyhmo.domain.ProjectLeaderWith;
+package com.xyhmo.query.project;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
- * 该类用于展示我发布的工程列表
+ * 创建工程订单入参
  *
  * */
-public class ProjectLeaderVo extends BaseModel implements Serializable {
-    private static final long serialVersionUID = 4064864271218038978L;
-
+public class ProjectCreateReq implements Serializable{
+    private static final long serialVersionUID = -4688737788221343286L;
     /**
-     * id
-     *
+     * token
+     * 用户登录校验
      * */
-    private Long id;
-    /**
-     * 订单ID
-     *
-     * */
-    private String orderId;
-    /**
-     * 发布订单的pin
-     *
-     * */
-    private String pin;
-    /**
-     * 工程坐标
-     *
-     * */
-    private String coordinate;
-    /**
-     * 用户姓名
-     *
-     * */
-    private String userName;
+    private String token;
     /**
      * 工程标题
      *
@@ -70,24 +45,15 @@ public class ProjectLeaderVo extends BaseModel implements Serializable {
      * */
     private Date projectEnTime;
     /**
-     * 0:未开始 1：正在进行中 2：工程暂停 5：工程不正常结束 10：工程结束
-     *
-     * */
-    private Integer projectStatus;
-    /**
-     * 工程总付款金额
-     *
-     * */
-    private Double projectTotalPay;
-    /**
-     * 手机号
-     */
-    private String mobileNumber;
-    /**
      * 工程描述
      *
      * */
     private String describe;
+    /**
+     * 工程坐标
+     *
+     * */
+    private String coordinate;
     /**
      * 省份ID
      *
@@ -123,55 +89,13 @@ public class ProjectLeaderVo extends BaseModel implements Serializable {
      *
      * */
     private String addressDetail;
-    /**
-     * 完整地址
-     *
-     * */
-    private String completeAddress;
-    /**
-     * 发布工程的工人列表
-     *
-     * */
-    private List<ProjectLeaderWith> projectLeaderWithList;
 
-    public Long getId() {
-        return id;
+    public String getToken() {
+        return token;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getPin() {
-        return pin;
-    }
-
-    public void setPin(String pin) {
-        this.pin = pin;
-    }
-
-    public String getCoordinate() {
-        return coordinate;
-    }
-
-    public void setCoordinate(String coordinate) {
-        this.coordinate = coordinate;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getProjectTitle() {
@@ -222,30 +146,6 @@ public class ProjectLeaderVo extends BaseModel implements Serializable {
         this.projectEnTime = projectEnTime;
     }
 
-    public Integer getProjectStatus() {
-        return projectStatus;
-    }
-
-    public void setProjectStatus(Integer projectStatus) {
-        this.projectStatus = projectStatus;
-    }
-
-    public Double getProjectTotalPay() {
-        return projectTotalPay;
-    }
-
-    public void setProjectTotalPay(Double projectTotalPay) {
-        this.projectTotalPay = projectTotalPay;
-    }
-
-    public String getMobileNumber() {
-        return mobileNumber;
-    }
-
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
-    }
-
     public String getDescribe() {
         return describe;
     }
@@ -254,12 +154,12 @@ public class ProjectLeaderVo extends BaseModel implements Serializable {
         this.describe = describe;
     }
 
-    public List<ProjectLeaderWith> getProjectLeaderWithList() {
-        return projectLeaderWithList;
+    public String getCoordinate() {
+        return coordinate;
     }
 
-    public void setProjectLeaderWithList(List<ProjectLeaderWith> projectLeaderWithList) {
-        this.projectLeaderWithList = projectLeaderWithList;
+    public void setCoordinate(String coordinate) {
+        this.coordinate = coordinate;
     }
 
     public Integer getProvinceId() {
@@ -316,13 +216,5 @@ public class ProjectLeaderVo extends BaseModel implements Serializable {
 
     public void setAddressDetail(String addressDetail) {
         this.addressDetail = addressDetail;
-    }
-
-    public String getCompleteAddress() {
-        return completeAddress;
-    }
-
-    public void setCompleteAddress(String completeAddress) {
-        this.completeAddress = completeAddress;
     }
 }

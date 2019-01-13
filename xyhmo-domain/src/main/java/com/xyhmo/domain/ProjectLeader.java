@@ -33,11 +33,6 @@ public class ProjectLeader extends BaseModel implements Serializable{
      * */
     private String coordinate;
     /**
-     * 工程地址
-     *
-     * */
-    private String address;
-    /**
      * 用户姓名
      *
      * */
@@ -91,6 +86,46 @@ public class ProjectLeader extends BaseModel implements Serializable{
      *
      * */
     private String describe;
+    /**
+     * 省份ID
+     *
+     * */
+    private Integer provinceId;
+    /**
+     * 市区ID
+     *
+     * */
+    private Integer cityId;
+    /**
+     * 县城ID
+     *
+     * */
+    private Integer countyId;
+    /**
+     * 省份名称
+     *
+     * */
+    private String provinceName;
+    /**
+     * 市区名称
+     *
+     * */
+    private String citName;
+    /**
+     * 县城名称
+     *
+     * */
+    private String countyName;
+    /**
+     * 详细地址
+     *
+     * */
+    private String addressDetail;
+    /**
+     * 完整地址
+     *
+     * */
+    private String completeAddress;
 
     public Long getId() {
         return id;
@@ -122,14 +157,6 @@ public class ProjectLeader extends BaseModel implements Serializable{
 
     public void setCoordinate(String coordinate) {
         this.coordinate = coordinate;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getUserName() {
@@ -218,5 +245,69 @@ public class ProjectLeader extends BaseModel implements Serializable{
 
     public void setDescribe(String describe) {
         this.describe = describe;
+    }
+
+    public Integer getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Integer provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
+
+    public Integer getCountyId() {
+        return countyId;
+    }
+
+    public void setCountyId(Integer countyId) {
+        this.countyId = countyId;
+    }
+
+    public String getProvinceName() {
+        return provinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
+    }
+
+    public String getCitName() {
+        return citName;
+    }
+
+    public void setCitName(String citName) {
+        this.citName = citName;
+    }
+
+    public String getCountyName() {
+        return countyName;
+    }
+
+    public void setCountyName(String countyName) {
+        this.countyName = countyName;
+    }
+
+    public String getAddressDetail() {
+        return addressDetail;
+    }
+
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
+    }
+
+    public String getCompleteAddress() {
+        return completeAddress;
+    }
+
+    public void setCompleteAddress(String completeAddress) {
+        this.completeAddress = completeAddress;
     }
 }

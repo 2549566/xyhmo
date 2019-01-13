@@ -55,7 +55,7 @@ public class ProjectWorker extends BaseModel implements Serializable{
      * 工程地址
      *
      * */
-    private String address;
+    private String completeAddress;
     /**
      * 工程标题
      *
@@ -171,14 +171,6 @@ public class ProjectWorker extends BaseModel implements Serializable{
         this.coordinate = coordinate;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getProjectTitle() {
         return projectTitle;
     }
@@ -257,5 +249,13 @@ public class ProjectWorker extends BaseModel implements Serializable{
 
     public void setDescribe(String describe) {
         this.describe = describe;
+    }
+
+    public String getCompleteAddress() {
+        return completeAddress;
+    }
+
+    public void setCompleteAddress(String completeAddress) {
+        this.completeAddress = completeAddress;
     }
 }
