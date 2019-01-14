@@ -51,6 +51,8 @@ public final class Contants {
 	public static String REDIS_ORDERWORKER_YIZHIFU_PIN;
 	//非缓存：业务员商品列表的缓存过期时间
 	public static int ORDERWORKER_CACHE_OVER_TIME;
+	//缓存：地址表的缓存
+	public static String REDIS_ADDRESS;
 	static{
 		MOBILE_GEN_CODE = "mobile_check_code_";
 		MOBILE_CHECK_CODE_OVER_TIME = 10*60;
@@ -76,6 +78,7 @@ public final class Contants {
 		REDIS_ORDERWORKER_WEIZHIFU_PIN="redis_orderworker_weizhifu_pin_";
 		REDIS_ORDERWORKER_YIZHIFU_PIN="redis_orderworker_yizhifu_pin_";
 		ORDERWORKER_CACHE_OVER_TIME=60*60*24*3;
+		REDIS_ADDRESS="redis_address";
 	}
 
 	

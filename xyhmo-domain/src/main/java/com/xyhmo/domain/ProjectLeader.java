@@ -12,6 +12,8 @@ public class ProjectLeader extends BaseModel implements Serializable{
 
     private static final long serialVersionUID = -3207388033871460439L;
 
+    private String tableName;
+
     /**
      * id
      *
@@ -46,7 +48,7 @@ public class ProjectLeader extends BaseModel implements Serializable{
      * 工程需要人数
      *
      * */
-    private Integer projecNeedWorker;
+    private Integer projectNeedWorker;
     /**
      * 工程天数
      *
@@ -61,12 +63,12 @@ public class ProjectLeader extends BaseModel implements Serializable{
      * 工程开始日期
      *
      * */
-    private Date projecStartTime;
+    private Date projectStartTime;
     /**
      * 工程结束日期
      *
      * */
-    private Date projectEnTime;
+    private Date projectEndTime;
     /**
      * 0:未开始 1：正在进行中 2：工程暂停 5：工程不正常结束 10：工程结束
      *
@@ -110,7 +112,7 @@ public class ProjectLeader extends BaseModel implements Serializable{
      * 市区名称
      *
      * */
-    private String citName;
+    private String cityName;
     /**
      * 县城名称
      *
@@ -126,6 +128,14 @@ public class ProjectLeader extends BaseModel implements Serializable{
      *
      * */
     private String completeAddress;
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
     public Long getId() {
         return id;
@@ -175,12 +185,12 @@ public class ProjectLeader extends BaseModel implements Serializable{
         this.projectTitle = projectTitle;
     }
 
-    public Integer getProjecNeedWorker() {
-        return projecNeedWorker;
+    public Integer getProjectNeedWorker() {
+        return projectNeedWorker;
     }
 
-    public void setProjecNeedWorker(Integer projecNeedWorker) {
-        this.projecNeedWorker = projecNeedWorker;
+    public void setProjectNeedWorker(Integer projectNeedWorker) {
+        this.projectNeedWorker = projectNeedWorker;
     }
 
     public Integer getProjectNeedDay() {
@@ -199,20 +209,20 @@ public class ProjectLeader extends BaseModel implements Serializable{
         this.everyDaySalary = everyDaySalary;
     }
 
-    public Date getProjecStartTime() {
-        return projecStartTime;
+    public Date getProjectStartTime() {
+        return projectStartTime;
     }
 
-    public void setProjecStartTime(Date projecStartTime) {
-        this.projecStartTime = projecStartTime;
+    public void setProjectStartTime(Date projectStartTime) {
+        this.projectStartTime = projectStartTime;
     }
 
-    public Date getProjectEnTime() {
-        return projectEnTime;
+    public Date getProjectEndTime() {
+        return projectEndTime;
     }
 
-    public void setProjectEnTime(Date projectEnTime) {
-        this.projectEnTime = projectEnTime;
+    public void setProjectEndTime(Date projectEndTime) {
+        this.projectEndTime = projectEndTime;
     }
 
     public Integer getProjectStatus() {
@@ -279,12 +289,12 @@ public class ProjectLeader extends BaseModel implements Serializable{
         this.provinceName = provinceName;
     }
 
-    public String getCitName() {
-        return citName;
+    public String getCityName() {
+        return cityName;
     }
 
-    public void setCitName(String citName) {
-        this.citName = citName;
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public String getCountyName() {

@@ -23,7 +23,7 @@ public class ProjectCreateReq implements Serializable{
      * 工程需要人数
      *
      * */
-    private Integer projecNeedWorker;
+    private Integer projectNeedWorker;
     /**
      * 工程天数
      *
@@ -38,12 +38,12 @@ public class ProjectCreateReq implements Serializable{
      * 工程开始日期
      *
      * */
-    private Date projecStartTime;
+    private Date projectStartTime;
     /**
      * 工程结束日期
      *
      * */
-    private Date projectEnTime;
+    private Date projectEndTime;
     /**
      * 工程描述
      *
@@ -89,6 +89,15 @@ public class ProjectCreateReq implements Serializable{
      *
      * */
     private String addressDetail;
+    /**
+     * 总付款金额
+     *
+     * */
+    private Double projectTotalPay;
+    /**
+     * 手机号
+     */
+    private String mobileNumber;
 
     public String getToken() {
         return token;
@@ -106,12 +115,12 @@ public class ProjectCreateReq implements Serializable{
         this.projectTitle = projectTitle;
     }
 
-    public Integer getProjecNeedWorker() {
-        return projecNeedWorker;
+    public Integer getProjectNeedWorker() {
+        return projectNeedWorker;
     }
 
-    public void setProjecNeedWorker(Integer projecNeedWorker) {
-        this.projecNeedWorker = projecNeedWorker;
+    public void setProjectNeedWorker(Integer projectNeedWorker) {
+        this.projectNeedWorker = projectNeedWorker;
     }
 
     public Integer getProjectNeedDay() {
@@ -130,20 +139,20 @@ public class ProjectCreateReq implements Serializable{
         this.everyDaySalary = everyDaySalary;
     }
 
-    public Date getProjecStartTime() {
-        return projecStartTime;
+    public Date getProjectStartTime() {
+        return projectStartTime;
     }
 
-    public void setProjecStartTime(Date projecStartTime) {
-        this.projecStartTime = projecStartTime;
+    public void setProjectStartTime(Date projectStartTime) {
+        this.projectStartTime = projectStartTime;
     }
 
-    public Date getProjectEnTime() {
-        return projectEnTime;
+    public Date getProjectEndTime() {
+        return projectEndTime;
     }
 
-    public void setProjectEnTime(Date projectEnTime) {
-        this.projectEnTime = projectEnTime;
+    public void setProjectEndTime(Date projectEndTime) {
+        this.projectEndTime = projectEndTime;
     }
 
     public String getDescribe() {
@@ -216,5 +225,21 @@ public class ProjectCreateReq implements Serializable{
 
     public void setAddressDetail(String addressDetail) {
         this.addressDetail = addressDetail;
+    }
+
+    public Double getProjectTotalPay() {
+        return projectTotalPay;
+    }
+
+    public void setProjectTotalPay(Double projectTotalPay) {
+        this.projectTotalPay = projectTotalPay;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
 }

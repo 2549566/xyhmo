@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.GenProjectOrderDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.GenProjectOrder" >
+      <id column="id" property="id" />
+      <result column="project_name" property="projectName" />
+  </resultMap>
+
+    <sql id="allColumns">
+        id,project_name
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.GenProjectOrder" >
+        INSERT INTO gen_project_order (<include refid="allColumns"/>)
+        VALUES (null,#{projectName})
+    </insert>
+</mapper>

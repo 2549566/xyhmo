@@ -1,8 +1,10 @@
 package com.xyhmo.util.impl;
 
 import com.xyhmo.dao.GenOrderDao;
+import com.xyhmo.dao.GenProjectOrderDao;
 import com.xyhmo.dao.GenSkuDao;
 import com.xyhmo.domain.GenOrder;
+import com.xyhmo.domain.GenProjectOrder;
 import com.xyhmo.domain.GenSku;
 import com.xyhmo.util.GenIdService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ public class GenIdServiceImpl implements GenIdService{
     private GenSkuDao genSkuDao;
     @Autowired
     private GenOrderDao genOrderDao;
+    @Autowired
+    private GenProjectOrderDao genProjectOrderDao;
 
     @Override
     public Long genSkuId(Integer skuType) {
@@ -30,6 +34,15 @@ public class GenIdServiceImpl implements GenIdService{
         GenOrder genOrder = new GenOrder();
         genOrder.setOrderName("1");
         Long id = genOrderDao.insert(genOrder);
+        String date = System.currentTimeMillis()+"";
+        return city+date+String.valueOf(id);
+    }
+
+    @Override
+    public String genProjectOrderId(String city) {
+        GenProjectOrder genProjectOrder=new GenProjectOrder();
+        genProjectOrder.setProjectName("1");
+        Long id = genProjectOrderDao.insert(genProjectOrder);
         String date = System.currentTimeMillis()+"";
         return city+date+String.valueOf(id);
     }

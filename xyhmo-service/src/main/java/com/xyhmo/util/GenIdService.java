@@ -16,4 +16,9 @@ public interface GenIdService {
      *
      * */
     String genOrderId(String city);
+    /**
+     * 生成工程订单ID
+     *
+     * */
+    String genProjectOrderId(String city);
 }

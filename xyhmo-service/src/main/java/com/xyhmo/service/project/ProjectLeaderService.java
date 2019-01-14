@@ -7,5 +7,5 @@ public interface ProjectLeaderService {
      * 业务员创建一个工程订单
      *
      * */
-    Long createProjectOrder(ProjectCreateReq projectCreateReq);
+    Long createProjectOrder(ProjectCreateReq projectCreateReq)throws Exception;
 }

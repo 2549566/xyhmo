@@ -6,7 +6,8 @@ package com.xyhmo.commom.enums;
  * */
 public enum CityEnum {
 
-    SKU_JUANCAI("BJ","北京");
+    SKU_JUANCAI("BJ","北京"),
+    PROJECT_CITY("PROJECTBJ","北京");
     private String code;
     private String desc;
 

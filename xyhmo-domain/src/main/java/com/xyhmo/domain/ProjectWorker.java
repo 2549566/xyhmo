@@ -65,7 +65,7 @@ public class ProjectWorker extends BaseModel implements Serializable{
      * 工程需要人数
      *
      * */
-    private Integer projecNeedWorker;
+    private Integer projectNeedWorker;
     /**
      * 工程天数
      *
@@ -80,12 +80,12 @@ public class ProjectWorker extends BaseModel implements Serializable{
      * 工程开始日期
      *
      * */
-    private Date projecStartTime;
+    private Date projectStartTime;
     /**
      * 工程结束日期
      *
      * */
-    private Date projectEnTime;
+    private Date projectEndTime;
     /**
      * 0:未开始 1：正在进行中 2：工程暂停 5：工程不正常结束 10：工程结束
      *
@@ -100,7 +100,7 @@ public class ProjectWorker extends BaseModel implements Serializable{
      * 发布人的名称
      *
      * */
-    private String leadeName;
+    private String leaderName;
     /**
      * 工程描述
      *
@@ -179,12 +179,20 @@ public class ProjectWorker extends BaseModel implements Serializable{
         this.projectTitle = projectTitle;
     }
 
-    public Integer getProjecNeedWorker() {
-        return projecNeedWorker;
+    public Integer getProjectNeedWorker() {
+        return projectNeedWorker;
     }
 
-    public void setProjecNeedWorker(Integer projecNeedWorker) {
-        this.projecNeedWorker = projecNeedWorker;
+    public void setProjectNeedWorker(Integer projectNeedWorker) {
+        this.projectNeedWorker = projectNeedWorker;
+    }
+
+    public Date getProjectStartTime() {
+        return projectStartTime;
+    }
+
+    public void setProjectStartTime(Date projectStartTime) {
+        this.projectStartTime = projectStartTime;
     }
 
     public Integer getProjectNeedDay() {
@@ -203,20 +211,12 @@ public class ProjectWorker extends BaseModel implements Serializable{
         this.everyDaySalary = everyDaySalary;
     }
 
-    public Date getProjecStartTime() {
-        return projecStartTime;
+    public Date getProjectEndTime() {
+        return projectEndTime;
     }
 
-    public void setProjecStartTime(Date projecStartTime) {
-        this.projecStartTime = projecStartTime;
-    }
-
-    public Date getProjectEnTime() {
-        return projectEnTime;
-    }
-
-    public void setProjectEnTime(Date projectEnTime) {
-        this.projectEnTime = projectEnTime;
+    public void setProjectEndTime(Date projectEndTime) {
+        this.projectEndTime = projectEndTime;
     }
 
     public Integer getProjectStatus() {
@@ -235,12 +235,12 @@ public class ProjectWorker extends BaseModel implements Serializable{
         this.projectTotalPay = projectTotalPay;
     }
 
-    public String getLeadeName() {
-        return leadeName;
+    public String getLeaderName() {
+        return leaderName;
     }
 
-    public void setLeadeName(String leadeName) {
-        this.leadeName = leadeName;
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
     }
 
     public String getDescribe() {
