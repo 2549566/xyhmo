@@ -38,12 +38,12 @@ public class ProjectCreateReq implements Serializable{
      * 工程开始日期
      *
      * */
-    private Date projectStartTime;
+    private String projectStartTime;
     /**
      * 工程结束日期
      *
      * */
-    private Date projectEndTime;
+    private String projectEndTime;
     /**
      * 工程描述
      *
@@ -139,22 +139,6 @@ public class ProjectCreateReq implements Serializable{
         this.everyDaySalary = everyDaySalary;
     }
 
-    public Date getProjectStartTime() {
-        return projectStartTime;
-    }
-
-    public void setProjectStartTime(Date projectStartTime) {
-        this.projectStartTime = projectStartTime;
-    }
-
-    public Date getProjectEndTime() {
-        return projectEndTime;
-    }
-
-    public void setProjectEndTime(Date projectEndTime) {
-        this.projectEndTime = projectEndTime;
-    }
-
     public String getDescribe() {
         return describe;
     }
@@ -241,5 +225,21 @@ public class ProjectCreateReq implements Serializable{
 
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
+    }
+
+    public String getProjectStartTime() {
+        return projectStartTime;
+    }
+
+    public void setProjectStartTime(String projectStartTime) {
+        this.projectStartTime = projectStartTime;
+    }
+
+    public String getProjectEndTime() {
+        return projectEndTime;
+    }
+
+    public void setProjectEndTime(String projectEndTime) {
+        this.projectEndTime = projectEndTime;
     }
 }

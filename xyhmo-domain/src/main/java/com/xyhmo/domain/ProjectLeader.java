@@ -63,12 +63,12 @@ public class ProjectLeader extends BaseModel implements Serializable{
      * 工程开始日期
      *
      * */
-    private Date projectStartTime;
+    private String projectStartTime;
     /**
      * 工程结束日期
      *
      * */
-    private Date projectEndTime;
+    private String projectEndTime;
     /**
      * 0:未开始 1：正在进行中 2：工程暂停 5：工程不正常结束 10：工程结束
      *
@@ -87,7 +87,7 @@ public class ProjectLeader extends BaseModel implements Serializable{
      * 工程描述
      *
      * */
-    private String describe;
+    private String description;
     /**
      * 省份ID
      *
@@ -209,19 +209,19 @@ public class ProjectLeader extends BaseModel implements Serializable{
         this.everyDaySalary = everyDaySalary;
     }
 
-    public Date getProjectStartTime() {
+    public String getProjectStartTime() {
         return projectStartTime;
     }
 
-    public void setProjectStartTime(Date projectStartTime) {
+    public void setProjectStartTime(String projectStartTime) {
         this.projectStartTime = projectStartTime;
     }
 
-    public Date getProjectEndTime() {
+    public String getProjectEndTime() {
         return projectEndTime;
     }
 
-    public void setProjectEndTime(Date projectEndTime) {
+    public void setProjectEndTime(String projectEndTime) {
         this.projectEndTime = projectEndTime;
     }
 
@@ -249,12 +249,12 @@ public class ProjectLeader extends BaseModel implements Serializable{
         this.mobileNumber = mobileNumber;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getProvinceId() {

@@ -4,6 +4,7 @@ import com.xyhmo.commom.enums.CityEnum;
 import com.xyhmo.commom.enums.ProjectStatusEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.utils.TableNameUtil;
+import com.xyhmo.dao.ProjectLeaderDao;
 import com.xyhmo.domain.Address;
 import com.xyhmo.domain.ProjectLeader;
 import com.xyhmo.query.project.ProjectCreateReq;
@@ -33,6 +34,8 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
     private GenIdService genIdService;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private ProjectLeaderDao projectLeaderDao;
 
     @Override
     public Long createProjectOrder(ProjectCreateReq projectCreateReq)throws Exception {
@@ -45,11 +48,12 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
             return null;
         }
         ProjectLeader projectLeader=translationToProjectLeader(projectCreateReq,userVo);
-        return null;
+        Long id=projectLeaderDao.insert(projectLeader);
+        return id;
     }
 
     private ProjectLeader translationToProjectLeader(ProjectCreateReq projectCreateReq,UserVo userVo)throws Exception {
-        String tableName = TableNameUtil.genOrderTabeleName(userVo.getPin());
+        String tableName = TableNameUtil.genProjectOrderTableName(userVo.getPin());
         if(StringUtils.isBlank(tableName)){
             throw new Exception(SystemEnum.SYSTEM_ERROR.getDesc());
         }
@@ -66,12 +70,12 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         Integer projectNeedWorker=projectCreateReq.getProjectNeedWorker();
         Integer projectNeedDay=projectCreateReq.getProjectNeedDay();
         Double everyDaySalary=projectCreateReq.getEveryDaySalary();
-        Date projecStartTime=projectCreateReq.getProjectStartTime();
-        Date projectEndTime=projectCreateReq.getProjectEndTime();
+        String projecStartTime="'"+projectCreateReq.getProjectStartTime()+"'";
+        String projectEndTime="'"+projectCreateReq.getProjectEndTime()+"'";
         //创建工程必须是0（未开始）状态
         Integer projectStatus= ProjectStatusEnum.PROJECT_NOT_START.getCode();
         Double projectTotalPay=projectCreateReq.getProjectTotalPay();
-        String mobileNumber=projectCreateReq.getMobileNumber();
+        String mobileNumber="'"+projectCreateReq.getMobileNumber()+"'";
         String describe="''";
         if(StringUtils.isNotBlank(projectCreateReq.getDescribe())){
             describe="'"+projectCreateReq.getDescribe()+"'";
@@ -125,7 +129,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         projectLeader.setProjectStatus(projectStatus);
         projectLeader.setProjectTotalPay(projectTotalPay);
         projectLeader.setMobileNumber(mobileNumber);
-        projectLeader.setDescribe(describe);
+        projectLeader.setDescription(describe);
         projectLeader.setProvinceId(provinceId);
         projectLeader.setCityId(cityId);
         projectLeader.setCountyId(countyId);
@@ -136,6 +140,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         projectLeader.setCompleteAddress(completeAddress);
         projectLeader.setCreator(pin);
         projectLeader.setModifier(pin);
+        projectLeader.setStatus(1);
         return projectLeader;
     }
 }

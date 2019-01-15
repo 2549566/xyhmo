@@ -14,7 +14,7 @@ public class Address implements Serializable{
      * id
      *
      * */
-    private Long id;
+    private Integer id;
     /**
      * 父ID
      *
@@ -31,11 +31,11 @@ public class Address implements Serializable{
      * */
     private Integer type;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -87,7 +87,7 @@ public class ProjectLeaderVo extends BaseModel implements Serializable {
      * 工程描述
      *
      * */
-    private String describe;
+    private String description;
     /**
      * 省份ID
      *
@@ -246,12 +246,12 @@ public class ProjectLeaderVo extends BaseModel implements Serializable {
         this.mobileNumber = mobileNumber;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<ProjectLeaderWith> getProjectLeaderWithList() {

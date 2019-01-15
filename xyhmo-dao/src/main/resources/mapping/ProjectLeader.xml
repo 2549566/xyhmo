@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.ProjectLeaderDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.ProjectLeader" >
+      <id column="id" property="id" />
+      <result column="order_id" property="orderId" />
+      <result column="pin" property="pin" />
+      <result column="coordinate" property="coordinate" />
+      <result column="created" property="created" />
+      <result column="modified" property="modified" />
+      <result column="creator" property="creator" />
+      <result column="modifier" property="modifier" />
+      <result column="status" property="status" />
+      <result column="user_name" property="userName" />
+      <result column="project_title" property="projectTitle" />
+      <result column="project_need_worker" property="projectNeedWorker" />
+      <result column="project_need_day" property="projectNeedDay" />
+      <result column="every_day_salary" property="everyDaySalary" />
+      <result column="project_start_time" property="projectStartTime" />
+      <result column="project_end_time" property="projectEndTime" />
+      <result column="project_status" property="projectStatus" />
+      <result column="project_total_pay" property="projectTotalPay" />
+      <result column="mobile_number" property="mobileNumber" />
+      <result column="description" property="description" />
+      <result column="province_id" property="provinceId" />
+      <result column="city_id" property="cityId" />
+      <result column="county_id" property="countyId" />
+      <result column="province_name" property="provinceName" />
+      <result column="city_name" property="cityName" />
+      <result column="county_name" property="countyName" />
+      <result column="address_detail" property="addressDetail" />
+      <result column="complete_address" property="completeAddress" />
+  </resultMap>
+
+    <sql id="allColumns">
+        id,order_id,pin,coordinate,created,modified,creator,modifier,status,user_name,project_title,project_need_worker,project_need_day,every_day_salary,
+        project_start_time,project_end_time,project_status,project_total_pay,mobile_number,description,province_id,city_id,county_id,province_name,
+        city_name,county_name,address_detail,complete_address
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.ProjectLeader" statementType="STATEMENT">
+        INSERT INTO ${tableName} (<include refid="allColumns"/>)
+        VALUES (null,${orderId},${pin},${coordinate},NOW(),NOW(),${creator},${modifier},${status},${userName},${projectTitle},${projectNeedWorker},
+        ${projectNeedDay},${everyDaySalary},${projectStartTime},${projectEndTime},${projectStatus},${projectTotalPay},${mobileNumber},${description},${provinceId},
+        ${cityId},${countyId},${provinceName},${cityName},${countyName},${addressDetail},${completeAddress})
+    </insert>
+
+</mapper>

@@ -1,7 +1,6 @@
 package com.xyhmo.controller.order.projectOrder;
 
 import com.xyhmo.commom.base.Result;
-import com.xyhmo.commom.enums.DeliveryEnum;
 import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.enums.SystemEnum;
@@ -19,9 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Controller
-@RequestMapping("/projectOrderLeader")
-public class ProjectOrderLeaderController {
+@RequestMapping("/projectLeader")
+public class ProjectLeaderController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -31,10 +33,32 @@ public class ProjectOrderLeaderController {
     @Autowired
     private ProjectLeaderService projectLeaderService;
 
-    @RequestMapping(value = "/createProjectOrder", method = RequestMethod.POST)
+//    @RequestMapping(value = "/createProjectOrder", method = RequestMethod.POST)
+    //todo 换成POST
+    @RequestMapping(value = "/createProjectOrder", method = RequestMethod.GET)
     @ResponseBody
-    public Result createProjectOrder(@RequestBody ProjectCreateReq projectCreateReq){
+//    public Result createProjectOrder(@RequestBody ProjectCreateReq projectCreateReq){
+     public Result createProjectOrder(){
         Result result = new Result();
+        //参数
+        ProjectCreateReq projectCreateReq=new ProjectCreateReq();
+        projectCreateReq.setToken("1f2e40a670db6c40b37e2cb577566b65");
+        projectCreateReq.setProjectTitle("工程标题");
+        projectCreateReq.setProjectNeedWorker(5);
+        projectCreateReq.setProjectNeedDay(7);
+        String start  = "2019-01-22";
+        String end="2019-01-28";
+        projectCreateReq.setProjectStartTime(start);
+        projectCreateReq.setProjectEndTime(end);
+        projectCreateReq.setEveryDaySalary(300.00);
+        projectCreateReq.setProjectTotalPay(10500.00);
+        projectCreateReq.setProvinceId(2);
+        projectCreateReq.setCityId(52);
+        projectCreateReq.setCountyId(502);
+        projectCreateReq.setCoordinate("12324,12221");
+        projectCreateReq.setAddressDetail("新龙城小区1号楼2单元301室");
+        projectCreateReq.setMobileNumber("13718699660");
+        projectCreateReq.setDescribe("卫生间漏水，需要维修工人5个，7天内干完");
         try{
             if(projectCreateReq==null){
                 throw new ParamException(ParamEnum.PARAM_DELIVERY_ERROR.getCode(),ParamEnum.PARAM_DELIVERY_ERROR.getDesc());
