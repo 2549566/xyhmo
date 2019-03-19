@@ -5,9 +5,12 @@ import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
+import com.xyhmo.domain.ProjectOrderVo;
 import com.xyhmo.query.project.ProjectCreateReq;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.service.project.ProjectLeaderService;
+import com.xyhmo.vo.UserVo;
+import com.xyhmo.vo.project.ProjectLeaderVo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/projectLeader")
@@ -33,6 +38,13 @@ public class ProjectLeaderController {
     @Autowired
     private ProjectLeaderService projectLeaderService;
 
+
+    /**
+     * 业务员招工，创建招工订单
+     * 1：不能创建小于等于今天的订单
+     * 2：每日刷新（定时任务去做，此方法不做）缓存。并清理缓存数据
+     * 3：数据库存一份，缓存中存一份
+     * */
 //    @RequestMapping(value = "/createProjectOrder", method = RequestMethod.POST)
     //todo 换成POST
     @RequestMapping(value = "/createProjectOrder", method = RequestMethod.GET)
@@ -42,12 +54,12 @@ public class ProjectLeaderController {
         Result result = new Result();
         //参数
         ProjectCreateReq projectCreateReq=new ProjectCreateReq();
-        projectCreateReq.setToken("1f2e40a670db6c40b37e2cb577566b65");
+        projectCreateReq.setToken("f639681dfded0944eb486bbf08fe6891");
         projectCreateReq.setProjectTitle("工程标题");
         projectCreateReq.setProjectNeedWorker(5);
         projectCreateReq.setProjectNeedDay(7);
-        String start  = "2019-01-22";
-        String end="2019-01-28";
+        String start  = "2019-03-21";
+        String end="2019-03-28";
         projectCreateReq.setProjectStartTime(start);
         projectCreateReq.setProjectEndTime(end);
         projectCreateReq.setEveryDaySalary(300.00);
@@ -75,10 +87,32 @@ public class ProjectLeaderController {
             logger.error("projectOrderLeader:订单入参错误",p);
             return result.fail(p.getCode(),p.getMessage());
         }catch (Exception e){
+            logger.error("projectOrderLeader：创建工程订单失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+    }
+    @RequestMapping(value = "/getProjectOrderListPage", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getProjecOrderListPage(String token,Integer page,Integer pageSize){
+        Result result = new Result();
+        try{
+            if(pageSize>50){
+                throw new ParamException("每页最多查询不能超过50个");
+            }
+            UserVo userVo=tokenService.checkTokenExist(token);
+            List<ProjectOrderVo> projectLeaderVoList= projectLeaderService.getProjectOrderListPage(userVo,page,pageSize);
+            return result.success(projectLeaderVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("projectOrderLeader:订单入参错误",p);
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (Exception e){
             logger.error("projectOrderLeader：保存工程订单失败",e);
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
         }
     }
+
+
+
 
     private Boolean checkParam(ProjectCreateReq projectCreateReq){
         if(projectCreateReq==null){
@@ -100,6 +134,18 @@ public class ProjectLeaderController {
         if(projectCreateReq.getProjectStartTime()==null){
             logger.error("projectOrderLeader:projecStartTime is null");
             throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),"projecStartTime is null");
+        }
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        Date startTime=null;
+        try {
+            startTime=sdf.parse(projectCreateReq.getProjectStartTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Date now=new Date();
+        if(startTime.before(now)){
+            logger.error("projectOrderLeader:projecStartTime is error");
+            throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),"projecStartTime is error");
         }
         if(projectCreateReq.getProjectEndTime()==null){
             logger.error("projectOrderLeader:projectEnTime is null");

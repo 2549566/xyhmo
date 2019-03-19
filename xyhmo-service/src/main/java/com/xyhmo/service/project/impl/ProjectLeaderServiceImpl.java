@@ -7,12 +7,15 @@ import com.xyhmo.commom.utils.TableNameUtil;
 import com.xyhmo.dao.ProjectLeaderDao;
 import com.xyhmo.domain.Address;
 import com.xyhmo.domain.ProjectLeader;
+import com.xyhmo.domain.ProjectOrderVo;
 import com.xyhmo.query.project.ProjectCreateReq;
 import com.xyhmo.service.UserInfoService;
 import com.xyhmo.service.address.AddressService;
 import com.xyhmo.service.project.ProjectLeaderService;
+import com.xyhmo.service.redis.impl.RedisProjectOrderService;
 import com.xyhmo.util.GenIdService;
 import com.xyhmo.vo.UserVo;
+import com.xyhmo.vo.project.ProjectLeaderVo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProjectLeaderServiceImpl implements ProjectLeaderService {
@@ -36,6 +41,8 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
     private AddressService addressService;
     @Autowired
     private ProjectLeaderDao projectLeaderDao;
+    @Autowired
+    private RedisProjectOrderService redisProjectOrderService;
 
     @Override
     public Long createProjectOrder(ProjectCreateReq projectCreateReq)throws Exception {
@@ -49,7 +56,28 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         }
         ProjectLeader projectLeader=translationToProjectLeader(projectCreateReq,userVo);
         Long id=projectLeaderDao.insert(projectLeader);
+        if(id==null || id<1){
+            throw new Exception("ProjectLeaderServiceImpl：createProjectOrder业务员创建招工订单入库失败");
+        }
+        projectLeader.setId(id);
+        redisProjectOrderService.saveProjectOrder2Reids(projectLeader);
         return id;
+    }
+
+    @Override
+    public List<ProjectOrderVo> getProjectOrderListPage(UserVo userVo,Integer page,Integer pageSize) {
+        if(userVo==null || StringUtils.isEmpty(userVo.getPin())){
+            logger.error("ProjectLeaderServiceImpl:user is error");
+            return new ArrayList<>();
+        }
+        //todo 先获取到自己发布的订单，放在列表的第一位
+        Set<ProjectOrderVo> allSet = new HashSet<>();
+        //获取自己的list，并转为userSet，allSet加入userSet
+
+        List<ProjectOrderVo> otherProjectOrderList= redisProjectOrderService.getProjectOrderListPage(page,pageSize);
+        Set<ProjectOrderVo> otherProjectOrderSet=new HashSet<>(otherProjectOrderList);
+        allSet.addAll(otherProjectOrderSet);
+        return new ArrayList<>(allSet);
     }
 
     private ProjectLeader translationToProjectLeader(ProjectCreateReq projectCreateReq,UserVo userVo)throws Exception {
