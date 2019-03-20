@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +60,6 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         if(id==null || id<1){
             throw new Exception("ProjectLeaderServiceImpl：createProjectOrder业务员创建招工订单入库失败");
         }
-        projectLeader.setId(id);
         redisProjectOrderService.saveProjectOrder2Reids(projectLeader);
         return id;
     }
@@ -151,11 +151,15 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         projectLeader.setProjectTitle(projectTitle);
         projectLeader.setProjectNeedWorker(projectNeedWorker);
         projectLeader.setProjectNeedDay(projectNeedDay);
-        projectLeader.setEveryDaySalary(everyDaySalary);
+        if(everyDaySalary!=null){
+            projectLeader.setEveryDaySalary(new BigDecimal(everyDaySalary));
+        }
         projectLeader.setProjectStartTime(projecStartTime);
         projectLeader.setProjectEndTime(projectEndTime);
         projectLeader.setProjectStatus(projectStatus);
-        projectLeader.setProjectTotalPay(projectTotalPay);
+        if(projectTotalPay!=null){
+            projectLeader.setProjectTotalPay(new BigDecimal(projectTotalPay));
+        }
         projectLeader.setMobileNumber(mobileNumber);
         projectLeader.setDescription(describe);
         projectLeader.setProvinceId(provinceId);

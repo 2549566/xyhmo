@@ -3,6 +3,7 @@ package com.xyhmo.domain;
 import com.xyhmo.commom.model.BaseModel;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 该类是发布工程人的订单的详细信息。用于工人申请加入该工程
@@ -37,7 +38,7 @@ public class ProjectLeaderWith extends BaseModel implements Serializable{
      * 每天工资
      *
      * */
-    private Double everyDaySalary;
+    private BigDecimal everyDaySalary;
     /**
      * 干活的总天数
      *
@@ -47,7 +48,7 @@ public class ProjectLeaderWith extends BaseModel implements Serializable{
      * 总工资
      *
      * */
-    private Double totaSalary;
+    private BigDecimal totaSalary;
     /**
      * 干活工人的电话号码
      *
@@ -101,28 +102,12 @@ public class ProjectLeaderWith extends BaseModel implements Serializable{
         this.workerPin = workerPin;
     }
 
-    public Double getEveryDaySalary() {
-        return everyDaySalary;
-    }
-
-    public void setEveryDaySalary(Double everyDaySalary) {
-        this.everyDaySalary = everyDaySalary;
-    }
-
     public Integer getTotalDay() {
         return totalDay;
     }
 
     public void setTotalDay(Integer totalDay) {
         this.totalDay = totalDay;
-    }
-
-    public Double getTotaSalary() {
-        return totaSalary;
-    }
-
-    public void setTotaSalary(Double totaSalary) {
-        this.totaSalary = totaSalary;
     }
 
     public String getWorkerMoblie() {
@@ -155,5 +140,21 @@ public class ProjectLeaderWith extends BaseModel implements Serializable{
 
     public void setWorkerName(String workerName) {
         this.workerName = workerName;
+    }
+
+    public BigDecimal getEveryDaySalary() {
+        return everyDaySalary;
+    }
+
+    public void setEveryDaySalary(BigDecimal everyDaySalary) {
+        this.everyDaySalary = everyDaySalary;
+    }
+
+    public BigDecimal getTotaSalary() {
+        return totaSalary;
+    }
+
+    public void setTotaSalary(BigDecimal totaSalary) {
+        this.totaSalary = totaSalary;
     }
 }

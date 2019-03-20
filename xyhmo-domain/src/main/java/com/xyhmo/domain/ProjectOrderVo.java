@@ -3,6 +3,7 @@ package com.xyhmo.domain;
 import com.xyhmo.commom.model.BaseModel;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ public class ProjectOrderVo extends BaseModel implements Serializable{
      * 每天工人工资
      *
      * */
-    private Double everyDaySalary;
+    private BigDecimal everyDaySalary;
     /**
      * 工程开始日期
      *
@@ -79,7 +80,7 @@ public class ProjectOrderVo extends BaseModel implements Serializable{
      * 工程总付款金额
      *
      * */
-    private Double projectTotalPay;
+    private BigDecimal projectTotalPay;
     /**
      * 手机号
      */
@@ -207,14 +208,6 @@ public class ProjectOrderVo extends BaseModel implements Serializable{
         this.projectNeedDay = projectNeedDay;
     }
 
-    public Double getEveryDaySalary() {
-        return everyDaySalary;
-    }
-
-    public void setEveryDaySalary(Double everyDaySalary) {
-        this.everyDaySalary = everyDaySalary;
-    }
-
     public String getProjectStartTime() {
         return projectStartTime;
     }
@@ -237,14 +230,6 @@ public class ProjectOrderVo extends BaseModel implements Serializable{
 
     public void setProjectStatus(Integer projectStatus) {
         this.projectStatus = projectStatus;
-    }
-
-    public Double getProjectTotalPay() {
-        return projectTotalPay;
-    }
-
-    public void setProjectTotalPay(Double projectTotalPay) {
-        this.projectTotalPay = projectTotalPay;
     }
 
     public String getMobileNumber() {
@@ -333,5 +318,21 @@ public class ProjectOrderVo extends BaseModel implements Serializable{
 
     public void setProjectLeaderWithList(List<ProjectLeaderWith> projectLeaderWithList) {
         this.projectLeaderWithList = projectLeaderWithList;
+    }
+
+    public BigDecimal getEveryDaySalary() {
+        return everyDaySalary;
+    }
+
+    public void setEveryDaySalary(BigDecimal everyDaySalary) {
+        this.everyDaySalary = everyDaySalary;
+    }
+
+    public BigDecimal getProjectTotalPay() {
+        return projectTotalPay;
+    }
+
+    public void setProjectTotalPay(BigDecimal projectTotalPay) {
+        this.projectTotalPay = projectTotalPay;
     }
 }
