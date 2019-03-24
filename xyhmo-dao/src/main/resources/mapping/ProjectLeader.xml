@@ -30,18 +30,35 @@
       <result column="county_name" property="countyName" />
       <result column="address_detail" property="addressDetail" />
       <result column="complete_address" property="completeAddress" />
+      <result column="current_worker_number" property="currentWorkerNumber" />
   </resultMap>
 
     <sql id="allColumns">
         id,order_id,pin,coordinate,created,modified,creator,modifier,status,user_name,project_title,project_need_worker,project_need_day,every_day_salary,
         project_start_time,project_end_time,project_status,project_total_pay,mobile_number,description,province_id,city_id,county_id,province_name,
-        city_name,county_name,address_detail,complete_address
+        city_name,county_name,address_detail,complete_address,current_worker_number
     </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.ProjectLeader" statementType="STATEMENT">
         INSERT INTO ${tableName} (<include refid="allColumns"/>)
         VALUES (null,${orderId},${pin},${coordinate},NOW(),NOW(),${creator},${modifier},${status},${userName},${projectTitle},${projectNeedWorker},
         ${projectNeedDay},${everyDaySalary},${projectStartTime},${projectEndTime},${projectStatus},${projectTotalPay},${mobileNumber},${description},${provinceId},
-        ${cityId},${countyId},${provinceName},${cityName},${countyName},${addressDetail},${completeAddress})
+        ${cityId},${countyId},${provinceName},${cityName},${countyName},${addressDetail},${completeAddress},${currentWorkerNumber})
     </insert>
+    <select id="selectMyProjectLeaderList" parameterType="com.xyhmo.domain.ProjectLeader"  statementType="STATEMENT" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ${tableName}
+        WHERE STATUS = 1 AND pin=${pin}
+    </select>
+    <select id="selectOneProjectLeader" parameterType="com.xyhmo.domain.ProjectLeader"  statementType="STATEMENT" resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ${tableName}
+        WHERE STATUS = 1 AND order_id=${orderId}
+    </select>
+    <update  id="updateCurrentWorkerNum" parameterType="com.xyhmo.domain.ProjectLeader"  statementType="STATEMENT">
+        UPDATE ${tableName} SET
+        current_worker_number=${currentWorkerNumber},
+        modified=NOW()
+        WHERE order_id=${orderId}
+    </update>
 
 </mapper>

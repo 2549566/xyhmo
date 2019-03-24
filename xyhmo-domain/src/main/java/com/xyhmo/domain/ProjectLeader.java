@@ -129,6 +129,11 @@ public class ProjectLeader extends BaseModel implements Serializable{
      *
      * */
     private String completeAddress;
+    /**
+     * 当前工程招工人数
+     *
+     * */
+    private Integer currentWorkerNumber;
 
     public String getTableName() {
         return tableName;
@@ -320,5 +325,13 @@ public class ProjectLeader extends BaseModel implements Serializable{
 
     public void setProjectTotalPay(BigDecimal projectTotalPay) {
         this.projectTotalPay = projectTotalPay;
+    }
+
+    public Integer getCurrentWorkerNumber() {
+        return currentWorkerNumber;
+    }
+
+    public void setCurrentWorkerNumber(Integer currentWorkerNumber) {
+        this.currentWorkerNumber = currentWorkerNumber;
     }
 }

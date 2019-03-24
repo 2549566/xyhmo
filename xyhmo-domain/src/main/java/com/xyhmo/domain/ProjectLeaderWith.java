@@ -13,6 +13,8 @@ public class ProjectLeaderWith extends BaseModel implements Serializable{
 
     private static final long serialVersionUID = 8582955021850628995L;
 
+    private String tableName;
+
     /**
      * id
      *
@@ -156,5 +158,13 @@ public class ProjectLeaderWith extends BaseModel implements Serializable{
 
     public void setTotaSalary(BigDecimal totaSalary) {
         this.totaSalary = totaSalary;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyhmo.dao.ProjectLeaderWithDao" >
+  <resultMap id="BaseResultMap" type="com.xyhmo.domain.ProjectLeaderWith" >
+      <id column="id" property="id" />
+      <result column="order_id" property="orderId" />
+      <result column="pin" property="pin" />
+      <result column="worker_pin" property="workerPin" />
+      <result column="every_day_salary" property="everyDaySalary" />
+      <result column="total_day" property="totalDay" />
+      <result column="total_salary" property="totaSalary" />
+      <result column="created" property="created" />
+      <result column="modified" property="modified" />
+      <result column="creator" property="creator" />
+      <result column="modifier" property="modifier" />
+      <result column="status" property="status" />
+      <result column="worker_moblie" property="workerMoblie" />
+      <result column="score" property="score" />
+      <result column="next_cooperation" property="nextCooperation" />
+      <result column="worker_name" property="workerName" />
+  </resultMap>
+
+    <sql id="allColumns">
+        id,order_id,pin,worker_pin,every_day_salary,total_day,total_salary,created,modified,creator,modifier,status,
+        worker_moblie,score,next_cooperation,worker_name
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.ProjectLeaderWith" statementType="STATEMENT">
+        INSERT INTO ${tableName} (<include refid="allColumns"/>)
+        VALUES (null,${orderId},${pin},${workerPin},${everyDaySalary},${totalDay},${totaSalary},NOW(),NOW(),${creator},${modifier},${status},
+        ${workerMoblie},${score},${nextCooperation},${workerName})
+    </insert>
+    <select id="batchProjectLeaderWithList" statementType="STATEMENT"  resultMap="BaseResultMap">
+        SELECT <include refid="allColumns"/>
+        FROM ${tableName}
+        WHERE STATUS = 1 AND order_id IN
+        <foreach collection="orderIdList" item="idList"  open="(" separator="," close=")">
+            ${idList}
+        </foreach>
+    </select>
+</mapper>

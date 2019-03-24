@@ -3,6 +3,7 @@ package com.xyhmo.domain;
 import com.xyhmo.commom.model.BaseModel;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -11,6 +12,9 @@ import java.util.Date;
  * */
 public class ProjectWorker extends BaseModel implements Serializable{
     private static final long serialVersionUID = -3402774045392131101L;
+
+    private String tableName;
+
     /**
      * id
      *
@@ -75,17 +79,17 @@ public class ProjectWorker extends BaseModel implements Serializable{
      * 每天工人工资
      *
      * */
-    private Double everyDaySalary;
+    private BigDecimal everyDaySalary;
     /**
      * 工程开始日期
      *
      * */
-    private Date projectStartTime;
+    private String projectStartTime;
     /**
      * 工程结束日期
      *
      * */
-    private Date projectEndTime;
+    private String projectEndTime;
     /**
      * 0:未开始 1：正在进行中 2：工程暂停 5：工程不正常结束 10：工程结束
      *
@@ -95,7 +99,7 @@ public class ProjectWorker extends BaseModel implements Serializable{
      * 工程总付款金额
      *
      * */
-    private Double projectTotalPay;
+    private BigDecimal projectTotalPay;
     /**
      * 发布人的名称
      *
@@ -187,14 +191,6 @@ public class ProjectWorker extends BaseModel implements Serializable{
         this.projectNeedWorker = projectNeedWorker;
     }
 
-    public Date getProjectStartTime() {
-        return projectStartTime;
-    }
-
-    public void setProjectStartTime(Date projectStartTime) {
-        this.projectStartTime = projectStartTime;
-    }
-
     public Integer getProjectNeedDay() {
         return projectNeedDay;
     }
@@ -203,36 +199,12 @@ public class ProjectWorker extends BaseModel implements Serializable{
         this.projectNeedDay = projectNeedDay;
     }
 
-    public Double getEveryDaySalary() {
-        return everyDaySalary;
-    }
-
-    public void setEveryDaySalary(Double everyDaySalary) {
-        this.everyDaySalary = everyDaySalary;
-    }
-
-    public Date getProjectEndTime() {
-        return projectEndTime;
-    }
-
-    public void setProjectEndTime(Date projectEndTime) {
-        this.projectEndTime = projectEndTime;
-    }
-
     public Integer getProjectStatus() {
         return projectStatus;
     }
 
     public void setProjectStatus(Integer projectStatus) {
         this.projectStatus = projectStatus;
-    }
-
-    public Double getProjectTotalPay() {
-        return projectTotalPay;
-    }
-
-    public void setProjectTotalPay(Double projectTotalPay) {
-        this.projectTotalPay = projectTotalPay;
     }
 
     public String getLeaderName() {
@@ -257,5 +229,45 @@ public class ProjectWorker extends BaseModel implements Serializable{
 
     public void setCompleteAddress(String completeAddress) {
         this.completeAddress = completeAddress;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public BigDecimal getEveryDaySalary() {
+        return everyDaySalary;
+    }
+
+    public void setEveryDaySalary(BigDecimal everyDaySalary) {
+        this.everyDaySalary = everyDaySalary;
+    }
+
+    public String getProjectStartTime() {
+        return projectStartTime;
+    }
+
+    public void setProjectStartTime(String projectStartTime) {
+        this.projectStartTime = projectStartTime;
+    }
+
+    public String getProjectEndTime() {
+        return projectEndTime;
+    }
+
+    public void setProjectEndTime(String projectEndTime) {
+        this.projectEndTime = projectEndTime;
+    }
+
+    public BigDecimal getProjectTotalPay() {
+        return projectTotalPay;
+    }
+
+    public void setProjectTotalPay(BigDecimal projectTotalPay) {
+        this.projectTotalPay = projectTotalPay;
     }
 }

@@ -58,7 +58,7 @@ public class ProjectLeaderController {
         projectCreateReq.setProjectTitle("工程标题");
         projectCreateReq.setProjectNeedWorker(5);
         projectCreateReq.setProjectNeedDay(7);
-        String start  = "2019-03-21";
+        String start  = "2019-03-26";
         String end="2019-03-28";
         projectCreateReq.setProjectStartTime(start);
         projectCreateReq.setProjectEndTime(end);
@@ -173,4 +173,10 @@ public class ProjectLeaderController {
         }
         return true;
     }
+
+    /**
+     * 我的-招工-发布
+     * 获取我的工单列表
+     * 列表中每个工人必须校验工人在这期间是否有活
+     * */
 }

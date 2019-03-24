@@ -3,10 +3,13 @@ package com.xyhmo.service.project.impl;
 import com.xyhmo.commom.enums.CityEnum;
 import com.xyhmo.commom.enums.ProjectStatusEnum;
 import com.xyhmo.commom.enums.SystemEnum;
+import com.xyhmo.commom.exception.SystemException;
 import com.xyhmo.commom.utils.TableNameUtil;
 import com.xyhmo.dao.ProjectLeaderDao;
+import com.xyhmo.dao.ProjectLeaderWithDao;
 import com.xyhmo.domain.Address;
 import com.xyhmo.domain.ProjectLeader;
+import com.xyhmo.domain.ProjectLeaderWith;
 import com.xyhmo.domain.ProjectOrderVo;
 import com.xyhmo.query.project.ProjectCreateReq;
 import com.xyhmo.service.UserInfoService;
@@ -24,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ProjectLeaderServiceImpl implements ProjectLeaderService {
@@ -44,6 +44,8 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
     private ProjectLeaderDao projectLeaderDao;
     @Autowired
     private RedisProjectOrderService redisProjectOrderService;
+    @Autowired
+    private ProjectLeaderWithDao projectLeaderWithDao;
 
     @Override
     public Long createProjectOrder(ProjectCreateReq projectCreateReq)throws Exception {
@@ -55,13 +57,111 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         if(userVo==null || StringUtils.isEmpty(userVo.getPin())){
             return null;
         }
-        ProjectLeader projectLeader=translationToProjectLeader(projectCreateReq,userVo);
+        String orderId=genIdService.genProjectOrderId(CityEnum.PROJECT_CITY.getCode());
+        ProjectLeader projectLeader=translationToProjectLeader(projectCreateReq,userVo,orderId);
         Long id=projectLeaderDao.insert(projectLeader);
         if(id==null || id<1){
             throw new Exception("ProjectLeaderServiceImpl：createProjectOrder业务员创建招工订单入库失败");
         }
-        redisProjectOrderService.saveProjectOrder2Reids(projectLeader);
+        ProjectLeader projectLeaderRedis=translationToProjectLeaderRedis(projectCreateReq,userVo,orderId);
+        redisProjectOrderService.saveProjectOrder2Reids(projectLeaderRedis);
         return id;
+    }
+
+    private ProjectLeader translationToProjectLeaderRedis(ProjectCreateReq projectCreateReq, UserVo userVo,String orderId)throws Exception  {
+        String tableName = TableNameUtil.genProjectLeaderTableName(userVo.getPin());
+        if(StringUtils.isBlank(tableName)){
+            throw new Exception(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+        String pin=userVo.getPin();
+        String coordinate="";
+        String userName="";
+        if(StringUtils.isNotBlank(userVo.getRealName())){
+            userName=userVo.getRealName();
+        }else if(StringUtils.isNotBlank(userVo.getUserName())){
+            userName=userVo.getUserName();
+        }
+        String projectTitle=projectCreateReq.getProjectTitle();
+        Integer projectNeedWorker=projectCreateReq.getProjectNeedWorker();
+        Integer projectNeedDay=projectCreateReq.getProjectNeedDay();
+        Double everyDaySalary=projectCreateReq.getEveryDaySalary();
+        String projecStartTime=projectCreateReq.getProjectStartTime();
+        String projectEndTime=projectCreateReq.getProjectEndTime();
+        //创建工程必须是0（未开始）状态
+        Integer projectStatus= ProjectStatusEnum.PROJECT_RECRUITMENT.getCode();
+        Double projectTotalPay=projectCreateReq.getProjectTotalPay();
+        String mobileNumber=projectCreateReq.getMobileNumber();
+        String describe="";
+        if(StringUtils.isNotBlank(projectCreateReq.getDescribe())){
+            describe=projectCreateReq.getDescribe();
+        }
+        Integer provinceId=projectCreateReq.getProvinceId();
+        Integer cityId=projectCreateReq.getCityId();
+        Integer countyId=projectCreateReq.getCountyId();
+        List<Address> addressList=addressService.getAddressList();
+        String provinceName="";
+        String cityName="";
+        String countyName="";
+        if(!CollectionUtils.isEmpty(addressList)){
+            for(Address address:addressList){
+                if(!provinceName.equals("") && !cityName.equals("") && !countyName.equals("")){
+                    break;
+                }
+                if(address.getId().equals(provinceId)){
+                    provinceName=address.getCityName();
+                    projectCreateReq.setProvinceName(address.getCityName());
+                    continue;
+                }
+                if(address.getId().equals(cityId)){
+                    cityName=address.getCityName();
+                    projectCreateReq.setCitName(address.getCityName());
+                    continue;
+                }
+                if(address.getId().equals(countyId)){
+                    countyName=address.getCityName();
+                    projectCreateReq.setCountyName(address.getCityName());
+                    continue;
+                }
+            }
+        }
+        String addressDetail="";
+        if(StringUtils.isNotBlank(projectCreateReq.getAddressDetail())){
+            addressDetail=projectCreateReq.getAddressDetail();
+        }
+        String completeAddress=projectCreateReq.getProvinceName()+projectCreateReq.getCitName()+projectCreateReq.getCountyName()+projectCreateReq.getAddressDetail();
+        ProjectLeader projectLeader=new ProjectLeader();
+        projectLeader.setTableName(tableName);
+        projectLeader.setOrderId(orderId);
+        projectLeader.setPin(pin);
+        projectLeader.setCoordinate(coordinate);
+        projectLeader.setUserName(userName);
+        projectLeader.setProjectTitle(projectTitle);
+        projectLeader.setProjectNeedWorker(projectNeedWorker);
+        projectLeader.setProjectNeedDay(projectNeedDay);
+        if(everyDaySalary!=null){
+            projectLeader.setEveryDaySalary(new BigDecimal(everyDaySalary));
+        }
+        projectLeader.setProjectStartTime(projecStartTime);
+        projectLeader.setProjectEndTime(projectEndTime);
+        projectLeader.setProjectStatus(projectStatus);
+        if(projectTotalPay!=null){
+            projectLeader.setProjectTotalPay(new BigDecimal(projectTotalPay));
+        }
+        projectLeader.setMobileNumber(mobileNumber);
+        projectLeader.setDescription(describe);
+        projectLeader.setProvinceId(provinceId);
+        projectLeader.setCityId(cityId);
+        projectLeader.setCountyId(countyId);
+        projectLeader.setProvinceName(provinceName);
+        projectLeader.setCityName(cityName);
+        projectLeader.setCountyName(countyName);
+        projectLeader.setAddressDetail(addressDetail);
+        projectLeader.setCompleteAddress(completeAddress);
+        projectLeader.setCreator(pin);
+        projectLeader.setModifier(pin);
+        projectLeader.setStatus(1);
+        projectLeader.setCurrentWorkerNumber(0);
+        return projectLeader;
     }
 
     @Override
@@ -70,22 +170,100 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
             logger.error("ProjectLeaderServiceImpl:user is error");
             return new ArrayList<>();
         }
-        //todo 先获取到自己发布的订单，放在列表的第一位
         Set<ProjectOrderVo> allSet = new HashSet<>();
         //获取自己的list，并转为userSet，allSet加入userSet
-
+        if(page.equals("1")){
+            Set<ProjectOrderVo> myProjectOrderListSet=getMyProjectOrderList(userVo);
+            if(!CollectionUtils.isEmpty(myProjectOrderListSet)){
+                allSet.addAll(myProjectOrderListSet);
+            }
+        }
         List<ProjectOrderVo> otherProjectOrderList= redisProjectOrderService.getProjectOrderListPage(page,pageSize);
         Set<ProjectOrderVo> otherProjectOrderSet=new HashSet<>(otherProjectOrderList);
         allSet.addAll(otherProjectOrderSet);
         return new ArrayList<>(allSet);
     }
 
-    private ProjectLeader translationToProjectLeader(ProjectCreateReq projectCreateReq,UserVo userVo)throws Exception {
-        String tableName = TableNameUtil.genProjectOrderTableName(userVo.getPin());
+    private Set<ProjectOrderVo> getMyProjectOrderList(UserVo userVo){
+        if(userVo==null || StringUtils.isEmpty(userVo.getPin())){
+            return new HashSet<>();
+        }
+        String tableName = TableNameUtil.genProjectLeaderTableName(userVo.getPin());
+        String projectOrderWithTableName=TableNameUtil.genProjectLeaderWithTableName(userVo.getPin());
+        if(StringUtils.isEmpty(tableName)){
+            return new HashSet<>();
+        }
+        ProjectLeader projectLeader=new ProjectLeader();
+        projectLeader.setTableName(tableName);
+        projectLeader.setPin("'"+userVo.getPin()+"'");
+        List<ProjectLeader> projectLeaderList=projectLeaderDao.selectMyProjectLeaderList(projectLeader);
+        if(CollectionUtils.isEmpty(projectLeaderList)){
+            return new HashSet<>();
+        }
+        List<String> orderIdList = new ArrayList<>();
+        for(ProjectLeader leader:projectLeaderList){
+            if(leader==null){
+                continue;
+            }
+            orderIdList.add(leader.getOrderId());
+        }
+        List<ProjectLeaderWith> projectLeaderWithList=projectLeaderWithDao.batchProjectLeaderWithList(projectOrderWithTableName,orderIdList);
+        List<ProjectOrderVo> orderVoList=translationToProjectOrderVo(projectLeaderList,projectLeaderWithList);
+        return new HashSet<>(orderVoList);
+    }
+
+    private List<ProjectOrderVo> translationToProjectOrderVo(List<ProjectLeader> projectLeaderList, List<ProjectLeaderWith> projectLeaderWithList) {
+        if(CollectionUtils.isEmpty(projectLeaderList)){
+            return new ArrayList<>();
+        }
+        List<ProjectOrderVo> projectOrderVoList=new ArrayList<>();
+        for(ProjectLeader projectLeader:projectLeaderList){
+            if(projectLeader==null){
+                continue;
+            }
+            List<ProjectLeaderWith> oneProjectLeaderWithList=new ArrayList<>();
+            for(ProjectLeaderWith projectLeaderWith:projectLeaderWithList){
+                if(projectLeader.getOrderId().equals(projectLeaderWith.getOrderId())){
+                    oneProjectLeaderWithList.add(projectLeaderWith);
+                }
+            }
+            ProjectOrderVo projectOrderVo=new ProjectOrderVo();
+            projectOrderVo.setTableName(projectLeader.getTableName());
+            projectOrderVo.setId(projectLeader.getId());
+            projectOrderVo.setOrderId(projectLeader.getOrderId());
+            projectOrderVo.setPin(projectLeader.getPin());
+            projectOrderVo.setCoordinate(projectLeader.getCoordinate());
+            projectOrderVo.setUserName(projectLeader.getUserName());
+            projectOrderVo.setProjectTitle(projectLeader.getProjectTitle());
+            projectOrderVo.setProjectNeedDay(projectLeader.getProjectNeedDay());
+            projectOrderVo.setProjectNeedWorker(projectLeader.getProjectNeedWorker());
+            projectOrderVo.setEveryDaySalary(projectLeader.getEveryDaySalary());
+            projectOrderVo.setProjectStartTime(projectLeader.getProjectStartTime());
+            projectOrderVo.setProjectEndTime(projectLeader.getProjectEndTime());
+            projectOrderVo.setProjectStatus(projectLeader.getProjectStatus());
+            projectOrderVo.setProjectTotalPay(projectLeader.getProjectTotalPay());
+            projectOrderVo.setMobileNumber(projectLeader.getMobileNumber());
+            projectOrderVo.setDescription(projectLeader.getDescription());
+            projectOrderVo.setProvinceId(projectLeader.getProvinceId());
+            projectOrderVo.setCityId(projectLeader.getCityId());
+            projectOrderVo.setCountyId(projectLeader.getCountyId());
+            projectOrderVo.setProvinceName(projectLeader.getProvinceName());
+            projectOrderVo.setCityName(projectLeader.getCityName());
+            projectOrderVo.setCountyName(projectLeader.getCountyName());
+            projectOrderVo.setAddressDetail(projectLeader.getAddressDetail());
+            projectOrderVo.setCompleteAddress(projectLeader.getCompleteAddress());
+            projectOrderVo.setCurrentWorkerNumber(projectLeader.getCurrentWorkerNumber());
+            projectOrderVo.setProjectLeaderWithList(oneProjectLeaderWithList);
+        }
+        return projectOrderVoList;
+    }
+
+    private ProjectLeader translationToProjectLeader(ProjectCreateReq projectCreateReq,UserVo userVo,String orderId)throws Exception {
+        String tableName = TableNameUtil.genProjectLeaderTableName(userVo.getPin());
         if(StringUtils.isBlank(tableName)){
             throw new Exception(SystemEnum.SYSTEM_ERROR.getDesc());
         }
-        String orderId="'"+genIdService.genProjectOrderId(CityEnum.PROJECT_CITY.getCode())+"'";
+        orderId="'"+orderId+"'";
         String pin="'"+userVo.getPin()+"'";
         String coordinate="''";
         String userName="''";
@@ -101,7 +279,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         String projecStartTime="'"+projectCreateReq.getProjectStartTime()+"'";
         String projectEndTime="'"+projectCreateReq.getProjectEndTime()+"'";
         //创建工程必须是0（未开始）状态
-        Integer projectStatus= ProjectStatusEnum.PROJECT_NOT_START.getCode();
+        Integer projectStatus= ProjectStatusEnum.PROJECT_RECRUITMENT.getCode();
         Double projectTotalPay=projectCreateReq.getProjectTotalPay();
         String mobileNumber="'"+projectCreateReq.getMobileNumber()+"'";
         String describe="''";
@@ -173,6 +351,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         projectLeader.setCreator(pin);
         projectLeader.setModifier(pin);
         projectLeader.setStatus(1);
+        projectLeader.setCurrentWorkerNumber(0);
         return projectLeader;
     }
 }

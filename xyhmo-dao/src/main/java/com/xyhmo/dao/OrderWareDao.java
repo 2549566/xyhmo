@@ -19,5 +19,5 @@ public interface OrderWareDao {
      * 根据id列表获取订单商品列表
      *
      * */
-    List<OrderWare> selectOrderWareListByOrderIdList(@Param("tableName")String orderWareTableName, @Param("orderIdList")List<String> orderIdList);
+    List<OrderWare> selectOrderWareListByOrderIdList(@Param("tableName")String projectOrderWithTableName, @Param("orderIdList")List<String> orderIdList);
 }
