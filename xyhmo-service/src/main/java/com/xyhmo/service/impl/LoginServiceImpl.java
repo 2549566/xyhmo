@@ -39,7 +39,8 @@ public class LoginServiceImpl implements LoginService{
             logger.error("LoginServiceImpl register error");
             return false;
         }
-        redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,mobile,Contants.TOKEN_OVER_TIME);
+        UserVo userVo= getUserInfo(mobile);
+        redisService.set(Contants.REDIS_TOKEKN_BEFORE+token,userVo,Contants.TOKEN_OVER_TIME);
         return id>0;
     }
 

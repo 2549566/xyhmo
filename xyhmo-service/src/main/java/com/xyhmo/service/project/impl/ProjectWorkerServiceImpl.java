@@ -80,11 +80,7 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
             throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_WORKER_APPLYERROR.getCode(),BusiessExceptionEnum.PROJECT_ORDER_WORKER_APPLYERROR.getDesc());
         }
         List<ProjectOrderVo> projectOrderVoList=redisService.get(Contants.REDIS_PROJECTORDERLIST_BJ);
-        //todo 在productLeaderWith 表中，添加字段，是否已报，如果报了，则前端按钮为灰色，在这里再做校验
-        /**
-         * 删除代码开始
-         *
-         * */
+        //校验工人是否申报工单
         for(ProjectOrderVo vo:projectOrderVoList){
             if(vo==null){
                 continue;
@@ -94,20 +90,16 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
                 continue;
             }
             for(ProjectLeaderWith projectLeaderWith:projectLeaderWithList){
-                if(userVo.getPin().equals(projectLeaderWith.getWorkerPin())){
+                if(projectLeaderWith.getWorkerPin().equals(userVo.getPin()) && projectLeaderWith.getIsApply()){
                     logger.error("ProjectWorkerServiceImpl：applyProjectOrder-该招工信息您已申报");
                     throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_IS_APPLY.getCode(),BusiessExceptionEnum.PROJECT_ORDER_IS_APPLY.getDesc());
                 }
             }
         }
-        /**
-         * 删除代码结束
-         *
-         * */
-        //todo 是否需要更新projectLeader表，还是说等开工以后，从缓存中写入数据库中,状态更新了以后还需要写工人的库
         ProjectLeaderWith projectLeaderWith=translationToProjectLeaderWith(userVo,projectLeader);
+        ProjectLeaderWith projectLeaderWithRedis=translationToProjectLeaderWithRedis(userVo,projectLeader);
         ProjectWorker projectWorker=translationToProjectWorker(userVo,projectLeader);
-        autowaredToProjectOrderVo(projectOrderVo,projectLeaderWith,projectLeader);
+        autowaredToProjectOrderVo(projectOrderVo,projectLeaderWithRedis,projectLeader);
         if(!projectOrderVo.getProjectStatus().equals(projectWorker.getProjectStatus())){
             projectWorker.setProjectStatus(projectOrderVo.getProjectStatus());
         }
@@ -240,6 +232,61 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
         projectLeaderWith.setStatus(1);
         projectLeaderWith.setScore(0.00);
         projectLeaderWith.setNextCooperation(1);
+        projectLeaderWith.setIsApply(true);
+        return projectLeaderWith;
+    }
+    /**
+     * 组装干活工人的报单类(缓存中)。
+     * projectLeaderWith 按照leaderPin(发布招工信息的人)来分表
+     *
+     * */
+    private ProjectLeaderWith translationToProjectLeaderWithRedis(UserVo userVo, ProjectLeader projectLeader) {
+        if(userVo==null || projectLeader== null){
+            return null;
+        }
+        String tableName=TableNameUtil.genProjectLeaderWithTableName(projectLeader.getPin());
+        if(StringUtils.isBlank(tableName)){
+            return null;
+        }
+        String orderId="";
+        if(StringUtils.isNotBlank(projectLeader.getOrderId())){
+            orderId=projectLeader.getOrderId();
+        }
+        String pin="";
+        if(StringUtils.isNotBlank(projectLeader.getPin())){
+            pin=projectLeader.getPin();
+        }
+        String workerPin="";
+        if(StringUtils.isNotBlank(userVo.getPin())){
+            workerPin=userVo.getPin();
+        }
+        BigDecimal everyDaySalary=projectLeader.getEveryDaySalary();
+        Integer totalDay=projectLeader.getProjectNeedDay();
+        BigDecimal totaSalary=projectLeader.getProjectTotalPay();
+        String workerMoblie="";
+        if(StringUtils.isNotBlank(userVo.getMobileNumber())){
+            workerMoblie=userVo.getMobileNumber();
+        }
+        String workerName="";
+        if(StringUtils.isNotBlank(userVo.getRealName())){
+            workerName=userVo.getRealName();
+        }
+        ProjectLeaderWith projectLeaderWith=new ProjectLeaderWith();
+        projectLeaderWith.setTableName(tableName);
+        projectLeaderWith.setOrderId(orderId);
+        projectLeaderWith.setPin(pin);
+        projectLeaderWith.setWorkerPin(workerPin);
+        projectLeaderWith.setEveryDaySalary(everyDaySalary);
+        projectLeaderWith.setTotalDay(totalDay);
+        projectLeaderWith.setTotaSalary(totaSalary);
+        projectLeaderWith.setWorkerMoblie(workerMoblie);
+        projectLeaderWith.setWorkerName(workerName);
+        projectLeaderWith.setCreator(pin);
+        projectLeaderWith.setModifier(pin);
+        projectLeaderWith.setStatus(1);
+        projectLeaderWith.setScore(0.00);
+        projectLeaderWith.setNextCooperation(1);
+        projectLeaderWith.setIsApply(true);
         return projectLeaderWith;
     }
     /**

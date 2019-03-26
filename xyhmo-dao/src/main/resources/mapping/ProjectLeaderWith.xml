@@ -18,16 +18,17 @@
       <result column="score" property="score" />
       <result column="next_cooperation" property="nextCooperation" />
       <result column="worker_name" property="workerName" />
+      <result column="is_apply" property="isApply" />
   </resultMap>
 
     <sql id="allColumns">
         id,order_id,pin,worker_pin,every_day_salary,total_day,total_salary,created,modified,creator,modifier,status,
-        worker_moblie,score,next_cooperation,worker_name
+        worker_moblie,score,next_cooperation,worker_name,is_apply
     </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"   parameterType="com.xyhmo.domain.ProjectLeaderWith" statementType="STATEMENT">
         INSERT INTO ${tableName} (<include refid="allColumns"/>)
         VALUES (null,${orderId},${pin},${workerPin},${everyDaySalary},${totalDay},${totaSalary},NOW(),NOW(),${creator},${modifier},${status},
-        ${workerMoblie},${score},${nextCooperation},${workerName})
+        ${workerMoblie},${score},${nextCooperation},${workerName},${isApply})
     </insert>
     <select id="batchProjectLeaderWithList" statementType="STATEMENT"  resultMap="BaseResultMap">
         SELECT <include refid="allColumns"/>

@@ -71,6 +71,11 @@ public class ProjectLeaderWith extends BaseModel implements Serializable{
      *
      * */
     private String workerName;
+    /**
+     * 是否已申报
+     *
+     * */
+    private Boolean isApply=false;
 
     public Long getId() {
         return id;
@@ -166,5 +171,13 @@ public class ProjectLeaderWith extends BaseModel implements Serializable{
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public Boolean getIsApply() {
+        return isApply;
+    }
+
+    public void setIsApply(Boolean isApply) {
+        this.isApply = isApply;
     }
 }
