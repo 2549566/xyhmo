@@ -1,6 +1,7 @@
 package com.xyhmo.service.project.impl;
 
 import com.xyhmo.commom.enums.CityEnum;
+import com.xyhmo.commom.enums.DateEnum;
 import com.xyhmo.commom.enums.ProjectStatusEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.SystemException;
@@ -232,7 +233,9 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         orderIdList.add("'"+orderId+"'");
         List<ProjectLeaderWith> projectLeaderWithList=projectLeaderWithDao.batchProjectLeaderWithList(projectLeaderWithTableName,orderIdList);
         projectOrderVo=new ProjectOrderVo();
-        return translationToOneProjectVo(projectOrderVo,projectLeader,projectLeaderWithList);
+        projectOrderVo=translationToOneProjectVo(projectOrderVo,projectLeader,projectLeaderWithList);
+        redisService.set(Contants.REDIS_ONE_PROJECTORDER+orderId,projectOrderVo, DateEnum.DATE_PROJECTORDER_ADDDAY.getCode());
+        return projectOrderVo;
     }
 
     private ProjectOrderVo translationToOneProjectVo(ProjectOrderVo projectOrderVo, ProjectLeader projectLeader,List<ProjectLeaderWith> projectLeaderWithList) {
