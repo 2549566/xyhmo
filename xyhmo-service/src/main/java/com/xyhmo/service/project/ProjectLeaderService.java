@@ -18,4 +18,14 @@ public interface ProjectLeaderService {
      *
      * */
     List<ProjectOrderVo> getProjectOrderListPage(UserVo userVo,Integer page,Integer pageSize);
+    /**
+     * 获取我的订单列表
+     *
+     * */
+    List<ProjectLeader> getMyProjectLeaderList(UserVo userVo,Integer projectStatus);
+    /**
+     * 根据订单ID获取订单报工信息
+     *
+     * */
+    ProjectOrderVo getProjectLeaderWithListByOrderId(UserVo userVo, String orderId);
 }

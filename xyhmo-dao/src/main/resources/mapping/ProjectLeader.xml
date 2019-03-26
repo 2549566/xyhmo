@@ -48,6 +48,14 @@
         SELECT <include refid="allColumns"/>
         FROM ${tableName}
         WHERE STATUS = 1 AND pin=${pin}
+        <choose>
+            <when test="projectStatus==0 or projectStatus==1">
+                AND project_status IN (0,1) ORDER BY project_status ASC, created DESC
+            </when>
+            <otherwise>
+                AND project_status=${projectStatus} ORDER BY created DESC
+            </otherwise>
+        </choose>
     </select>
     <select id="selectOneProjectLeader" parameterType="com.xyhmo.domain.ProjectLeader"  statementType="STATEMENT" resultMap="BaseResultMap">
         SELECT <include refid="allColumns"/>

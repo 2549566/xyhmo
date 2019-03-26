@@ -5,6 +5,7 @@ import com.xyhmo.commom.enums.ParamEnum;
 import com.xyhmo.commom.enums.ReturnEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.ParamException;
+import com.xyhmo.domain.ProjectLeader;
 import com.xyhmo.domain.ProjectOrderVo;
 import com.xyhmo.query.project.ProjectCreateReq;
 import com.xyhmo.service.TokenService;
@@ -23,8 +24,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/projectLeader")
@@ -103,14 +106,59 @@ public class ProjectLeaderController {
             List<ProjectOrderVo> projectLeaderVoList= projectLeaderService.getProjectOrderListPage(userVo,page,pageSize);
             return result.success(projectLeaderVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
-            logger.error("projectOrderLeader:订单入参错误",p);
+            logger.error("projectOrderLeader:每页最多查询不能超过50个",p);
             return result.fail(p.getCode(),p.getMessage());
         }catch (Exception e){
-            logger.error("projectOrderLeader：保存工程订单失败",e);
+            logger.error("projectOrderLeader：获取所有的招工订单列表失败",e);
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
         }
     }
 
+    /**
+     * 获取不同状态的我的列表
+     * 入参:0或1的情况下，取0和1的并集。并且按状态顺序排列
+     * */
+    @RequestMapping(value = "/getMyProjectOrderList", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getMyProjectOrderList(String token,Integer projectStatus){
+        Result result = new Result();
+        try{
+            UserVo userVo=tokenService.checkTokenExist(token);
+            List<ProjectLeader> projectLeaderList=projectLeaderService.getMyProjectLeaderList(userVo,projectStatus);
+            return result.success(projectLeaderList, ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("projectOrderLeader:获取我的招工订单入参错误",p);
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (Exception e){
+            logger.error("projectOrderLeader：获取我的订单列表失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+    }
+
+
+    /**
+     * 根据订单ID查询报工列表
+     *
+     * */
+    @RequestMapping(value = "/getProjectLeaderWithListByOrderId", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getProjectLeaderWithListByOrderId(String token,String orderId){
+        Result result = new Result();
+        try{
+            if(StringUtils.isBlank(orderId)){
+                throw new ParamException(ParamEnum.PARAM_ORDER_ID_ERROR.getCode(),ParamEnum.PARAM_ORDER_ID_ERROR.getDesc());
+            }
+            UserVo userVo=tokenService.checkTokenExist(token);
+            ProjectOrderVo projectOrderVo=projectLeaderService.getProjectLeaderWithListByOrderId(userVo,orderId);
+            return result.success(projectOrderVo, ReturnEnum.RETURN_SUCCESS.getDesc());
+        }catch (ParamException p){
+            logger.error("projectOrderLeader:根据订单ID获取订单报工信息入参错误",p);
+            return result.fail(p.getCode(),p.getMessage());
+        }catch (Exception e){
+            logger.error("projectOrderLeader：根据订单ID获取订单报工信息失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+    }
 
 
 

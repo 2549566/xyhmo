@@ -4,6 +4,8 @@ import com.xyhmo.commom.enums.CityEnum;
 import com.xyhmo.commom.enums.ProjectStatusEnum;
 import com.xyhmo.commom.enums.SystemEnum;
 import com.xyhmo.commom.exception.SystemException;
+import com.xyhmo.commom.service.Contants;
+import com.xyhmo.commom.service.RedisService;
 import com.xyhmo.commom.utils.TableNameUtil;
 import com.xyhmo.dao.ProjectLeaderDao;
 import com.xyhmo.dao.ProjectLeaderWithDao;
@@ -46,6 +48,9 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
     private RedisProjectOrderService redisProjectOrderService;
     @Autowired
     private ProjectLeaderWithDao projectLeaderWithDao;
+
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public Long createProjectOrder(ProjectCreateReq projectCreateReq)throws Exception {
@@ -184,6 +189,82 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         return new ArrayList<>(allSet);
     }
 
+    @Override
+    public List<ProjectLeader> getMyProjectLeaderList(UserVo userVo, Integer projectStatus) {
+        if(userVo==null || StringUtils.isEmpty(userVo.getPin())){
+            return new ArrayList<>();
+        }
+        String tableName = TableNameUtil.genProjectLeaderTableName(userVo.getPin());
+        if(StringUtils.isEmpty(tableName)){
+            return new ArrayList<>();
+        }
+        ProjectLeader projectLeader=new ProjectLeader();
+        projectLeader.setTableName(tableName);
+        projectLeader.setPin("'"+userVo.getPin()+"'");
+        projectLeader.setProjectStatus(projectStatus);
+        List<ProjectLeader> projectLeaderList=projectLeaderDao.selectMyProjectLeaderList(projectLeader);
+        return projectLeaderList;
+    }
+
+    @Override
+    public ProjectOrderVo getProjectLeaderWithListByOrderId(UserVo userVo, String orderId) {
+        if(StringUtils.isBlank(orderId) || userVo==null || StringUtils.isBlank(userVo.getPin())){
+            return null;
+        }
+        ProjectOrderVo projectOrderVo=redisService.get(Contants.REDIS_ONE_PROJECTORDER+orderId);
+        if(projectOrderVo!=null){
+            return projectOrderVo;
+        }
+        String projectLeaderTableName=TableNameUtil.genProjectLeaderTableName(userVo.getPin());
+        String projectLeaderWithTableName=TableNameUtil.genProjectLeaderWithTableName(userVo.getPin());
+        if(StringUtils.isBlank(projectLeaderTableName) || StringUtils.isBlank(projectLeaderWithTableName)){
+            return null;
+        }
+        ProjectLeader projectLeaderParam=new ProjectLeader();
+        projectLeaderParam.setPin("'"+userVo.getPin()+"'");
+        projectLeaderParam.setTableName(projectLeaderTableName);
+        projectLeaderParam.setOrderId("'"+orderId+"'");
+        ProjectLeader projectLeader=projectLeaderDao.selectOneProjectLeader(projectLeaderParam);
+        if(projectLeader==null){
+            return null;
+        }
+        List<String> orderIdList=new ArrayList<>();
+        orderIdList.add("'"+orderId+"'");
+        List<ProjectLeaderWith> projectLeaderWithList=projectLeaderWithDao.batchProjectLeaderWithList(projectLeaderWithTableName,orderIdList);
+        projectOrderVo=new ProjectOrderVo();
+        return translationToOneProjectVo(projectOrderVo,projectLeader,projectLeaderWithList);
+    }
+
+    private ProjectOrderVo translationToOneProjectVo(ProjectOrderVo projectOrderVo, ProjectLeader projectLeader,List<ProjectLeaderWith> projectLeaderWithList) {
+        projectOrderVo.setTableName(projectLeader.getTableName());
+        projectOrderVo.setId(projectLeader.getId());
+        projectOrderVo.setOrderId(projectLeader.getOrderId());
+        projectOrderVo.setPin(projectLeader.getPin());
+        projectOrderVo.setCoordinate(projectLeader.getCoordinate());
+        projectOrderVo.setUserName(projectLeader.getUserName());
+        projectOrderVo.setProjectTitle(projectLeader.getProjectTitle());
+        projectOrderVo.setProjectNeedDay(projectLeader.getProjectNeedDay());
+        projectOrderVo.setProjectNeedWorker(projectLeader.getProjectNeedWorker());
+        projectOrderVo.setEveryDaySalary(projectLeader.getEveryDaySalary());
+        projectOrderVo.setProjectStartTime(projectLeader.getProjectStartTime());
+        projectOrderVo.setProjectEndTime(projectLeader.getProjectEndTime());
+        projectOrderVo.setProjectStatus(projectLeader.getProjectStatus());
+        projectOrderVo.setProjectTotalPay(projectLeader.getProjectTotalPay());
+        projectOrderVo.setMobileNumber(projectLeader.getMobileNumber());
+        projectOrderVo.setDescription(projectLeader.getDescription());
+        projectOrderVo.setProvinceId(projectLeader.getProvinceId());
+        projectOrderVo.setCityId(projectLeader.getCityId());
+        projectOrderVo.setCountyId(projectLeader.getCountyId());
+        projectOrderVo.setProvinceName(projectLeader.getProvinceName());
+        projectOrderVo.setCityName(projectLeader.getCityName());
+        projectOrderVo.setCountyName(projectLeader.getCountyName());
+        projectOrderVo.setAddressDetail(projectLeader.getAddressDetail());
+        projectOrderVo.setCompleteAddress(projectLeader.getCompleteAddress());
+        projectOrderVo.setCurrentWorkerNumber(projectLeader.getCurrentWorkerNumber());
+        projectOrderVo.setProjectLeaderWithList(projectLeaderWithList);
+        return projectOrderVo;
+    }
+
     private Set<ProjectOrderVo> getMyProjectOrderList(UserVo userVo){
         if(userVo==null || StringUtils.isEmpty(userVo.getPin())){
             return new HashSet<>();
@@ -196,6 +277,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         ProjectLeader projectLeader=new ProjectLeader();
         projectLeader.setTableName(tableName);
         projectLeader.setPin("'"+userVo.getPin()+"'");
+        projectLeader.setProjectStatus(ProjectStatusEnum.PROJECT_RECRUITMENT.getCode());
         List<ProjectLeader> projectLeaderList=projectLeaderDao.selectMyProjectLeaderList(projectLeader);
         if(CollectionUtils.isEmpty(projectLeaderList)){
             return new HashSet<>();
@@ -205,7 +287,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
             if(leader==null){
                 continue;
             }
-            orderIdList.add(leader.getOrderId());
+            orderIdList.add("'"+leader.getOrderId()+"'");
         }
         List<ProjectLeaderWith> projectLeaderWithList=projectLeaderWithDao.batchProjectLeaderWithList(projectOrderWithTableName,orderIdList);
         List<ProjectOrderVo> orderVoList=translationToProjectOrderVo(projectLeaderList,projectLeaderWithList);
@@ -228,32 +310,8 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
                 }
             }
             ProjectOrderVo projectOrderVo=new ProjectOrderVo();
-            projectOrderVo.setTableName(projectLeader.getTableName());
-            projectOrderVo.setId(projectLeader.getId());
-            projectOrderVo.setOrderId(projectLeader.getOrderId());
-            projectOrderVo.setPin(projectLeader.getPin());
-            projectOrderVo.setCoordinate(projectLeader.getCoordinate());
-            projectOrderVo.setUserName(projectLeader.getUserName());
-            projectOrderVo.setProjectTitle(projectLeader.getProjectTitle());
-            projectOrderVo.setProjectNeedDay(projectLeader.getProjectNeedDay());
-            projectOrderVo.setProjectNeedWorker(projectLeader.getProjectNeedWorker());
-            projectOrderVo.setEveryDaySalary(projectLeader.getEveryDaySalary());
-            projectOrderVo.setProjectStartTime(projectLeader.getProjectStartTime());
-            projectOrderVo.setProjectEndTime(projectLeader.getProjectEndTime());
-            projectOrderVo.setProjectStatus(projectLeader.getProjectStatus());
-            projectOrderVo.setProjectTotalPay(projectLeader.getProjectTotalPay());
-            projectOrderVo.setMobileNumber(projectLeader.getMobileNumber());
-            projectOrderVo.setDescription(projectLeader.getDescription());
-            projectOrderVo.setProvinceId(projectLeader.getProvinceId());
-            projectOrderVo.setCityId(projectLeader.getCityId());
-            projectOrderVo.setCountyId(projectLeader.getCountyId());
-            projectOrderVo.setProvinceName(projectLeader.getProvinceName());
-            projectOrderVo.setCityName(projectLeader.getCityName());
-            projectOrderVo.setCountyName(projectLeader.getCountyName());
-            projectOrderVo.setAddressDetail(projectLeader.getAddressDetail());
-            projectOrderVo.setCompleteAddress(projectLeader.getCompleteAddress());
-            projectOrderVo.setCurrentWorkerNumber(projectLeader.getCurrentWorkerNumber());
-            projectOrderVo.setProjectLeaderWithList(oneProjectLeaderWithList);
+            projectOrderVo=translationToOneProjectVo(projectOrderVo,projectLeader,oneProjectLeaderWithList);
+            projectOrderVoList.add(projectOrderVo);
         }
         return projectOrderVoList;
     }
