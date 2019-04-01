@@ -53,10 +53,19 @@ public final class Contants {
 	public static int ORDERWORKER_CACHE_OVER_TIME;
 	//缓存：地址表的缓存
 	public static String REDIS_ADDRESS;
+
+	/**
+	 * 工程订单缓存
+	 *
+	 * */
 	//缓存：(北京)招工订单（大缓存）
 	public static String REDIS_PROJECTORDERLIST_BJ;
 	//缓存：一个招工订单
 	public static String REDIS_ONE_PROJECTORDER;
+	//缓存：一个干活工人的工程时间
+	public static String REDIS_ONE_WORKERTIMELIST;
+
+
 	static{
 		MOBILE_GEN_CODE = "mobile_check_code_";
 		MOBILE_CHECK_CODE_OVER_TIME = 10*60;
@@ -85,6 +94,7 @@ public final class Contants {
 		REDIS_ADDRESS="redis_address";
 		REDIS_PROJECTORDERLIST_BJ="redis_projectOrderList_bj";
 		REDIS_ONE_PROJECTORDER="redis_projectOrder_one_";
+		REDIS_ONE_WORKERTIMELIST="redis_one_workerTimeList_";
 	}
 
 	

@@ -15,6 +15,7 @@ import com.xyhmo.domain.ProjectLeader;
 import com.xyhmo.domain.ProjectLeaderWith;
 import com.xyhmo.domain.ProjectOrderVo;
 import com.xyhmo.domain.ProjectWorker;
+import com.xyhmo.service.project.ProjectLeaderService;
 import com.xyhmo.service.project.ProjectWorkerService;
 import com.xyhmo.vo.UserVo;
 import org.apache.commons.lang.StringUtils;
@@ -47,6 +48,8 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
     private ProjectLeaderWithDao projectLeaderWithDao;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private ProjectLeaderService projectLeaderService;
 
     @Override
     public Boolean applyProjectOrder(UserVo userVo,String leaderPin, String projectOrderId) {
@@ -57,7 +60,7 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
             return false;
         }
         //根据leaderPin(分表，根据leaderPin找到是在哪个表) 和工程订单查询该工程
-        ProjectLeader projectLeader=getOneProjectLeader(leaderPin,projectOrderId);
+        ProjectLeader projectLeader=projectLeaderService.getOneProjectLeader(leaderPin,projectOrderId);
         if(projectLeader==null){
             return false;
         }
@@ -96,14 +99,15 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
                 }
             }
         }
-        ProjectLeaderWith projectLeaderWith=translationToProjectLeaderWith(userVo,projectLeader);
+//        ProjectLeaderWith projectLeaderWith=translationToProjectLeaderWith(userVo,projectLeader);
         ProjectLeaderWith projectLeaderWithRedis=translationToProjectLeaderWithRedis(userVo,projectLeader);
-        ProjectWorker projectWorker=translationToProjectWorker(userVo,projectLeader);
+//        ProjectWorker projectWorker=translationToProjectWorker(userVo,projectLeader);
         autowaredToProjectOrderVo(projectOrderVo,projectLeaderWithRedis,projectLeader);
-        if(!projectOrderVo.getProjectStatus().equals(projectWorker.getProjectStatus())){
-            projectWorker.setProjectStatus(projectOrderVo.getProjectStatus());
-        }
-        saveWorkerApply(projectLeaderWith,projectWorker,projectLeader);
+//        if(!projectOrderVo.getProjectStatus().equals(projectWorker.getProjectStatus())){
+//            projectWorker.setProjectStatus(projectOrderVo.getProjectStatus());
+//        }
+//        todo 没有必要事务存入 缓存中就有数据
+//        saveWorkerApply(projectLeaderWith,projectWorker,projectLeader);
         //查询大缓存中的所有订单列表
         if(CollectionUtils.isEmpty(projectOrderVoList)){
             logger.error("ProjectWorkerServiceImpl：applyProjectOrder-招工订单(所有订单)大缓存出现问题，请及时排查");
@@ -162,11 +166,13 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
     public void saveWorkerApply(ProjectLeaderWith projectLeaderWith,ProjectWorker projectWorker,ProjectLeader projectLeader) {
         projectLeaderWithDao.insert(projectLeaderWith);
         projectWorkerDao.insert(projectWorker);
+        ProjectLeader projectLeaderParam=new ProjectLeader();
         String leaderPin=projectLeader.getPin();
         String tableName=TableNameUtil.genProjectLeaderTableName(leaderPin);
-        projectLeader.setTableName(tableName);
-        projectLeader.setOrderId("'"+projectLeader.getOrderId()+"'");
-        projectLeaderDao.updateCurrentWorkerNum(projectLeader);
+        projectLeaderParam.setTableName(tableName);
+        projectLeaderParam.setOrderId("'"+projectLeader.getOrderId()+"'");
+        projectLeaderParam.setCurrentWorkerNumber(projectLeader.getCurrentWorkerNumber());
+        projectLeaderDao.updateProjectLeader(projectLeaderParam);
     }
 
     @Override
@@ -372,12 +378,4 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
         return projectWorker;
     }
 
-    private ProjectLeader getOneProjectLeader(String leaderPin, String projectOrderId) {
-        ProjectLeader projectLeader=new ProjectLeader();
-        String tableName = TableNameUtil.genProjectLeaderTableName(leaderPin);
-        projectLeader.setPin("'"+leaderPin+"'");
-        projectLeader.setTableName(tableName);
-        projectLeader.setOrderId("'"+projectOrderId+"'");
-        return projectLeaderDao.selectOneProjectLeader(projectLeader);
-    }
 }

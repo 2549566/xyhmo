@@ -62,11 +62,17 @@
         FROM ${tableName}
         WHERE STATUS = 1 AND order_id=${orderId}
     </select>
-    <update  id="updateCurrentWorkerNum" parameterType="com.xyhmo.domain.ProjectLeader"  statementType="STATEMENT">
+    <update  id="updateProjectLeader" parameterType="com.xyhmo.domain.ProjectLeader"  statementType="STATEMENT">
         UPDATE ${tableName} SET
-        current_worker_number=${currentWorkerNumber},
+        <if test="currentWorkerNumber!=null">
+            current_worker_number=${currentWorkerNumber},
+        </if>
+        <if test="projectStatus!=null">
+            project_status=${projectStatus},
+        </if>
         modified=NOW()
         WHERE order_id=${orderId}
     </update>
+
 
 </mapper>

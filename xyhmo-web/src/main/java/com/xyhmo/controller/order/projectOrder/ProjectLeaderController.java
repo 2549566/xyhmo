@@ -1,13 +1,13 @@
 package com.xyhmo.controller.order.projectOrder;
 
 import com.xyhmo.commom.base.Result;
-import com.xyhmo.commom.enums.ParamEnum;
-import com.xyhmo.commom.enums.ReturnEnum;
-import com.xyhmo.commom.enums.SystemEnum;
+import com.xyhmo.commom.enums.*;
+import com.xyhmo.commom.exception.BusinessException;
 import com.xyhmo.commom.exception.ParamException;
 import com.xyhmo.domain.ProjectLeader;
 import com.xyhmo.domain.ProjectOrderVo;
 import com.xyhmo.query.project.ProjectCreateReq;
+import com.xyhmo.query.project.WorkerInfoParam;
 import com.xyhmo.service.TokenService;
 import com.xyhmo.service.project.ProjectLeaderService;
 import com.xyhmo.vo.UserVo;
@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -138,18 +139,21 @@ public class ProjectLeaderController {
 
     /**
      * 根据订单ID查询报工列表
+     * projectStatus =0 的时候，缓存中一定有数据
+     * projectStatus =1 的时候，缓存中一定有数据
+     * projectStatus >1 的时候，缓存中不一定有数据，所以如果在缓存中获取不到数据，就去数据库拿
      *
      * */
     @RequestMapping(value = "/getProjectLeaderWithListByOrderId", method = RequestMethod.GET)
     @ResponseBody
-    public Result getProjectLeaderWithListByOrderId(String token,String orderId){
+    public Result getProjectLeaderWithListByOrderId(String token,String orderId,Integer projectStatus){
         Result result = new Result();
         try{
             if(StringUtils.isBlank(orderId)){
                 throw new ParamException(ParamEnum.PARAM_ORDER_ID_ERROR.getCode(),ParamEnum.PARAM_ORDER_ID_ERROR.getDesc());
             }
             UserVo userVo=tokenService.checkTokenExist(token);
-            ProjectOrderVo projectOrderVo=projectLeaderService.getProjectLeaderWithListByOrderId(userVo,orderId);
+            ProjectOrderVo projectOrderVo=projectLeaderService.getProjectLeaderWithListByOrderId(userVo,orderId,projectStatus);
             return result.success(projectOrderVo, ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
             logger.error("projectOrderLeader:根据订单ID获取订单报工信息入参错误",p);
@@ -160,6 +164,34 @@ public class ProjectLeaderController {
         }
     }
 
+    /**
+     * 确定干活工人
+     *
+     * */
+    private Result sureProjectWorkerList(String token,String orderId,List<WorkerInfoParam> workerInfoList){
+        Result result = new Result();
+        if(StringUtils.isBlank(token) || StringUtils.isBlank(orderId) || CollectionUtils.isEmpty(workerInfoList)){
+            return result.fail("系统正忙，请稍后再试");
+        }
+        try {
+            UserVo userVo=tokenService.checkTokenExist(token);
+            Boolean flag=false;
+            List<String> errorWorkerList= projectLeaderService.sureProjectWorkerList(userVo,orderId,workerInfoList);
+            if(CollectionUtils.isEmpty(errorWorkerList)){
+                flag=true;
+            }
+            if(!flag){
+                result.fail("系统正忙，请稍后再试");
+            }
+            return result.success("确认成功，请提前一天联系干活工人");
+        }catch (BusinessException b){
+            logger.error("projectOrderLeader：sureProjectWorkerList确认干活工人失败",b);
+            return result.fail(BusiessExceptionEnum.PROJECT_ORDER_SUREWORKERLIST_ERROR.getCode(),BusiessExceptionEnum.PROJECT_ORDER_SUREWORKERLIST_ERROR.getDesc());
+        }catch (Exception e){
+            logger.error("projectOrderLeader：sureProjectWorkerList确认干活工人失败",e);
+            return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
+        }
+    }
 
 
     private Boolean checkParam(ProjectCreateReq projectCreateReq){

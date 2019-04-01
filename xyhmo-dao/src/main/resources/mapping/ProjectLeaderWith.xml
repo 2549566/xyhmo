@@ -30,6 +30,13 @@
         VALUES (null,${orderId},${pin},${workerPin},${everyDaySalary},${totalDay},${totaSalary},NOW(),NOW(),${creator},${modifier},${status},
         ${workerMoblie},${score},${nextCooperation},${workerName},${isApply})
     </insert>
+    <insert id="insertBatch" statementType="STATEMENT" parameterType="java.util.List">
+        insert into ${tableName} (<include refid="allColumns"/>) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (null,${item.orderId},${item.pin},${item.workerPin},${item.everyDaySalary},${item.totalDay},${item.totaSalary},NOW(),NOW(),${item.creator},${item.modifier},${item.status},
+            ${item.workerMoblie},${item.score},${item.nextCooperation},${item.workerName},${item.isApply})
+        </foreach>
+    </insert>
     <select id="batchProjectLeaderWithList" statementType="STATEMENT"  resultMap="BaseResultMap">
         SELECT <include refid="allColumns"/>
         FROM ${tableName}
@@ -38,4 +45,5 @@
             ${idList}
         </foreach>
     </select>
+
 </mapper>

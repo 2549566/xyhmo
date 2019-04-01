@@ -2,6 +2,7 @@ package com.xyhmo.dao;
 
 import com.xyhmo.commom.dao.MyBatisRepository;
 import com.xyhmo.domain.ProjectLeader;
+import com.xyhmo.domain.ProjectLeaderWith;
 
 import java.util.List;
 
@@ -26,8 +27,10 @@ public interface ProjectLeaderDao {
      * */
     ProjectLeader selectOneProjectLeader(ProjectLeader projectLeader);
     /**
-     * 修改当前工人数量
+     * 修改projectLeader
      *
      * */
-    Long updateCurrentWorkerNum(ProjectLeader projectLeader);
+    Long updateProjectLeader(ProjectLeader projectLeader);
+
+    void insertBatch(List<ProjectLeaderWith> projectLeaderWithList);
 }

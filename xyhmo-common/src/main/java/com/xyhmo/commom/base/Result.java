@@ -6,6 +6,12 @@ public class Result<T> implements Serializable {
     private static final long serialVersionUID = -5230176214305528119L;
 
     private boolean success=false;
+    /**
+     * 1：成功
+     * 0:失败
+     * -1：未登录
+     *
+     * */
     private Integer code;
     private Integer businessCode;
     private String message;
