@@ -2,7 +2,7 @@ package com.xyhmo.commom.enums;
 
 /**
  * 工程状态
- * 0：招工中，1：招工结束 2：正在进行中 3：工程暂停 4：工程不正常结束 10：工程结束
+ * 0：招工中，1：招工结束，未开始 2：正在进行中 3：工程暂停 4：工程不正常结束 10：工程结束
  *
  * */
 public enum ProjectStatusEnum {

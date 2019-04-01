@@ -17,7 +17,7 @@ public interface ProjectWorkerService {
      * 事务处理
      *
      * */
-    void saveWorkerApply(ProjectLeaderWith projectLeaderWith, ProjectWorker projectWorker,ProjectLeader projectLeader);
+    void saveWorkerApply(ProjectLeader projectLeader);
     /**
      * 获取干活工人在干的工程列表
      *

@@ -130,7 +130,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
                 }
                 if(address.getId().equals(cityId)){
                     cityName=address.getCityName();
-                    projectCreateReq.setCitName(address.getCityName());
+                    projectCreateReq.setCityName(address.getCityName());
                     continue;
                 }
                 if(address.getId().equals(countyId)){
@@ -144,7 +144,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         if(StringUtils.isNotBlank(projectCreateReq.getAddressDetail())){
             addressDetail=projectCreateReq.getAddressDetail();
         }
-        String completeAddress=projectCreateReq.getProvinceName()+projectCreateReq.getCitName()+projectCreateReq.getCountyName()+projectCreateReq.getAddressDetail();
+        String completeAddress=projectCreateReq.getProvinceName()+projectCreateReq.getCityName()+projectCreateReq.getCountyName()+projectCreateReq.getAddressDetail();
         ProjectLeader projectLeader=new ProjectLeader();
         projectLeader.setTableName(tableName);
         projectLeader.setOrderId(orderId);
@@ -733,7 +733,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
                 }
                 if(address.getId().equals(cityId)){
                     cityName="'"+address.getCityName()+"'";
-                    projectCreateReq.setCitName(address.getCityName());
+                    projectCreateReq.setCityName(address.getCityName());
                     continue;
                 }
                 if(address.getId().equals(countyId)){
@@ -747,7 +747,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         if(StringUtils.isNotBlank(projectCreateReq.getAddressDetail())){
             addressDetail="'"+projectCreateReq.getAddressDetail()+"'";
         }
-        String completeAddress="'"+projectCreateReq.getProvinceName()+projectCreateReq.getCitName()+projectCreateReq.getCountyName()+projectCreateReq.getAddressDetail()+"'";
+        String completeAddress="'"+projectCreateReq.getProvinceName()+projectCreateReq.getCityName()+projectCreateReq.getCountyName()+projectCreateReq.getAddressDetail()+"'";
         ProjectLeader projectLeader=new ProjectLeader();
         projectLeader.setTableName(tableName);
         projectLeader.setOrderId(orderId);

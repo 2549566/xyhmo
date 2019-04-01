@@ -1,5 +1,6 @@
 package com.xyhmo.controller.order.projectOrder;
 
+import com.alibaba.dubbo.common.json.JSON;
 import com.xyhmo.commom.base.Result;
 import com.xyhmo.commom.enums.*;
 import com.xyhmo.commom.exception.BusinessException;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,7 +64,7 @@ public class ProjectLeaderController {
         projectCreateReq.setProjectTitle("工程标题");
         projectCreateReq.setProjectNeedWorker(5);
         projectCreateReq.setProjectNeedDay(7);
-        String start  = "2019-03-26";
+        String start  = "2019-04-12";
         String end="2019-03-28";
         projectCreateReq.setProjectStartTime(start);
         projectCreateReq.setProjectEndTime(end);
@@ -259,4 +261,30 @@ public class ProjectLeaderController {
      * 获取我的工单列表
      * 列表中每个工人必须校验工人在这期间是否有活
      * */
+
+    public static void main(String[] args) {
+        ProjectCreateReq projectCreateReq=new ProjectCreateReq();
+        projectCreateReq.setToken("f639681dfded0944eb486bbf08fe6891");
+        projectCreateReq.setProjectTitle("工程标题");
+        projectCreateReq.setProjectNeedWorker(5);
+        projectCreateReq.setProjectNeedDay(7);
+        String start  = "2019-04-12";
+        String end="2019-03-28";
+        projectCreateReq.setProjectStartTime(start);
+        projectCreateReq.setProjectEndTime(end);
+        projectCreateReq.setEveryDaySalary(300.00);
+        projectCreateReq.setProjectTotalPay(10500.00);
+        projectCreateReq.setProvinceId(2);
+        projectCreateReq.setCityId(52);
+        projectCreateReq.setCountyId(502);
+        projectCreateReq.setCoordinate("12324,12221");
+        projectCreateReq.setAddressDetail("新龙城小区1号楼2单元301室");
+        projectCreateReq.setMobileNumber("13718699660");
+        projectCreateReq.setDescribe("卫生间漏水，需要维修工人5个，7天内干完");
+        try {
+            System.out.println(JSON.json(projectCreateReq));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

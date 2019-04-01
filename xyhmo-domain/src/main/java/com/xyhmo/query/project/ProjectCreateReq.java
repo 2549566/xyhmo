@@ -78,7 +78,7 @@ public class ProjectCreateReq implements Serializable{
      * 市区名称
      *
      * */
-    private String citName;
+    private String cityName;
     /**
      * 县城名称
      *
@@ -187,12 +187,12 @@ public class ProjectCreateReq implements Serializable{
         this.provinceName = provinceName;
     }
 
-    public String getCitName() {
-        return citName;
+    public String getCityName() {
+        return cityName;
     }
 
-    public void setCitName(String citName) {
-        this.citName = citName;
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public String getCountyName() {

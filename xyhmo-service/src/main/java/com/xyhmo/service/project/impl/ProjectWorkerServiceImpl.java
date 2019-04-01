@@ -18,6 +18,7 @@ import com.xyhmo.domain.ProjectWorker;
 import com.xyhmo.service.project.ProjectLeaderService;
 import com.xyhmo.service.project.ProjectWorkerService;
 import com.xyhmo.vo.UserVo;
+import com.xyhmo.vo.project.ProjectWorkerTimeVo;
 import org.apache.commons.lang.StringUtils;
 import org.omg.CORBA.ORB;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,6 +73,19 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
             logger.error("ProjectWorkerServiceImpl：applyProjectOrder-招工订单(单个订单)缓存出现问题，请及时排查");
             throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_REDIS_GETBYPROJECTORDERID.getCode(),BusiessExceptionEnum.PROJECT_ORDER_REDIS_GETBYPROJECTORDERID.getDesc());
         }
+        //校验工人是否申报工单
+        List<ProjectLeaderWith> withList=projectOrderVo.getProjectLeaderWithList();
+        if(!CollectionUtils.isEmpty(withList)){
+            for(ProjectLeaderWith projectLeaderWith:withList){
+                if(projectLeaderWith==null){
+                    continue;
+                }
+                if(userVo.getPin().equals(projectLeaderWith.getWorkerPin()) && projectLeaderWith.getIsApply()){
+                    logger.error("ProjectWorkerServiceImpl：applyProjectOrder-该招工信息您已申报");
+                    throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_IS_APPLY.getCode(),BusiessExceptionEnum.PROJECT_ORDER_IS_APPLY.getDesc());
+                }
+            }
+        }
         if(!projectOrderVo.getProjectStatus().equals(ProjectStatusEnum.PROJECT_RECRUITMENT.getCode())){
             logger.error("ProjectWorkerServiceImpl：applyProjectOrder-招工已经结束");
             throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_WORKER_APPLYERROR.getCode(),BusiessExceptionEnum.PROJECT_ORDER_WORKER_APPLYERROR.getDesc());
@@ -82,23 +98,47 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
             logger.error("ProjectWorkerServiceImpl：applyProjectOrder-招工已经结束");
             throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_WORKER_APPLYERROR.getCode(),BusiessExceptionEnum.PROJECT_ORDER_WORKER_APPLYERROR.getDesc());
         }
-        List<ProjectOrderVo> projectOrderVoList=redisService.get(Contants.REDIS_PROJECTORDERLIST_BJ);
-        //校验工人是否申报工单
-        for(ProjectOrderVo vo:projectOrderVoList){
-            if(vo==null){
-                continue;
-            }
-            List<ProjectLeaderWith> projectLeaderWithList=vo.getProjectLeaderWithList();
-            if(projectLeaderWithList==null || CollectionUtils.isEmpty(projectLeaderWithList)){
-                continue;
-            }
-            for(ProjectLeaderWith projectLeaderWith:projectLeaderWithList){
-                if(projectLeaderWith.getWorkerPin().equals(userVo.getPin()) && projectLeaderWith.getIsApply()){
-                    logger.error("ProjectWorkerServiceImpl：applyProjectOrder-该招工信息您已申报");
-                    throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_IS_APPLY.getCode(),BusiessExceptionEnum.PROJECT_ORDER_IS_APPLY.getDesc());
-                }
-            }
-        }
+
+//        /**
+//         * 校验申报的时间是否有冲突
+//         *
+//         * */
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//        List<ProjectWorkerTimeVo> voList=redisService.get(Contants.REDIS_ONE_WORKERTIMELIST+userVo.getPin());
+//        for(ProjectWorkerTimeVo vo:voList){
+//            Date startTime= null;
+//            Date endTime=null;
+//            try {
+//                startTime = df.parse(projectOrderVo.getProjectStartTime());
+//                endTime=df.parse(projectOrderVo.getProjectEndTime());
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            if(vo.getStartDate().compareTo(startTime)>0 && vo.getStartDate().compareTo(endTime)<0){
+//                errorWorkerNameList.add(workerInfo.getRealName());
+//                break;
+//            }
+//            if(vo.getEndDate().compareTo(startTime)>0 && vo.getEndDate().compareTo(endTime)<0){
+//                errorWorkerNameList.add(workerInfo.getRealName());
+//                break;
+//            }
+//        }
+
+//        for(ProjectOrderVo vo:projectOrderVoList){
+//            if(vo==null){
+//                continue;
+//            }
+//            List<ProjectLeaderWith> projectLeaderWithList=vo.getProjectLeaderWithList();
+//            if(projectLeaderWithList==null || CollectionUtils.isEmpty(projectLeaderWithList)){
+//                continue;
+//            }
+//            for(ProjectLeaderWith projectLeaderWith:projectLeaderWithList){
+//                if(projectLeaderWith.getWorkerPin().equals(userVo.getPin()) && projectLeaderWith.getIsApply()){
+//                    logger.error("ProjectWorkerServiceImpl：applyProjectOrder-该招工信息您已申报");
+//                    throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_IS_APPLY.getCode(),BusiessExceptionEnum.PROJECT_ORDER_IS_APPLY.getDesc());
+//                }
+//            }
+//        }
 //        ProjectLeaderWith projectLeaderWith=translationToProjectLeaderWith(userVo,projectLeader);
         ProjectLeaderWith projectLeaderWithRedis=translationToProjectLeaderWithRedis(userVo,projectLeader);
 //        ProjectWorker projectWorker=translationToProjectWorker(userVo,projectLeader);
@@ -107,7 +147,8 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
 //            projectWorker.setProjectStatus(projectOrderVo.getProjectStatus());
 //        }
 //        todo 没有必要事务存入 缓存中就有数据
-//        saveWorkerApply(projectLeaderWith,projectWorker,projectLeader);
+        saveWorkerApply(projectLeader);
+        List<ProjectOrderVo> projectOrderVoList=redisService.get(Contants.REDIS_PROJECTORDERLIST_BJ);
         //查询大缓存中的所有订单列表
         if(CollectionUtils.isEmpty(projectOrderVoList)){
             logger.error("ProjectWorkerServiceImpl：applyProjectOrder-招工订单(所有订单)大缓存出现问题，请及时排查");
@@ -162,10 +203,10 @@ public class ProjectWorkerServiceImpl implements ProjectWorkerService {
 
 
     @Override
-    @Transactional(propagation= Propagation.REQUIRED)
-    public void saveWorkerApply(ProjectLeaderWith projectLeaderWith,ProjectWorker projectWorker,ProjectLeader projectLeader) {
-        projectLeaderWithDao.insert(projectLeaderWith);
-        projectWorkerDao.insert(projectWorker);
+//    @Transactional(propagation= Propagation.REQUIRED)
+    public void saveWorkerApply(ProjectLeader projectLeader) {
+//        projectLeaderWithDao.insert(projectLeaderWith);
+//        projectWorkerDao.insert(projectWorker);
         ProjectLeader projectLeaderParam=new ProjectLeader();
         String leaderPin=projectLeader.getPin();
         String tableName=TableNameUtil.genProjectLeaderTableName(leaderPin);
