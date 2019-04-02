@@ -18,5 +18,10 @@ public interface ProjectLeaderWithDao {
      * 批量查询列表
      *
      * */
-    List<ProjectLeaderWith> batchProjectLeaderWithList(@Param("tableName")String orderWareTableName, @Param("orderIdList")List<String> orderIdList);
+    List<ProjectLeaderWith> batchProjectLeaderWithList(@Param("tableName")String tableName, @Param("orderIdList")List<String> orderIdList);
+    /**
+     * 批量插入干活工人申报表（发布招工信息确认干活的时候，插入）
+     *
+     * */
+    void insertBatch(@Param("tableName")String tableName,@Param("projectLeaderWithList")List<ProjectLeaderWith> projectLeaderWithList);
 }

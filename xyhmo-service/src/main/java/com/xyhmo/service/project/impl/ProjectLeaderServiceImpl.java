@@ -217,6 +217,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         return projectLeaderList;
     }
 
+    //todo 缓存中有的，可以从缓存中取。没有的再去到数据库里取
     @Override
     public ProjectOrderVo getProjectLeaderWithListByOrderId(UserVo userVo, String orderId,Integer projectStatus) {
         if(StringUtils.isBlank(orderId) || userVo==null || StringUtils.isBlank(userVo.getPin())){
@@ -310,6 +311,9 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
             throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),ParamEnum.PARAM_ERROR.getDesc());
         }
         ProjectOrderVo projectOrderVo=redisService.get(Contants.REDIS_ONE_PROJECTORDER+orderId);
+        if(projectOrderVo.getProjectNeedWorker()!=workerInfoList.size()){
+            throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_WORKER_IS_NOT_FULL.getCode(),BusiessExceptionEnum.PROJECT_ORDER_WORKER_IS_NOT_FULL.getDesc());
+        }
         if(projectOrderVo==null || projectOrderVo.getProjectStartTime()==null || projectOrderVo.getProjectEndTime()==null){
             throw new BusinessException(BusiessExceptionEnum.PROJECT_ORDER_SUREWORKERLIST_ERROR.getCode(),BusiessExceptionEnum.PROJECT_ORDER_SUREWORKERLIST_ERROR.getDesc());
         }
@@ -422,7 +426,7 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
 
             String pin="''";
             if(StringUtils.isNotBlank(projectLeaderWith.getWorkerPin())){
-                pin="'"+projectLeaderWith.getWorkerPin()+"'";
+                pin=projectLeaderWith.getWorkerPin();
             }
             ProjectWorker projectWorker=new ProjectWorker();
             projectWorker.setCreator(pin);
@@ -459,12 +463,13 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         String leaderPin=userVo.getPin();
         String tableName=TableNameUtil.genProjectLeaderTableName(leaderPin);
         ProjectLeader projectLeaderParam=new ProjectLeader();
-        projectLeader.setTableName(tableName);
-        projectLeader.setOrderId("'"+projectLeader.getOrderId()+"'");
-        projectLeader.setProjectStatus(ProjectStatusEnum.PROJECT_RECRUIT_END_NOT_START.getCode());
+        projectLeaderParam.setTableName(tableName);
+        projectLeaderParam.setOrderId("'"+projectLeader.getOrderId()+"'");
+        projectLeaderParam.setProjectStatus(ProjectStatusEnum.PROJECT_RECRUIT_END_NOT_START.getCode());
         projectLeaderDao.updateProjectLeader(projectLeaderParam);
         //批量插入报工列表
-        projectLeaderDao.insertBatch(projectLeaderWithList);
+        String projectLeaderWithTableName=TableNameUtil.genProjectLeaderWithTableName(projectLeader.getPin());
+        projectLeaderWithDao.insertBatch(projectLeaderWithTableName,projectLeaderWithList);
         for(ProjectWorker projectWorker:projectWorkerList){
             projectWorkerDao.insert(projectWorker);
         }

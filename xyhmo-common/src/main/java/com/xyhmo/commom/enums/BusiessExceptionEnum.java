@@ -9,7 +9,7 @@ public enum BusiessExceptionEnum {
     PROJECT_ORDER_REDIS_GETBYPROJECTORDERID(-100002,"该工程人数已招满，请看看其他招工信息"),
     PROJECT_ORDER_IS_APPLY(-100003,"该招工信息您已申报"),
     PROJECT_ORDER_SUREWORKERLIST_ERROR(-100004,"确认干活工人失败"),
-    PROJECT_ORDER_WORKER_IS_NOT_FULL(-100005,"报工人数还未报满");
+    PROJECT_ORDER_WORKER_IS_NOT_FULL(-100005,"报工人数与需要人数不相等");
     private int code;
     private String desc;
 

@@ -51,32 +51,33 @@ public class ProjectLeaderController {
      * 2：每日刷新（定时任务去做，此方法不做）缓存。并清理缓存数据
      * 3：数据库存一份，缓存中存一份
      * */
-//    @RequestMapping(value = "/createProjectOrder", method = RequestMethod.POST)
+
     //todo 换成POST
-    @RequestMapping(value = "/createProjectOrder", method = RequestMethod.GET)
+//    @RequestMapping(value = "/createProjectOrder", method = RequestMethod.GET)
+    @RequestMapping(value = "/createProjectOrder", method = RequestMethod.POST)
     @ResponseBody
-//    public Result createProjectOrder(@RequestBody ProjectCreateReq projectCreateReq){
-     public Result createProjectOrder(){
+    public Result createProjectOrder(@RequestBody ProjectCreateReq projectCreateReq){
+//     public Result createProjectOrder(){
         Result result = new Result();
         //参数
-        ProjectCreateReq projectCreateReq=new ProjectCreateReq();
-        projectCreateReq.setToken("f639681dfded0944eb486bbf08fe6891");
-        projectCreateReq.setProjectTitle("工程标题");
-        projectCreateReq.setProjectNeedWorker(5);
-        projectCreateReq.setProjectNeedDay(7);
-        String start  = "2019-04-12";
-        String end="2019-03-28";
-        projectCreateReq.setProjectStartTime(start);
-        projectCreateReq.setProjectEndTime(end);
-        projectCreateReq.setEveryDaySalary(300.00);
-        projectCreateReq.setProjectTotalPay(10500.00);
-        projectCreateReq.setProvinceId(2);
-        projectCreateReq.setCityId(52);
-        projectCreateReq.setCountyId(502);
-        projectCreateReq.setCoordinate("12324,12221");
-        projectCreateReq.setAddressDetail("新龙城小区1号楼2单元301室");
-        projectCreateReq.setMobileNumber("13718699660");
-        projectCreateReq.setDescribe("卫生间漏水，需要维修工人5个，7天内干完");
+//        ProjectCreateReq projectCreateReq=new ProjectCreateReq();
+//        projectCreateReq.setToken("f639681dfded0944eb486bbf08fe6891");
+//        projectCreateReq.setProjectTitle("工程标题");
+//        projectCreateReq.setProjectNeedWorker(2);
+//        projectCreateReq.setProjectNeedDay(7);
+//        String start  = "2019-04-12";
+//        String end="2019-03-28";
+//        projectCreateReq.setProjectStartTime(start);
+//        projectCreateReq.setProjectEndTime(end);
+//        projectCreateReq.setEveryDaySalary(300.00);
+//        projectCreateReq.setProjectTotalPay(10500.00);
+//        projectCreateReq.setProvinceId(2);
+//        projectCreateReq.setCityId(52);
+//        projectCreateReq.setCountyId(502);
+//        projectCreateReq.setCoordinate("12324,12221");
+//        projectCreateReq.setAddressDetail("新龙城小区1号楼2单元301室");
+//        projectCreateReq.setMobileNumber("13718699660");
+//        projectCreateReq.setDescribe("卫生间漏水，需要维修工人5个，7天内干完");
         try{
             if(projectCreateReq==null){
                 throw new ParamException(ParamEnum.PARAM_DELIVERY_ERROR.getCode(),ParamEnum.PARAM_DELIVERY_ERROR.getDesc());
@@ -170,7 +171,19 @@ public class ProjectLeaderController {
      * 确定干活工人
      *
      * */
+    @RequestMapping(value = "/sureProjectWorkerList", method = RequestMethod.POST)
+    @ResponseBody
     private Result sureProjectWorkerList(String token,String orderId,List<WorkerInfoParam> workerInfoList){
+//    private Result sureProjectWorkerList(String token,String orderId){
+//        List<WorkerInfoParam> workerInfoList =new ArrayList<>();
+//        WorkerInfoParam workerInfoParam1=new WorkerInfoParam();
+//        workerInfoParam1.setPin("BJ13777777777639194");
+//        workerInfoParam1.setRealName("张三");
+//        workerInfoList.add(workerInfoParam1);
+//        WorkerInfoParam workerInfoParam2=new WorkerInfoParam();
+//        workerInfoParam2.setPin("BJ13888888888903906");
+//        workerInfoParam2.setRealName("李四");
+//        workerInfoList.add(workerInfoParam2);
         Result result = new Result();
         if(StringUtils.isBlank(token) || StringUtils.isBlank(orderId) || CollectionUtils.isEmpty(workerInfoList)){
             return result.fail("系统正忙，请稍后再试");
@@ -188,7 +201,7 @@ public class ProjectLeaderController {
             return result.success("确认成功，请提前一天联系干活工人");
         }catch (BusinessException b){
             logger.error("projectOrderLeader：sureProjectWorkerList确认干活工人失败",b);
-            return result.fail(BusiessExceptionEnum.PROJECT_ORDER_SUREWORKERLIST_ERROR.getCode(),BusiessExceptionEnum.PROJECT_ORDER_SUREWORKERLIST_ERROR.getDesc());
+            return result.fail(b.getCode(),b.getMessage());
         }catch (Exception e){
             logger.error("projectOrderLeader：sureProjectWorkerList确认干活工人失败",e);
             return result.fail(SystemEnum.SYSTEM_ERROR.getDesc());
@@ -254,37 +267,5 @@ public class ProjectLeaderController {
             throw new ParamException(ParamEnum.PARAM_ERROR.getCode(),"mobileNumber is null");
         }
         return true;
-    }
-
-    /**
-     * 我的-招工-发布
-     * 获取我的工单列表
-     * 列表中每个工人必须校验工人在这期间是否有活
-     * */
-
-    public static void main(String[] args) {
-        ProjectCreateReq projectCreateReq=new ProjectCreateReq();
-        projectCreateReq.setToken("f639681dfded0944eb486bbf08fe6891");
-        projectCreateReq.setProjectTitle("工程标题");
-        projectCreateReq.setProjectNeedWorker(5);
-        projectCreateReq.setProjectNeedDay(7);
-        String start  = "2019-04-12";
-        String end="2019-03-28";
-        projectCreateReq.setProjectStartTime(start);
-        projectCreateReq.setProjectEndTime(end);
-        projectCreateReq.setEveryDaySalary(300.00);
-        projectCreateReq.setProjectTotalPay(10500.00);
-        projectCreateReq.setProvinceId(2);
-        projectCreateReq.setCityId(52);
-        projectCreateReq.setCountyId(502);
-        projectCreateReq.setCoordinate("12324,12221");
-        projectCreateReq.setAddressDetail("新龙城小区1号楼2单元301室");
-        projectCreateReq.setMobileNumber("13718699660");
-        projectCreateReq.setDescribe("卫生间漏水，需要维修工人5个，7天内干完");
-        try {
-            System.out.println(JSON.json(projectCreateReq));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

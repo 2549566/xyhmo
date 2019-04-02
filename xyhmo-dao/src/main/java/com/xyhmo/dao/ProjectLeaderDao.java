@@ -3,6 +3,7 @@ package com.xyhmo.dao;
 import com.xyhmo.commom.dao.MyBatisRepository;
 import com.xyhmo.domain.ProjectLeader;
 import com.xyhmo.domain.ProjectLeaderWith;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -31,6 +32,4 @@ public interface ProjectLeaderDao {
      *
      * */
     Long updateProjectLeader(ProjectLeader projectLeader);
-
-    void insertBatch(List<ProjectLeaderWith> projectLeaderWithList);
 }
