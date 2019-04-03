@@ -100,14 +100,14 @@ public class ProjectLeaderController {
     }
     @RequestMapping(value = "/getProjectOrderListPage", method = RequestMethod.GET)
     @ResponseBody
-    public Result getProjecOrderListPage(String token,Integer page,Integer pageSize){
+    public Result getProjecOrderListPage(String token,Integer pageNum,Integer pageSize){
         Result result = new Result();
         try{
             if(pageSize>50){
                 throw new ParamException("每页最多查询不能超过50个");
             }
             UserVo userVo=tokenService.checkTokenExist(token);
-            List<ProjectOrderVo> projectLeaderVoList= projectLeaderService.getProjectOrderListPage(userVo,page,pageSize);
+            List<ProjectOrderVo> projectLeaderVoList= projectLeaderService.getProjectOrderListPage(userVo,pageNum,pageSize);
             return result.success(projectLeaderVoList, ReturnEnum.RETURN_SUCCESS.getDesc());
         }catch (ParamException p){
             logger.error("projectOrderLeader:每页最多查询不能超过50个",p);
