@@ -1,5 +1,7 @@
 package com.xyhmo.query.project;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -38,11 +40,13 @@ public class ProjectCreateReq implements Serializable{
      * 工程开始日期
      *
      * */
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
     private String projectStartTime;
     /**
      * 工程结束日期
      *
      * */
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
     private String projectEndTime;
     /**
      * 工程描述
